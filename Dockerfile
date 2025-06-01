@@ -20,15 +20,20 @@ RUN apt-get update && apt-get install -y \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
-    docker-php-ext-install -j$(nproc) \
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+
+# Install core extensions
+RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql \
     mbstring \
     exif \
     pcntl \
     bcmath \
-    gd \
+    gd
+
+# Install additional extensions
+RUN docker-php-ext-install -j$(nproc) \
     zip \
     ctype \
     dom \

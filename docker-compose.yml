@@ -1,5 +1,5 @@
 services:
-  # PHP Service
+  # PHP Services
   app:
     build:
       context: .

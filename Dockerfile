@@ -33,18 +33,19 @@ RUN docker-php-ext-install -j$(nproc) \
     gd \
     zip
 
-# Install additional extensions one by one
-RUN docker-php-ext-install ctype && \
-    docker-php-ext-install dom && \
-    docker-php-ext-install fileinfo && \
-    docker-php-ext-install filter && \
-    docker-php-ext-install hash && \
-    docker-php-ext-install openssl && \
-    docker-php-ext-install pcre && \
-    docker-php-ext-install pdo && \
-    docker-php-ext-install session && \
-    docker-php-ext-install tokenizer && \
-    docker-php-ext-install xml
+# Enable built-in extensions
+RUN docker-php-ext-enable \
+    ctype \
+    dom \
+    fileinfo \
+    filter \
+    hash \
+    openssl \
+    pcre \
+    pdo \
+    session \
+    tokenizer \
+    xml
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

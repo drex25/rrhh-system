@@ -30,22 +30,21 @@ RUN docker-php-ext-install -j$(nproc) \
     exif \
     pcntl \
     bcmath \
-    gd
+    gd \
+    zip
 
-# Install additional extensions
-RUN docker-php-ext-install -j$(nproc) \
-    zip \
-    ctype \
-    dom \
-    fileinfo \
-    filter \
-    hash \
-    openssl \
-    pcre \
-    pdo \
-    session \
-    tokenizer \
-    xml
+# Install additional extensions one by one
+RUN docker-php-ext-install ctype && \
+    docker-php-ext-install dom && \
+    docker-php-ext-install fileinfo && \
+    docker-php-ext-install filter && \
+    docker-php-ext-install hash && \
+    docker-php-ext-install openssl && \
+    docker-php-ext-install pcre && \
+    docker-php-ext-install pdo && \
+    docker-php-ext-install session && \
+    docker-php-ext-install tokenizer && \
+    docker-php-ext-install xml
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

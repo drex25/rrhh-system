@@ -9,6 +9,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www:delegated
+      - ./storage:/var/www/storage:delegated
     networks:
       - rrhh-network
 
@@ -21,6 +22,7 @@ services:
       - "8000:80"
     volumes:
       - ./:/var/www:delegated
+      - ./storage:/var/www/storage:delegated
       - ./docker/nginx/conf.d:/etc/nginx/conf.d:delegated
     networks:
       - rrhh-network

@@ -49,5 +49,12 @@ RUN echo "pm = dynamic" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.min_spare_servers = 1" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.max_spare_servers = 3" >> /usr/local/etc/php-fpm.d/www.conf
 
+# Configuración de límites de PHP
+RUN echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/docker-php-upload-limits.ini && \
+    echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/docker-php-upload-limits.ini && \
+    echo "memory_limit=256M" >> /usr/local/etc/php/conf.d/docker-php-upload-limits.ini && \
+    echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/docker-php-upload-limits.ini && \
+    echo "max_input_time=300" >> /usr/local/etc/php/conf.d/docker-php-upload-limits.ini
+
 EXPOSE 9000
 CMD ["php-fpm"]

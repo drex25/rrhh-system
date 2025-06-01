@@ -68,7 +68,7 @@
                 <div><p class="text-sm text-gray-600">Provincia de Nacimiento</p><p class="font-medium">{{ $employee->birth_province_name }}</p></div>
                 <div><p class="text-sm text-gray-600">Ciudad de Nacimiento</p><p class="font-medium">{{ $employee->birth_city ?? 'No especificada' }}</p></div>
                 <div><p class="text-sm text-gray-600">Nacionalidad</p><p class="font-medium">{{ $employee->nationality ?? 'No especificada' }}</p></div>
-                <div><p class="text-sm text-gray-600">Sexo</p><p class="font-medium">{{ $employee->gender ?? 'No especificado' }}</p></div>
+                <div><p class="text-sm text-gray-600">Genero</p><p class="font-medium">{{ $employee->gender ?? 'No especificado' }}</p></div>
                 <div><p class="text-sm text-gray-600">Dirección</p><p class="font-medium">{{ $employee->address }}</p></div>
                 <div><p class="text-sm text-gray-600">Teléfono</p><p class="font-medium">{{ $employee->phone }}</p></div>
                 <div><p class="text-sm text-gray-600">Email</p><p class="font-medium">{{ $employee->email }}</p></div>

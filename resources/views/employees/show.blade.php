@@ -65,7 +65,7 @@
                 <div><p class="text-sm text-gray-600">CUIT</p><p class="font-medium">{{ $employee->cuit }}</p></div>
                 <div><p class="text-sm text-gray-600">Fecha de Nacimiento</p><p class="font-medium">{{ $employee->birth_date->format('d/m/Y') }}</p></div>
                 <div><p class="text-sm text-gray-600">País</p><p class="font-medium">{{ $employee->birth_country ?? 'No especificado' }}</p></div>
-                <div><p class="text-sm text-gray-600">Provincia de Nacimiento</p><p class="font-medium">{{ $employee->birth_province_name }}</p></div>
+                <div><p class="text-sm text-gray-600">Provincia</p><p class="font-medium">{{ $employee->birth_province_name }}</p></div>
                 <div><p class="text-sm text-gray-600">Ciudad</p><p class="font-medium">{{ $employee->birth_city ?? 'No especificada' }}</p></div>
                 <div><p class="text-sm text-gray-600">Nacionalidad</p><p class="font-medium">{{ $employee->nationality ?? 'No especificada' }}</p></div>
                 <div><p class="text-sm text-gray-600">Genero</p><p class="font-medium">{{ $employee->gender ?? 'No especificado' }}</p></div>

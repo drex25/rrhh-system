@@ -23,7 +23,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 
-# Install core extensions
+# Install required extensions
 RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql \
     mbstring \

@@ -164,10 +164,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0v6m0 0H7m6 0h6" />
                     </svg>
-                    <span x-show="!sidebarCollapsed">Dashboard</span>
+                    <span x-show="!sidebarCollapsed">Panel</span>
                     <span x-show="tooltip"
                         class="absolute left-full ml-2 px-2 py-1 rounded bg-gray-900 text-white text-xs z-50"
-                        x-cloak>Dashboard</span>
+                        x-cloak>Panel</span>
                 </a>
                 @role('Admin')
                     <div class="mt-6 mb-2 text-xs text-gray-400 dark:text-gray-500 uppercase pl-2"

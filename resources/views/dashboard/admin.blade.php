@@ -5,7 +5,7 @@
 <div class="mb-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Panel de Control</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Bienvenido a tu panel de control</p>
         </div>
         <div class="mt-4 md:mt-0 flex items-center space-x-3">

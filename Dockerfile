@@ -33,20 +33,6 @@ RUN docker-php-ext-install -j$(nproc) \
     gd \
     zip
 
-# Enable built-in extensions
-RUN docker-php-ext-enable \
-    ctype \
-    dom \
-    fileinfo \
-    filter \
-    hash \
-    openssl \
-    pcre \
-    pdo \
-    session \
-    tokenizer \
-    xml
-
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

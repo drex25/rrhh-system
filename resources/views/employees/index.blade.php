@@ -7,7 +7,7 @@
         <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white tracking-tight mb-4 md:mb-0">Empleados</h1>
         <a href="{{ route('employees.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-semibold rounded-full shadow-lg hover:scale-105 hover:from-indigo-600 hover:to-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
             <i class="fa-solid fa-user-plus text-xl"></i>
-            Dar Alta
+            Dar de Alta
         </a>
     </div>
 

@@ -24,36 +24,30 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first
-COPY composer.json composer.lock ./
+# Copiar todo el proyecto (incluyendo artisan)
+COPY . .
 
-# Install dependencies
 # Instalar dependencias con autoload incluido
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copy the rest of the application
-COPY . .
-
-# Generate autoload files
+# Generate optimized autoload
 RUN composer dump-autoload --optimize
 
-# Install npm dependencies
+# Instalar dependencias de npm
 RUN npm install
 
-# Create storage link
+# Crear enlace de almacenamiento
 RUN php artisan storage:link
 
-# Set permissions
+# Asignar permisos
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Configure PHP-FPM
+# Configuración de PHP-FPM
 RUN echo "pm = dynamic" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.max_children = 5" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.start_servers = 2" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.min_spare_servers = 1" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "pm.max_spare_servers = 3" >> /usr/local/etc/php-fpm.d/www.conf
 
-# Expose port 9000
 EXPOSE 9000
-
-CMD ["php-fpm"] 
+CMD ["php-fpm"]

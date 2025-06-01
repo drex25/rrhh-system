@@ -64,11 +64,11 @@
                 <div><p class="text-sm text-gray-600">DNI</p><p class="font-medium">{{ $employee->dni }}</p></div>
                 <div><p class="text-sm text-gray-600">CUIT</p><p class="font-medium">{{ $employee->cuit }}</p></div>
                 <div><p class="text-sm text-gray-600">Fecha de Nacimiento</p><p class="font-medium">{{ $employee->birth_date->format('d/m/Y') }}</p></div>
-                <div><p class="text-sm text-gray-600">País de Nacimiento</p><p class="font-medium">{{ $employee->birth_country ?? 'No especificado' }}</p></div>
-                <div><p class="text-sm text-gray-600">Provincia de Nacimiento</p><p class="font-medium">{{ $employee->birth_province_name }}</p></div>
+                <div><p class="text-sm text-gray-600">País</p><p class="font-medium">{{ $employee->birth_country ?? 'No especificado' }}</p></div>
+                <div><p class="text-sm text-gray-600">Provincia</p><p class="font-medium">{{ $employee->birth_province_name }}</p></div>
                 <div><p class="text-sm text-gray-600">Ciudad de Nacimiento</p><p class="font-medium">{{ $employee->birth_city ?? 'No especificada' }}</p></div>
                 <div><p class="text-sm text-gray-600">Nacionalidad</p><p class="font-medium">{{ $employee->nationality ?? 'No especificada' }}</p></div>
-                <div><p class="text-sm text-gray-600">Genero</p><p class="font-medium">{{ $employee->gender ?? 'No especificado' }}</p></div>
+                <div><p class="text-sm text-gray-600">Género</p><p class="font-medium">{{ $employee->gender ?? 'No especificado' }}</p></div>
                 <div><p class="text-sm text-gray-600">Dirección</p><p class="font-medium">{{ $employee->address }}</p></div>
                 <div><p class="text-sm text-gray-600">Teléfono</p><p class="font-medium">{{ $employee->phone }}</p></div>
                 <div><p class="text-sm text-gray-600">Email</p><p class="font-medium">{{ $employee->email }}</p></div>
@@ -82,7 +82,7 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div><p class="text-sm text-gray-600">Departamento</p><p class="font-medium">{{ $employee->department->name }}</p></div>
-                <div><p class="text-sm text-gray-600">Posición</p><p class="font-medium">{{ $employee->position->title }}</p></div>
+                <div><p class="text-sm text-gray-600">Puesto</p><p class="font-medium">{{ $employee->position->title }}</p></div>
                 <div><p class="text-sm text-gray-600">Fecha de Ingreso</p><p class="font-medium">{{ $employee->hire_date->format('d/m/Y') }}</p></div>
                 <div><p class="text-sm text-gray-600">Tipo de Contratación</p><p class="font-medium">{{ $employee->employment_type }}</p></div>
                 <div><p class="text-sm text-gray-600">Horario de Trabajo</p><p class="font-medium">{{ $employee->work_schedule_from }} - {{ $employee->work_schedule_to }}</p></div>

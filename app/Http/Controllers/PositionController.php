@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Position;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class PositionController extends Controller
@@ -10,10 +11,30 @@ class PositionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $positions = Position::paginate(10);
-        return view('positions.index', compact('positions'));
+        $query = Position::query();
+
+        // Filtro de búsqueda
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        // Filtro por departamento
+        if ($request->has('department') && $request->input('department') !== '') {
+            $query->where('department_id', $request->input('department'));
+        }
+
+        // Filtro por estado
+        if ($request->has('status') && $request->input('status') !== '') {
+            $query->where('is_active', $request->input('status'));
+        }
+
+        $positions = $query->paginate(10);
+        $departments = Department::where('is_active', true)->get();
+
+        return view('positions.index', compact('positions', 'departments'));
     }
 
     /**
@@ -64,7 +85,8 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        return view('positions.edit', compact('position'));
+        $departments = Department::where('is_active', true)->get();
+        return view('positions.edit', compact('position', 'departments'));
     }
 
     /**

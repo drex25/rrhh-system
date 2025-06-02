@@ -62,7 +62,7 @@
                @mouseenter="if(sidebarCollapsed) tooltip = true"
                @mouseleave="tooltip = false">
                 <i class="fa-solid fa-users"></i>
-                <span x-show="!sidebarCollapsed">Empleados</span>
+                <span x-show="!sidebarCollapsed">Colaboradores</span>
                 <span x-show="tooltip" :class="darkMode ? 'bg-[#232B3E] text-white' : 'bg-gray-200 text-blue-900'" class="absolute left-full ml-2 px-2 py-1 rounded text-xs z-50" x-cloak>Empleados</span>
             </a>
             @php

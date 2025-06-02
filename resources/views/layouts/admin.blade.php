@@ -237,8 +237,13 @@
     </style>
 </head>
 
-<body class="min-h-screen font-sans antialiased" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', userMenu: false, showPasswordModal: false, redirecting: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" :class="darkMode ? 'bg-gray-900' : 'bg-gray-100'"
-    x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val));
+<body class="min-h-screen font-sans antialiased" 
+    x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', userMenu: false, showPasswordModal: false, redirecting: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" 
+    :class="darkMode ? 'dark bg-gray-900' : 'bg-gray-100'"
+    x-init="$watch('darkMode', val => {
+        localStorage.setItem('darkMode', val);
+        document.documentElement.classList.toggle('dark', val);
+    });
     $watch('sidebarCollapsed', val => localStorage.setItem('sidebarCollapsed', val));
     @if(Auth::user()->force_password_change && !request()->is('password/change'))
     showPasswordModal = true;

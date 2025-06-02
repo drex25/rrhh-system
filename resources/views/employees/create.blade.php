@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="w-full mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 space-y-10 mt-5">
-    <h2 class="text-4xl font-extrabold mb-10 text-gray-800 border-b pb-4 tracking-tight">Nuevo Colaborador</h2>
+<div :class="darkMode ? 'bg-[#181F2A] border-[#232B3E]' : 'bg-white border-gray-200'" class="rounded-2xl shadow-lg p-8 space-y-10 border transition-colors duration-300">
+    <h2 class="text-4xl font-extrabold mb-10 text-gray-800 dark:text-white border-b pb-4 tracking-tight">Nuevo Colaborador</h2>
     <form id="employeeForm" action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="space-y-10">
         @csrf
         @php
@@ -33,6 +33,11 @@
                 min-width: 90px;
                 flex: 1 1 0;
                 cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .wizard-step:hover {
+                transform: translateY(-2px) scale(1.04);
+                box-shadow: 0 4px 16px 0 rgba(99,102,241,0.10);
             }
             .wizard-circle {
                 background: #fff;
@@ -51,6 +56,11 @@
                 transition: all 0.3s cubic-bezier(.4,0,.2,1);
                 box-shadow: 0 2px 8px 0 rgba(99,102,241,0.04);
             }
+            .dark .wizard-circle {
+                background: #1f2937;
+                border-color: #374151;
+                color: #9ca3af;
+            }
             .wizard-step.completed .wizard-circle {
                 background: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
                 color: #fff;
@@ -63,6 +73,9 @@
                 box-shadow: 0 0 0 6px #6366f133, 0 4px 16px 0 rgba(99,102,241,0.10);
                 font-size: 2.1rem;
             }
+            .dark .wizard-step.active .wizard-circle {
+                background: #1f2937;
+            }
             .wizard-step.completed .wizard-circle i {
                 color: #fff;
             }
@@ -73,6 +86,10 @@
                 color: #6366f1;
                 text-align: center;
                 letter-spacing: -0.5px;
+                transition: all 0.3s ease;
+            }
+            .dark .wizard-step .wizard-title {
+                color: #60a5fa;
             }
             .wizard-step .wizard-desc {
                 font-size: 0.92rem;
@@ -80,6 +97,10 @@
                 opacity: 0.8;
                 text-align: center;
                 margin-top: 0.1rem;
+                transition: all 0.3s ease;
+            }
+            .dark .wizard-step .wizard-desc {
+                color: #9ca3af;
             }
             .wizard-step.completed .wizard-title,
             .wizard-step.completed .wizard-desc {
@@ -87,6 +108,9 @@
             }
             .wizard-step.active .wizard-title {
                 color: #6366f1;
+            }
+            .dark .wizard-step.active .wizard-title {
+                color: #60a5fa;
             }
             .wizard-step:not(:last-child) {
                 margin-right: 0;
@@ -112,6 +136,9 @@
                 top: 0;
                 overflow: hidden;
             }
+            .dark .wizard-connector-bar {
+                background: #374151;
+            }
             .wizard-connector-bar-progress {
                 position: absolute;
                 left: 0;
@@ -129,40 +156,27 @@
                 .wizard-connector { display: none; }
                 .wizard-step { min-width: 0; }
             }
-            .btn-pro {
-                background: linear-gradient(90deg, #6366f1 0%, #22d3ee 100%);
-                color: #fff;
-                font-weight: 700;
-                font-size: 1.1rem;
-                border-radius: 1rem;
-                padding: 0.85rem 2.5rem;
-                box-shadow: 0 4px 16px 0 rgba(99,102,241,0.10);
-                transition: all 0.2s cubic-bezier(.4,0,.2,1);
-                border: none;
-                outline: none;
-                margin-left: 0.5rem;
+            .form-input-pro {
+                @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200;
             }
-            .btn-pro:hover, .btn-pro:focus {
-                background: linear-gradient(90deg, #22d3ee 0%, #6366f1 100%);
-                transform: translateY(-2px) scale(1.04);
-                box-shadow: 0 8px 32px 0 rgba(99,102,241,0.18);
+            .form-input-pro:focus {
+                @apply shadow-lg transform scale-[1.02];
+            }
+            .error-message {
+                @apply text-red-500 text-sm mt-1 block;
+            }
+            .btn-pro {
+                @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm rounded-xl px-6 py-2.5 shadow-sm hover:from-indigo-600 hover:to-blue-600 transition-all duration-200 hover:scale-105 hover:shadow-md;
             }
             .btn-pro-secondary {
-                background: #fff;
-                color: #6366f1;
-                border: 2px solid #6366f1;
-                font-weight: 700;
-                font-size: 1.1rem;
-                border-radius: 1rem;
-                padding: 0.85rem 2.5rem;
-                transition: all 0.2s cubic-bezier(.4,0,.2,1);
-                margin-right: 0.5rem;
+                @apply bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400 font-semibold text-sm rounded-xl px-6 py-2.5 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:scale-105;
             }
-            .btn-pro-secondary:hover, .btn-pro-secondary:focus {
-                background: #f1f5f9;
-                color: #22d3ee;
-                border-color: #22d3ee;
-                transform: translateY(-2px) scale(1.04);
+            .step {
+                animation: fade-in 0.5s;
+            }
+            @keyframes fade-in {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
         </style>
 

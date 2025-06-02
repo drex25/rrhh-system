@@ -43,8 +43,9 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(10);
         $departments = \App\Models\Department::all();
+        $positions = \App\Models\Position::all();
 
-        return view('employees.index', compact('employees', 'departments'));
+        return view('employees.index', compact('employees', 'departments', 'positions'));
     }
 
     /**

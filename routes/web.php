@@ -10,6 +10,16 @@ use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\EmployeeLeaveBalanceController;
 use App\Http\Controllers\PasswordChangeController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\AcademicHistoryController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\JobPostingController;
+use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,6 +90,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas para mostrar el formulario de baja y procesar la baja de empleados
     Route::get('employees/{employee}/baja', [\App\Http\Controllers\EmployeeController::class, 'bajaForm'])->name('employees.bajaForm');
     Route::post('employees/{employee}/baja', [\App\Http\Controllers\EmployeeController::class, 'baja'])->name('employees.baja');
+
+    // Document Management
+    Route::resource('documents', DocumentController::class);
+    
+    // Academic History
+    Route::resource('academic-history', AcademicHistoryController::class);
+    
+    // Attendance
+    Route::resource('attendance', AttendanceController::class);
+    Route::resource('overtime', OvertimeController::class);
+    
+    // Recruitment
+    Route::resource('job-postings', JobPostingController::class);
+    Route::resource('candidates', CandidateController::class);
+    
+    // Development
+    Route::resource('training', TrainingController::class);
+    Route::resource('performance', PerformanceController::class);
+    
+    // Reports
+    Route::resource('reports', ReportController::class);
+    Route::resource('analytics', AnalyticsController::class);
 });
 
 Route::get('/api/countries', [LocationController::class, 'getCountries']);

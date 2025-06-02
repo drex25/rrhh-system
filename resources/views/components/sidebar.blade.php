@@ -20,6 +20,33 @@
     [data-theme="dark"] .sidebar-link {
         color: #fff;
     }
+    [data-theme="dark"] .text-gray-400 {
+        color: #9ca3af !important;
+    }
+    [data-theme="dark"] .border-[#232B3E] {
+        border-color: #374151 !important;
+    }
+    [data-theme="dark"] .bg-blue-50 {
+        background-color: #1e293b !important;
+    }
+    [data-theme="dark"] .text-blue-900 {
+        color: #fff !important;
+    }
+    .dark .sidebar-link {
+        color: #fff !important;
+    }
+    .dark .text-gray-400 {
+        color: #9ca3af !important;
+    }
+    .dark .border-[#232B3E] {
+        border-color: #374151 !important;
+    }
+    .dark .bg-blue-50 {
+        background-color: #1e293b !important;
+    }
+    .dark .text-blue-900 {
+        color: #fff !important;
+    }
 </style>
 <aside class="fixed z-30 inset-y-0 left-0 transition-all duration-300 ease-in-out" :class="sidebarCollapsed ? 'w-20' : 'w-72'">
     <div :class="darkMode ? 'bg-[#181F2A] border-[#232B3E]' : 'bg-white border-gray-200'" class="flex flex-col h-screen border-r sidebar-pro" style="scrollbar-width: none;">
@@ -50,7 +77,7 @@
             </a>
             <!-- Gestión -->
             @role('Admin|HR')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Gestión</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Gestión</div>
             @php
                 $isActive = request()->is('employees*');
                 $activeClasses = $isActive ? 'border-blue-500 bg-blue-50 text-blue-900 dark:bg-[#181F2A] dark:text-white shadow-md' : 'border-transparent text-blue-900 hover:bg-blue-100 dark:text-white dark:hover:bg-[#232B3E] hover:border-blue-400';
@@ -96,7 +123,7 @@
             @endrole
             <!-- Recibos y Licencias -->
             @role('Admin|HR')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Recibos y Licencias</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Recibos y Licencias</div>
             @php
                 $isActive = request()->is('payslips*');
                 $activeClasses = $isActive ? 'border-blue-500 bg-blue-50 text-blue-900 dark:bg-[#181F2A] dark:text-white shadow-md' : 'border-transparent text-blue-900 hover:bg-blue-100 dark:text-white dark:hover:bg-[#232B3E] hover:border-blue-400';
@@ -142,7 +169,7 @@
             @endrole
             <!-- Desarrollo (Submenú) -->
             @role('Admin')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Desarrollo</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Desarrollo</div>
             <div x-data="{ open: false }">
                 <button @click="open = !open"
                         :class="[
@@ -175,7 +202,7 @@
             @endrole
             <!-- Reclutamiento (Submenú) -->
             @role('Admin')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Reclutamiento</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Reclutamiento</div>
             <div x-data="{ open: false }">
                 <button @click="open = !open"
                         :class="[
@@ -202,7 +229,7 @@
             @endrole
             <!-- Reportes y Analíticas (Submenú) -->
             @role('Admin')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Reportes y Analíticas</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Reportes y Analíticas</div>
             <div x-data="{ open: false }">
                 <button @click="open = !open"
                         :class="[
@@ -228,7 +255,7 @@
             </div>
             @endrole
             <!-- Usuario y Admin -->
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Usuario</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Usuario</div>
             @php
                 $isActive = request()->is('profile');
                 $activeClasses = $isActive ? 'border-blue-500 bg-blue-50 text-blue-900 dark:bg-[#181F2A] dark:text-white shadow-md' : 'border-transparent text-blue-900 hover:bg-blue-100 dark:text-white dark:hover:bg-[#232B3E] hover:border-blue-400';
@@ -244,7 +271,7 @@
                 <span x-show="tooltip" :class="darkMode ? 'bg-[#232B3E] text-white' : 'bg-gray-200 text-blue-900'" class="absolute left-full ml-2 px-2 py-1 rounded text-xs z-50" x-cloak>Perfil</span>
             </a>
             @role('Admin')
-            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed">Admin</div>
+            <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Admin</div>
             @php
                 $isActive = request()->is('admin/settings');
                 $activeClasses = $isActive ? 'border-blue-500 bg-blue-50 text-blue-900 dark:bg-[#181F2A] dark:text-white shadow-md' : 'border-transparent text-blue-900 hover:bg-blue-100 dark:text-white dark:hover:bg-[#232B3E] hover:border-blue-400';

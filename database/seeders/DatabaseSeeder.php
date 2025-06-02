@@ -26,11 +26,11 @@ class DatabaseSeeder extends Seeder
             LeaveTypeSeeder::class,
         ]);
 
-        // Crear roles
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        $hrRole = Role::firstOrCreate(['name' => 'HR']);
-        $managerRole = Role::firstOrCreate(['name' => 'Manager']);
-        $employeeRole = Role::firstOrCreate(['name' => 'Employee']);
+        // Obtener roles existentes
+        $adminRole = Role::where('name', 'Admin')->first();
+        $hrRole = Role::where('name', 'HR')->first();
+        $managerRole = Role::where('name', 'Manager')->first();
+        $employeeRole = Role::where('name', 'Employee')->first();
 
         // Crear departamentos de ejemplo
         $departments = [

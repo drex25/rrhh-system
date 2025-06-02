@@ -2,12 +2,12 @@
 
 @section('content')
 <div class="w-full mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 space-y-10 mt-5">
-    <h2 class="text-4xl font-extrabold mb-10 text-gray-800 border-b pb-4 tracking-tight">Nuevo Empleado</h2>
+    <h2 class="text-4xl font-extrabold mb-10 text-gray-800 border-b pb-4 tracking-tight">Nuevo Colaborador</h2>
     <form id="employeeForm" action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="space-y-10">
         @csrf
         @php
             $steps = [
-                ['title' => 'Personales', 'desc' => 'Datos personales del empleado', 'icon' => 'user'],
+                ['title' => 'Personales', 'desc' => 'Datos personales del colaborador', 'icon' => 'user'],
                 ['title' => 'Laborales', 'desc' => 'Información laboral', 'icon' => 'briefcase'],
                 ['title' => 'Bancarios', 'desc' => 'Datos bancarios', 'icon' => 'bank'],
                 ['title' => 'Familiares', 'desc' => 'Información familiar', 'icon' => 'users'],

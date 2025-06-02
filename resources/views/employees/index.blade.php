@@ -9,7 +9,7 @@
                 <i class="fa-solid fa-users text-2xl text-white"></i>
             </div>
             <div>
-                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" :class="darkMode ? 'text-white' : 'text-blue-900'">Empleados</h1>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" :class="darkMode ? 'text-white' : 'text-blue-900'">Colaboradores</h1>
                 <p class="mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-600'">Gestión de personal</p>
             </div>
         </div>

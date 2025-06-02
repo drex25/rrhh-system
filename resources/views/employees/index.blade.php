@@ -3,7 +3,7 @@
 @section('content')
 <div class="w-full mx-auto px-4 md:px-6 lg:px-8 py-6" :class="darkMode ? 'bg-[#181F2A]' : 'bg-gray-100'" class="min-h-screen">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row items-center justify-between rounded-2xl shadow-lg p-8 mb-8 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-gray-200 border-gray-200'">
+    <div class="flex flex-col md:flex-row items-center justify-between rounded-2xl shadow-lg p-8 mb-8 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center gap-4 mb-4 md:mb-0">
             <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
                 <i class="fa-solid fa-users text-2xl text-white"></i>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Filtros -->
-    <div class="rounded-xl shadow-lg p-6 mb-8 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-gray-200 border-gray-200'">
+    <div class="rounded-xl shadow-lg p-6 mb-8 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <form action="{{ route('employees.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="relative group">
                 <label for="search" class="block text-sm font-medium mb-2" :class="darkMode ? 'text-gray-300' : 'text-blue-900'">Buscar</label>
@@ -63,10 +63,10 @@
     </div>
 
     <!-- Tabla -->
-    <div class="rounded-2xl shadow-lg overflow-hidden border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-gray-200 border-gray-200'">
+    <div class="rounded-2xl shadow-lg overflow-hidden border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y" :class="darkMode ? 'divide-gray-700' : 'divide-gray-300'">
-                <thead class="sticky top-0 z-10 border-b" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-gray-200 border-gray-200'">
+                <thead class="sticky top-0 z-10 border-b" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
                     <tr>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider" :class="darkMode ? 'text-gray-300' : 'text-blue-900'">Legajo</th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider" :class="darkMode ? 'text-gray-300' : 'text-blue-900'">Nombre</th>
@@ -76,7 +76,7 @@
                         <th scope="col" class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider" :class="darkMode ? 'text-gray-300' : 'text-blue-900'">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y" :class="darkMode ? 'bg-[#232B3E] divide-gray-700' : 'bg-gray-200 divide-gray-300'">
+                <tbody class="divide-y" :class="darkMode ? 'bg-[#232B3E] divide-gray-700' : 'bg-white divide-gray-300'">
                     @forelse($employees as $employee)
                         <tr class="transition-all duration-200" :class="darkMode ? 'hover:bg-[#232B3E]/80' : 'hover:bg-gray-300'">
                             <td class="px-6 py-4 whitespace-nowrap">

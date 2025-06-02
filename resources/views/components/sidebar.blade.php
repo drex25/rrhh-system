@@ -1,14 +1,14 @@
 <style>
     .sidebar-pro::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
     .sidebar-pro { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    .sidebar-logo img { height: 100% !important; max-height: 80px !important; width: auto !important; object-fit: contain; margin: 0 !important; padding: 0 !important; display: block; }
+    .sidebar-logo { padding: 0 !important; margin: 0 !important; height: 80px !important; }
 </style>
 <aside class="fixed z-30 inset-y-0 left-0 transition-all duration-300 ease-in-out" :class="sidebarCollapsed ? 'w-20' : 'w-72'">
     <div class="bg-[#181F2A] flex flex-col h-screen overflow-y-auto border-r border-[#232B3E] sidebar-pro" style="scrollbar-width: none;">
-        <div class="flex items-center justify-center h-20 border-b border-[#232B3E] bg-[#232B3E]">
+        <div class="flex items-center justify-center h-20 border-b border-[#232B3E] bg-[#232B3E] sidebar-logo">
             <template x-if="!sidebarCollapsed">
-               
-                    <img src="/images/TSG logo.png" alt="TSGroup Logo" class="w-10 h-10 object-contain">
-              
+                <img src="/images/TSG logo.png" alt="TSGroup Logo">
             </template>
             <template x-if="sidebarCollapsed">
                 <img src="/images/favicon.png" alt="TSGroup Favicon" class="w-10 h-10 object-contain">

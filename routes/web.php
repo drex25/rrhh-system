@@ -112,6 +112,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Reports
     Route::resource('reports', ReportController::class);
     Route::resource('analytics', AnalyticsController::class);
+
+    // Rutas de Reclutamiento
+    Route::get('/job-postings', [JobPostingController::class, 'index'])->name('job-postings.index');
+    Route::get('/job-postings/create', [JobPostingController::class, 'create'])->name('job-postings.create');
+    Route::post('/job-postings', [JobPostingController::class, 'store'])->name('job-postings.store');
+    Route::get('/job-postings/{jobPosting}', [JobPostingController::class, 'show'])->name('job-postings.show');
+    Route::get('/job-postings/{jobPosting}/edit', [JobPostingController::class, 'edit'])->name('job-postings.edit');
+    Route::put('/job-postings/{jobPosting}', [JobPostingController::class, 'update'])->name('job-postings.update');
+    Route::delete('/job-postings/{jobPosting}', [JobPostingController::class, 'destroy'])->name('job-postings.destroy');
+    Route::post('/job-postings/{jobPosting}/toggle-status', [JobPostingController::class, 'toggleStatus'])->name('job-postings.toggle-status');
+    Route::post('/job-postings/{jobPosting}/toggle-featured', [JobPostingController::class, 'toggleFeatured'])->name('job-postings.toggle-featured');
+
+    // Rutas para candidatos
+    Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
+    Route::get('/candidates/create', [CandidateController::class, 'create'])->name('candidates.create');
+    Route::post('/candidates', [CandidateController::class, 'store'])->name('candidates.store');
+    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
+    Route::get('/candidates/{candidate}/edit', [CandidateController::class, 'edit'])->name('candidates.edit');
+    Route::put('/candidates/{candidate}', [CandidateController::class, 'update'])->name('candidates.update');
+    Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
+    Route::get('/candidates/{candidate}/download-resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
 });
 
 Route::get('/api/countries', [LocationController::class, 'getCountries']);

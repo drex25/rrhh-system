@@ -16,8 +16,13 @@ class DepartmentController extends Controller
         $departments = Department::with('manager')
             ->latest()
             ->paginate(10);
+            
+        $employees = Employee::where('is_active', true)
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get();
 
-        return view('departments.index', compact('departments'));
+        return view('departments.index', compact('departments', 'employees'));
     }
 
     /**
@@ -45,8 +50,16 @@ class DepartmentController extends Controller
 
         $department = Department::create($validated);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Departamento creado exitosamente.',
+                'department' => $department
+            ]);
+        }
+
         return redirect()->route('departments.show', $department)
-            ->with('success', 'Department created successfully.');
+            ->with('success', 'Departamento creado exitosamente.');
     }
 
     /**
@@ -83,8 +96,16 @@ class DepartmentController extends Controller
 
         $department->update($validated);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Departamento actualizado exitosamente.',
+                'department' => $department
+            ]);
+        }
+
         return redirect()->route('departments.show', $department)
-            ->with('success', 'Department updated successfully.');
+            ->with('success', 'Departamento actualizado exitosamente.');
     }
 
     /**
@@ -93,12 +114,12 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         if ($department->employees()->exists()) {
-            return back()->with('error', 'Cannot delete department with associated employees.');
+            return back()->with('error', 'No se puede eliminar un departamento que tiene empleados asociados.');
         }
 
         $department->delete();
 
         return redirect()->route('departments.index')
-            ->with('success', 'Department deleted successfully.');
+            ->with('success', 'Departamento eliminado exitosamente.');
     }
 }

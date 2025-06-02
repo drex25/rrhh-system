@@ -12,6 +12,201 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <script>
+        // Modal functions
+        function openCreateModal() {
+            document.getElementById('createDepartmentModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createDepartmentModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            if (document.getElementById('createDepartmentForm')) {
+                document.getElementById('createDepartmentForm').reset();
+                // Clear error messages
+                document.querySelectorAll('[id$="-error"]').forEach(el => {
+                    el.classList.add('hidden');
+                    el.textContent = '';
+                });
+            }
+        }
+
+        // Delete confirmation
+        function confirmDelete(event) {
+            event.preventDefault();
+            const form = event.target;
+            
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción eliminará permanentemente el departamento y no se podrá deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                customClass: {
+                    popup: 'rounded-xl',
+                    confirmButton: 'rounded-lg',
+                    cancelButton: 'rounded-lg'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+
+        // Form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const createDepartmentForm = document.getElementById('createDepartmentForm');
+            if (createDepartmentForm) {
+                createDepartmentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: data.message,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                customClass: {
+                                    popup: 'rounded-xl'
+                                }
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            // Show validation errors
+                            Object.keys(data.errors).forEach(field => {
+                                const errorElement = document.getElementById(`${field}-error`);
+                                if (errorElement) {
+                                    errorElement.textContent = data.errors[field][0];
+                                    errorElement.classList.remove('hidden');
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ha ocurrido un error al crear el departamento.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                popup: 'rounded-xl'
+                            }
+                        });
+                    });
+                });
+            }
+        });
+
+        function openEditModal(department) {
+            document.getElementById('edit-name').value = department.name || '';
+            document.getElementById('edit-code').value = department.code || '';
+            document.getElementById('edit-description').value = department.description || '';
+            document.getElementById('edit-location').value = department.location || '';
+            document.getElementById('edit-manager_id').value = department.manager_id || '';
+            document.getElementById('edit-is_active').checked = department.is_active ? true : false;
+            document.getElementById('editDepartmentForm').action = `/departments/${department.id}`;
+            document.getElementById('editDepartmentModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            document.querySelectorAll('[id^="edit-"][id$="-error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+        }
+
+        function closeEditModal() {
+            document.getElementById('editDepartmentModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('editDepartmentForm').reset();
+            document.querySelectorAll('[id^="edit-"][id$="-error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const editDepartmentForm = document.getElementById('editDepartmentForm');
+            if (editDepartmentForm) {
+                editDepartmentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('_method', 'PATCH');
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: data.message,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                customClass: {
+                                    popup: 'rounded-xl'
+                                }
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Object.keys(data.errors).forEach(field => {
+                                const errorElement = document.getElementById(`edit-${field}-error`);
+                                if (errorElement) {
+                                    errorElement.textContent = data.errors[field][0];
+                                    errorElement.classList.remove('hidden');
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ha ocurrido un error al actualizar el departamento.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                popup: 'rounded-xl'
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    </script>
     <style>
     .input-pro, .form-input-pro, select, textarea {
         border: 1.5px solid #e5e7eb;

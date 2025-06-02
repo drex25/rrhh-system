@@ -52,14 +52,14 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Crear roles y asignar permisos
-        $admin = Role::create(['name' => 'Admin']);
+        $admin = Role::firstOrCreate(['name' => 'Admin']);
         $admin->givePermissionTo($permissions);
 
-        $hr = Role::create(['name' => 'HR']);
+        $hr = Role::firstOrCreate(['name' => 'HR']);
         $hr->givePermissionTo([
             'view_employees', 'create_employees', 'edit_employees',
             'view_departments', 'create_departments', 'edit_departments',
@@ -69,7 +69,7 @@ class RoleSeeder extends Seeder
             'view_leave_types', 'create_leave_types', 'edit_leave_types',
         ]);
 
-        $manager = Role::create(['name' => 'Manager']);
+        $manager = Role::firstOrCreate(['name' => 'Manager']);
         $manager->givePermissionTo([
             'view_employees',
             'view_departments',
@@ -79,7 +79,7 @@ class RoleSeeder extends Seeder
             'view_leave_types',
         ]);
 
-        $employee = Role::create(['name' => 'Employee']);
+        $employee = Role::firstOrCreate(['name' => 'Employee']);
         $employee->givePermissionTo([
             'view_payslips', 'download_payslips',
             'view_leave_requests', 'create_leave_requests',

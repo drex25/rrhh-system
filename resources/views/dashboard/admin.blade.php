@@ -5,8 +5,8 @@
 <div class="mb-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Panel de Control</h1>
-            <p class="mt-1 text-sm text-gray-300">Bienvenido a tu panel de control</p>
+            <h1 :class="darkMode ? 'text-white' : 'text-blue-900'" class="text-2xl font-bold">Panel de Control</h1>
+            <p :class="darkMode ? 'text-gray-300' : 'text-gray-600'" class="mt-1 text-sm">Bienvenido a tu panel de control</p>
         </div>
         <div class="mt-4 md:mt-0 flex items-center space-x-3">
             <button class="inline-flex items-center px-4 py-2 bg-[#232B3E] border border-[#232B3E] rounded-lg shadow text-sm font-medium text-gray-200 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -28,7 +28,7 @@
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Employees Card -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E] hover:shadow-lg transition-shadow duration-300">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Total Empleados</p>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Total Payslips Card -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E] hover:shadow-lg transition-shadow duration-300">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Total Recibos</p>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Pending Leave Requests Card -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E] hover:shadow-lg transition-shadow duration-300">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Licencias Pendientes</p>
@@ -88,7 +88,7 @@
             </div>
             <div class="p-3 bg-purple-800 rounded-full">
                 <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h7"/>
                 </svg>
             </div>
         </div>
@@ -106,7 +106,7 @@
     </div>
 
     <!-- Total Departments Card -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E] hover:shadow-lg transition-shadow duration-300">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Departamentos</p>
@@ -135,7 +135,7 @@
 <!-- Charts Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Employees by Department Chart -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E]">
+    <div class="rounded-xl shadow p-6 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-white">Empleados por Departamento</h3>
             <div class="flex items-center space-x-2">
@@ -152,7 +152,7 @@
     </div>
 
     <!-- Leave Requests by Month Chart -->
-    <div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E]">
+    <div class="rounded-xl shadow p-6 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-white">Licencias por Mes</h3>
             <div class="flex items-center space-x-2">
@@ -170,9 +170,9 @@
 </div>
 
 <!-- Recent Activity Section -->
-<div class="bg-[#232B3E] rounded-xl shadow p-6 border border-[#232B3E] mb-8">
+<div class="rounded-xl shadow p-6 border mb-8" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
     <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-semibold text-white">Actividad Reciente</h3>
+        <h3 :class="darkMode ? 'text-white' : 'text-blue-900'" class="text-lg font-semibold">Actividad Reciente</h3>
         <button class="text-sm text-blue-400 hover:text-blue-300">
             Ver todo
         </button>

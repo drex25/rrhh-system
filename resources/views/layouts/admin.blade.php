@@ -237,7 +237,7 @@
     </style>
 </head>
 
-<body class="bg-gray-900 min-h-screen font-sans antialiased" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', userMenu: false, showPasswordModal: false, redirecting: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" :class="{ 'dark': darkMode }"
+<body class="min-h-screen font-sans antialiased" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', userMenu: false, showPasswordModal: false, redirecting: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" :class="darkMode ? 'bg-gray-900' : 'bg-gray-100'"
     x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val));
     $watch('sidebarCollapsed', val => localStorage.setItem('sidebarCollapsed', val));
     @if(Auth::user()->force_password_change && !request()->is('password/change'))
@@ -341,9 +341,9 @@
         </div>
     @endif
     @include('components.sidebar')
-    <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out bg-gray-900" :class="sidebarCollapsed ? 'ml-20' : 'ml-72'">
+    <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out" :class="[sidebarCollapsed ? 'ml-20' : 'ml-72', darkMode ? 'bg-gray-900' : 'bg-gray-100']">
         @include('components.topbar')
-        <main class="flex-1 p-8 overflow-y-auto bg-gray-900 text-white" style="height:calc(100vh - 5rem)">
+        <main class="flex-1 p-8 overflow-y-auto" :class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'" style="height:calc(100vh - 5rem)">
             @yield('content')
         </main>
     </div>

@@ -21,15 +21,24 @@ use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PublicJobPostingController;
+use App\Http\Controllers\JobApplicationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
+// Redirect root to job postings
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
+    return redirect()->route('public.job-postings.index');
 });
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])

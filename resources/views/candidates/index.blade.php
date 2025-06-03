@@ -130,7 +130,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">
-                                            No se encontraron candidatos..
+                                            No se encontraron candidatos....
                                         </td>
                                     </tr>
                                 @endforelse

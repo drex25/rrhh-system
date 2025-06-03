@@ -104,9 +104,17 @@ class JobPosting extends Model
         parent::boot();
 
         static::creating(function ($jobPosting) {
-            if (empty($jobPosting->slug)) {
-                $jobPosting->slug = Str::slug($jobPosting->title);
+            $baseSlug = Str::slug($jobPosting->title);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            // Check if slug exists and append number until unique
+            while (static::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
             }
+
+            $jobPosting->slug = $slug;
         });
     }
 }

@@ -199,3 +199,5 @@
         @stack('scripts')
     </body>
 </html>
+
+{{-- // probar la nueva base de datos     --}}

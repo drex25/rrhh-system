@@ -17,7 +17,7 @@
 </head>
 <body class="font-sans antialiased bg-gray-50 dark:bg-gray-900">
     <!-- Navigation -->
-    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
@@ -30,10 +30,10 @@
 
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('public.job-postings.index') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }} text-sm font-medium leading-5 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
                             Inicio
                         </a>
-                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('public.job-postings.show') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }} text-sm font-medium leading-5 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
                             Empleos
                         </a>
                     </div>
@@ -73,10 +73,20 @@
                             </x-dropdown>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Iniciar sesión</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Registrarse</a>
-                        @endif
+                        <div class="flex items-center space-x-4">
+                            <a href="{{ route('login') }}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Iniciar sesión
+                            </a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" 
+                                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                    <i class="fas fa-user-plus mr-2"></i>
+                                    Registrarse
+                                </a>
+                            @endif
+                        </div>
                     @endauth
                 </div>
             </div>
@@ -84,7 +94,7 @@
     </nav>
 
     <!-- Page Content -->
-    <main class="min-h-screen">
+    <main class="min-h-screen pt-16">
         @yield('content')
     </main>
 
@@ -138,7 +148,7 @@
 
             <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-center text-gray-600 dark:text-gray-400">
-                    &copy; {{ date('Y') }} TS Group. Todos los derechos reservados.
+                    &copy; {{ date('Y') }} TSGroup. Todos los derechos reservados.
                 </p>
             </div>
         </div>

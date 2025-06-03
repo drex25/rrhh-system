@@ -157,3 +157,5 @@ class JobPostingController extends Controller
             ->with('success', 'Estado destacado actualizado exitosamente.');
     }
 } 
+
+//migrar a la nueva base de datos

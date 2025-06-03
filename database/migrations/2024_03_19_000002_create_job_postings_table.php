@@ -14,13 +14,16 @@ return new class extends Migration
             $table->text('description');
             $table->text('requirements')->nullable();
             $table->text('responsibilities')->nullable();
+            $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('position_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('employment_type')->nullable(); // Permanente, Temporal, etc.
+            $table->string('work_schedule')->nullable(); // Full-time, Part-time, etc.
             $table->string('location')->nullable();
-            $table->string('type')->nullable(); // full-time, part-time, contract, etc.
             $table->decimal('salary_min', 10, 2)->nullable();
             $table->decimal('salary_max', 10, 2)->nullable();
+            $table->date('closing_date')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
-            $table->date('closing_date')->nullable();
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('job_postings', function (Blueprint $table) {
             if (!Schema::hasColumn('job_postings', 'department_id')) {
-                $table->foreignId('department_id')->after('benefits')->constrained()->onDelete('cascade');
+                $table->foreignId('department_id')->after('closing_date')->constrained()->onDelete('cascade');
             }
             if (!Schema::hasColumn('job_postings', 'position_id')) {
                 $table->foreignId('position_id')->after('department_id')->constrained()->onDelete('cascade');

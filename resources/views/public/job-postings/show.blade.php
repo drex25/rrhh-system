@@ -3,227 +3,174 @@
 @section('title', $jobPosting->title)
 
 @section('content')
-<div class="bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Breadcrumb -->
-        <nav class="mb-8">
-            <ol class="flex items-center space-x-2 text-sm">
-                <li>
-                    <a href="{{ route('public.job-postings.index') }}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        Volver a vacantes
-                    </a>
-                </li>
-                <li class="text-gray-500 dark:text-gray-400">/</li>
-                <li class="text-gray-900 dark:text-white font-medium truncate max-w-md">{{ $jobPosting->title }}</li>
-            </ol>
-        </nav>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Detalles de la Vacante -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Header Card -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                    {{ $jobPosting->title }}
-                                </h1>
-                                <p class="text-gray-600 dark:text-gray-400">
-                                    {{ $jobPosting->department->name }} - {{ $jobPosting->position->name }}
-                                </p>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Hero Section Mejorada -->
+    <div class="relative bg-gradient-to-r from-[#0A0E20] to-[#1E3A8A] dark:from-[#0A0E20] dark:to-[#1E3A8A] overflow-hidden">
+        <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:60px_60px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="relative z-10">
+                <!-- Breadcrumb -->
+                <nav class="flex mb-8" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('public.job-postings.index') }}" class="text-blue-100 hover:text-white transition duration-150 ease-in-out">
+                                <i class="fas fa-home mr-2"></i>
+                                Inicio
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-blue-100 mx-2"></i>
+                                <span class="text-white">Detalles de la Vacante</span>
                             </div>
-                            <span class="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                {{ $jobPosting->employment_type }}
-                            </span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Título y datos clave sobre fondo azul -->
+                <div class="text-center md:text-left">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-lg">
+                        {{ $jobPosting->title }}
+                    </h1>
+                    <div class="flex flex-wrap gap-6 items-center justify-center md:justify-start mb-6">
+                        <div class="flex items-center text-blue-100 text-lg">
+                            <i class="fas fa-building w-6 mr-2"></i>
+                            {{ $jobPosting->department->name }}
                         </div>
-
-                        <!-- Información Principal -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-4">
-                                <div class="flex items-center text-gray-600 dark:text-gray-400 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                                    <i class="fas fa-map-marker-alt w-5 text-blue-500"></i>
-                                    <span class="ml-3">{{ $jobPosting->location }}</span>
-                                </div>
-                                <div class="flex items-center text-gray-600 dark:text-gray-400 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                                    <i class="fas fa-clock w-5 text-blue-500"></i>
-                                    <span class="ml-3">{{ $jobPosting->work_schedule }}</span>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                @if($jobPosting->min_salary && $jobPosting->max_salary)
-                                    <div class="flex items-center text-gray-600 dark:text-gray-400 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                                        <i class="fas fa-money-bill-wave w-5 text-blue-500"></i>
-                                        <span class="ml-3">${{ number_format($jobPosting->min_salary, 0) }} - ${{ number_format($jobPosting->max_salary, 0) }}</span>
-                                    </div>
-                                @endif
-                                <div class="flex items-center text-gray-600 dark:text-gray-400 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                                    <i class="fas fa-calendar-alt w-5 text-blue-500"></i>
-                                    <span class="ml-3">Publicado {{ $jobPosting->created_at->diffForHumans() }}</span>
-                                </div>
-                            </div>
+                        <div class="flex items-center text-blue-100 text-lg">
+                            <i class="fas fa-briefcase w-6 mr-2"></i>
+                            {{ $jobPosting->position->name }}
+                        </div>
+                        <div class="flex items-center text-blue-100 text-lg">
+                            <i class="fas fa-map-marker-alt w-6 mr-2"></i>
+                            {{ $jobPosting->location }}
+                        </div>
+                        <span class="inline-block px-4 py-2 rounded-full text-base font-semibold bg-blue-900/60 text-blue-200 border border-blue-200">
+                            {{ $jobPosting->employment_type }}
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap gap-6 items-center justify-center md:justify-start">
+                        <div class="flex items-center text-blue-200 text-base">
+                            <i class="fas fa-clock w-5 mr-2"></i>
+                            {{ $jobPosting->work_schedule }}
+                        </div>
+                        @if($jobPosting->min_salary && $jobPosting->max_salary)
+                        <div class="flex items-center text-blue-200 text-base">
+                            <i class="fas fa-money-bill-wave w-5 mr-2"></i>
+                            ${{ number_format($jobPosting->min_salary, 0) }} - ${{ number_format($jobPosting->max_salary, 0) }}
+                        </div>
+                        @endif
+                        <div class="flex items-center text-blue-200 text-base">
+                            <i class="fas fa-calendar-alt w-5 mr-2"></i>
+                            Publicado {{ $jobPosting->created_at->diffForHumans() }}
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Contenido Principal -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Detalles de la Vacante -->
+            <div class="lg:col-span-2 space-y-8">
                 <!-- Descripción -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-align-left mr-3 text-blue-500"></i>
-                            Descripción
-                        </h2>
-                        <div class="prose dark:prose-invert max-w-none">
-                            {!! $jobPosting->description !!}
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-align-left w-8 text-[#0A0E20]"></i>
+                        <span class="ml-2">Descripción del Puesto</span>
+                    </h2>
+                    <div class="prose dark:prose-invert max-w-none">
+                        {!! nl2br(e($jobPosting->description)) !!}
                     </div>
                 </div>
 
                 <!-- Requisitos -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-list-check mr-3 text-blue-500"></i>
-                            Requisitos
-                        </h2>
-                        <div class="prose dark:prose-invert max-w-none">
-                            {!! $jobPosting->requirements !!}
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-list-check w-8 text-[#0A0E20]"></i>
+                        <span class="ml-2">Requisitos</span>
+                    </h2>
+                    <div class="prose dark:prose-invert max-w-none">
+                        {!! nl2br(e($jobPosting->requirements)) !!}
                     </div>
                 </div>
 
                 <!-- Responsabilidades -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-tasks mr-3 text-blue-500"></i>
-                            Responsabilidades
-                        </h2>
-                        <div class="prose dark:prose-invert max-w-none">
-                            {!! $jobPosting->responsibilities !!}
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-tasks w-8 text-[#0A0E20]"></i>
+                        <span class="ml-2">Responsabilidades</span>
+                    </h2>
+                    <div class="prose dark:prose-invert max-w-none">
+                        {!! nl2br(e($jobPosting->responsibilities)) !!}
                     </div>
                 </div>
 
                 <!-- Beneficios -->
-                @if($jobPosting->benefits)
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                        <div class="p-6">
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                                <i class="fas fa-gift mr-3 text-blue-500"></i>
-                                Beneficios
-                            </h2>
-                            <div class="prose dark:prose-invert max-w-none">
-                                {!! $jobPosting->benefits !!}
-                            </div>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-gift w-8 text-[#0A0E20]"></i>
+                        <span class="ml-2">Beneficios</span>
+                    </h2>
+                    <div class="prose dark:prose-invert max-w-none">
+                        {!! nl2br(e($jobPosting->benefits)) !!}
                     </div>
-                @endif
+                </div>
             </div>
 
             <!-- Formulario de Aplicación -->
             <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden sticky top-8">
-                    <div class="p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-                            <i class="fas fa-paper-plane mr-3 text-blue-500"></i>
-                            Aplicar a esta vacante
-                        </h2>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700 sticky top-24">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-paper-plane w-8 text-[#0A0E20]"></i>
+                        <span class="ml-2">Aplicar Ahora</span>
+                    </h2>
+                    <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        @csrf
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre Completo</label>
+                            <input type="text" name="name" id="name" required
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        </div>
 
-                        @if(session('success'))
-                            <div class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 flex items-center">
-                                <i class="fas fa-check-circle mr-2"></i>
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Correo Electrónico</label>
+                            <input type="email" name="email" id="email" required
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        </div>
 
-                        <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-                            @csrf
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Teléfono</label>
+                            <input type="tel" name="phone" id="phone" required
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        </div>
 
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre completo</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                    <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                                        class="block w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                </div>
-                                @error('name')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                        <div>
+                            <label for="resume" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CV (PDF)</label>
+                            <input type="file" name="resume" id="resume" accept=".pdf" required
+                                class="block w-full text-sm text-gray-500 dark:text-gray-400
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-lg file:border-0
+                                file:text-sm file:font-medium
+                                file:bg-[#0A0E20] file:text-white
+                                hover:file:bg-[#1E3A8A]
+                                dark:file:bg-[#0A0E20] dark:file:text-white
+                                transition duration-150 ease-in-out">
+                        </div>
 
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Correo electrónico</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-envelope text-gray-400"></i>
-                                    </div>
-                                    <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                        class="block w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                </div>
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                        <div>
+                            <label for="cover_letter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Carta de Presentación (Opcional)</label>
+                            <textarea name="cover_letter" id="cover_letter" rows="4"
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out"></textarea>
+                        </div>
 
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Teléfono</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-phone text-gray-400"></i>
-                                    </div>
-                                    <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
-                                        class="block w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                </div>
-                                @error('phone')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="resume" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CV (PDF, DOC, DOCX)</label>
-                                <div class="mt-1">
-                                    <div class="flex items-center justify-center w-full">
-                                        <label for="resume" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <i class="fas fa-file-upload text-3xl text-gray-400 mb-2"></i>
-                                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                    <span class="font-semibold">Haz clic para subir</span> o arrastra y suelta
-                                                </p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">PDF, DOC o DOCX</p>
-                                            </div>
-                                            <input id="resume" name="resume" type="file" class="hidden" required accept=".pdf,.doc,.docx" />
-                                        </label>
-                                    </div>
-                                </div>
-                                @error('resume')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="cover_letter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Carta de presentación</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute top-3 left-3 pointer-events-none">
-                                        <i class="fas fa-pen text-gray-400"></i>
-                                    </div>
-                                    <textarea name="cover_letter" id="cover_letter" rows="4" required
-                                        class="block w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">{{ old('cover_letter') }}</textarea>
-                                </div>
-                                @error('cover_letter')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 ease-in-out flex items-center justify-center">
-                                <i class="fas fa-paper-plane mr-2"></i>
-                                Enviar aplicación
-                            </button>
-                        </form>
-                    </div>
+                        <button type="submit" class="w-full bg-[#0A0E20] hover:bg-[#1E3A8A] text-white font-bold py-3 px-6 rounded-lg transition duration-150 ease-in-out transform hover:scale-105 flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Enviar Aplicación
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

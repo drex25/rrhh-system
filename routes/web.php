@@ -20,6 +20,7 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\PublicJobPostingController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -140,5 +141,10 @@ Route::get('/api/provinces', [LocationController::class, 'getProvinces']);
 Route::get('/api/cities', [LocationController::class, 'getCities']);
 
 Route::get('/employees/{id}/pdf', [App\Http\Controllers\EmployeeController::class, 'downloadPdf'])->name('employees.downloadPdf')->middleware('auth');
+
+// Rutas públicas para vacantes
+Route::get('/vacantes', [PublicJobPostingController::class, 'index'])->name('public.job-postings.index');
+Route::get('/vacantes/{jobPosting}', [PublicJobPostingController::class, 'show'])->name('public.job-postings.show');
+Route::post('/vacantes/{jobPosting}/apply', [PublicJobPostingController::class, 'apply'])->name('public.job-postings.apply');
 
 require __DIR__.'/auth.php';

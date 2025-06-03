@@ -158,4 +158,4 @@ class JobPostingController extends Controller
     }
 } 
 
-//migrar a la nueva base de datos
+//migrar a la nueva base 

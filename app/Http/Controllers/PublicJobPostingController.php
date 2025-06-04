@@ -25,8 +25,12 @@ class PublicJobPostingController extends Controller
             });
         }
 
-        if ($request->has('department') && $request->input('department') !== '') {
+        if ($request->filled('department')) {
             $query->where('department_id', $request->input('department'));
+        }
+
+        if ($request->filled('modality')) {
+            $query->where('modality', $request->input('modality'));
         }
 
         if ($request->has('type') && $request->input('type') !== '') {

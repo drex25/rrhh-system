@@ -7,11 +7,13 @@ use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class JobPostingController extends Controller
 {
     public function index(Request $request)
     {
+        Log::info('JobPostingController@index filtros recibidos', $request->all());
         $query = JobPosting::query()
             ->with(['department', 'position'])
             ->latest();
@@ -40,6 +42,8 @@ class JobPostingController extends Controller
         if ($request->has('type') && $request->input('type') !== '') {
             $query->where('employment_type', $request->input('type'));
         }
+
+        Log::info('JobPostingController@index SQL', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
         $jobPostings = $query->paginate(10);
         $departments = Department::where('is_active', true)->get();

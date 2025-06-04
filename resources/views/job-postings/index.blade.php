@@ -80,7 +80,7 @@
                         </div>
                         <div class="flex items-center text-gray-600 dark:text-gray-400">
                             <i class="fas fa-briefcase w-5"></i>
-                            <span class="ml-2">{{ $jobPosting->position->name }}</span>
+                            <span class="ml-2">{{ $jobPosting->position->title }}</span>
                         </div>
                         <div class="flex items-center text-gray-600 dark:text-gray-400">
                             <i class="fas fa-map-marker-alt w-5"></i>

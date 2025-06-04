@@ -119,7 +119,20 @@ class JobPostingController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        // Slug único ignorando el registro actual
+        $baseSlug = Str::slug($validated['title']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (
+            JobPosting::where('slug', $slug)
+                ->where('id', '!=', $jobPosting->id)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+        $validated['slug'] = $slug;
+
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_active'] = $request->has('is_active');
 

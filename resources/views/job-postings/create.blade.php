@@ -221,15 +221,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Estado *</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-flag"></i></span>
-                                <select name="status" id="status" required
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150">
-                                    <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
-                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicada</option>
-                                    <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Cerrada</option>
-                                </select>
-                            </div>
+                            <select name="status" id="status" required
+                                class="w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150">
+                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
+                                <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicada</option>
+                                <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Cerrada</option>
+                            </select>
                             @error('status')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -244,6 +241,31 @@
                             @error('application_deadline')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="vacancies" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Número de Vacantes *</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-users"></i></span>
+                                <input type="number" name="vacancies" id="vacancies" value="{{ old('vacancies', 1) }}" min="1" required
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150">
+                            </div>
+                            @error('vacancies')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex items-center space-x-6 mt-8 md:mt-0">
+                            <div class="flex items-center">
+                                <input type="checkbox" name="is_featured" id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
+                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                <label for="is_featured" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Destacada</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active') ? 'checked' : '' }}
+                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                <label for="is_active" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Activa</label>
+                            </div>
                         </div>
                     </div>
                 </div>

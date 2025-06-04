@@ -95,34 +95,36 @@
     </div>
 
     <!-- Listado de Vacantes -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($jobPostings as $jobPosting)
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                                    {{ $jobPosting->title }}
-                                </h2>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $jobPosting->department->name }} - {{ $jobPosting->position->title }}
-                                </p>
-                            </div>
-                            <span class="px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2
-                                @if($jobPosting->modality == 'remoto') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
-                                @elseif($jobPosting->modality == 'hibrido') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
-                                @else bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200 @endif">
-                                @if($jobPosting->modality == 'remoto')
-                                    <i class="fas fa-house-laptop"></i> Remoto
-                                @elseif($jobPosting->modality == 'hibrido')
-                                    <i class="fas fa-exchange-alt"></i> Híbrido
-                                @else
-                                    <i class="fas fa-building"></i> Presencial
-                                @endif
-                            </span>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700 relative">
+                    @if($jobPosting->is_featured)
+                        <div class="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-4 py-1 rounded-bl-lg font-bold text-sm flex items-center gap-2 z-20">
+                            <i class="fas fa-star"></i>
+                            Destacada
                         </div>
-
+                    @endif
+                    <!-- Badge de modalidad -->
+                    <span class="absolute top-6 left-6 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 z-10
+                        @if($jobPosting->modality == 'remoto') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
+                        @elseif($jobPosting->modality == 'hibrido') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
+                        @else bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200 @endif">
+                        @if($jobPosting->modality == 'remoto')
+                            <i class="fas fa-house-laptop"></i> Remoto
+                        @elseif($jobPosting->modality == 'hibrido')
+                            <i class="fas fa-exchange-alt"></i> Híbrido
+                        @else
+                            <i class="fas fa-building"></i> Presencial
+                        @endif
+                    </span>
+                    <div class="p-8 pt-20">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                            {{ $jobPosting->title }}
+                        </h2>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            {{ $jobPosting->department->name }} - {{ $jobPosting->position->title }}
+                        </p>
                         <div class="space-y-4 mb-6">
                             <div class="flex items-center text-gray-600 dark:text-gray-400">
                                 <i class="fas fa-map-marker-alt w-5 text-[#0A0E20]"></i>
@@ -139,30 +141,21 @@
                                 </div>
                             @endif
                         </div>
-
-                        <div class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <div class="flex justify-between items-center">
                             <a href="{{ route('public.job-postings.show', $jobPosting) }}" 
-                                class="inline-flex items-center text-[#0A0E20] hover:text-[#1E3A8A] dark:text-blue-400 dark:hover:text-blue-300 font-medium transition duration-150 ease-in-out">
+                                class="inline-flex items-center px-4 py-2 bg-[#0A0E20] hover:bg-[#1E3A8A] text-white text-sm font-bold rounded-lg shadow-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]">
                                 Ver detalles
-                                <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                                <i class="fas fa-arrow-right ml-2"></i>
                             </a>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ $jobPosting->created_at->diffForHumans() }}
-                            </span>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="col-span-3">
-                    <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-briefcase text-5xl text-gray-400"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">No se encontraron vacantes</h3>
-                        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-                            No hay vacantes disponibles que coincidan con tus criterios de búsqueda. 
-                            Te invitamos a intentar con otros filtros o revisar más tarde.
-                        </p>
+                <div class="col-span-full">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center">
+                        <i class="fas fa-briefcase text-4xl text-gray-400 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No se encontraron vacantes</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Intenta con otros filtros o vuelve más tarde.</p>
                     </div>
                 </div>
             @endforelse

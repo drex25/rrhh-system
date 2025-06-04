@@ -37,7 +37,9 @@ class PublicJobPostingController extends Controller
             $query->where('employment_type', $request->input('type'));
         }
 
-        $jobPostings = $query->latest()->paginate(9);
+        $jobPostings = $query->orderBy('is_featured', 'desc')
+                            ->latest()
+                            ->paginate(9);
         $departments = \App\Models\Department::where('is_active', true)->get();
 
         return view('public.job-postings.index', compact('jobPostings', 'departments'));

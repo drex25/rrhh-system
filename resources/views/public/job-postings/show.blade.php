@@ -7,6 +7,12 @@
     <!-- Hero Section Mejorada -->
     <div class="relative bg-gradient-to-r from-[#0A0E20] to-[#1E3A8A] dark:from-[#0A0E20] dark:to-[#1E3A8A] overflow-hidden">
         <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:60px_60px]"></div>
+        @if($jobPosting->is_featured)
+            <div class="absolute top-6 right-6 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-6 py-2 rounded-full font-bold text-sm flex items-center gap-2 z-20 shadow-lg">
+                <i class="fas fa-star"></i>
+                Vacante Destacada
+            </div>
+        @endif
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div class="relative z-10">
                 <!-- Breadcrumb -->

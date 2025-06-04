@@ -27,19 +27,19 @@ class JobPostingController extends Controller
             });
         }
 
-        if ($request->has('department') && $request->input('department') !== '') {
+        if ($request->filled('department')) {
             $query->where('department_id', $request->input('department'));
         }
 
-        if ($request->has('modality') && $request->input('modality') !== '') {
+        if ($request->filled('modality')) {
             $query->where('modality', $request->input('modality'));
         }
 
-        if ($request->has('status') && $request->input('status') !== '') {
+        if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
-        if ($request->has('type') && $request->input('type') !== '') {
+        if ($request->filled('type')) {
             $query->where('employment_type', $request->input('type'));
         }
 

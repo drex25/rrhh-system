@@ -29,6 +29,10 @@ class JobPostingController extends Controller
             $query->where('department_id', $request->input('department'));
         }
 
+        if ($request->has('modality') && $request->input('modality') !== '') {
+            $query->where('modality', $request->input('modality'));
+        }
+
         if ($request->has('status') && $request->input('status') !== '') {
             $query->where('status', $request->input('status'));
         }
@@ -63,6 +67,7 @@ class JobPostingController extends Controller
             'position_id' => 'required|exists:positions,id',
             'employment_type' => 'required|string',
             'work_schedule' => 'required|string',
+            'modality' => 'required|in:remoto,hibrido,presencial',
             'location' => 'required|string',
             'salary_min' => 'nullable|numeric',
             'salary_max' => 'nullable|numeric',
@@ -109,6 +114,7 @@ class JobPostingController extends Controller
             'position_id' => 'required|exists:positions,id',
             'employment_type' => 'required|string',
             'work_schedule' => 'required|string',
+            'modality' => 'required|in:remoto,hibrido,presencial',
             'location' => 'required|string',
             'salary_min' => 'nullable|numeric',
             'salary_max' => 'nullable|numeric',

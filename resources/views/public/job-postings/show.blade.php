@@ -45,8 +45,17 @@
                             <i class="fas fa-map-marker-alt w-6 mr-2"></i>
                             {{ $jobPosting->location }}
                         </div>
-                        <span class="inline-block px-4 py-2 rounded-full text-base font-semibold bg-blue-900/60 text-blue-200 border border-blue-200">
-                            {{ $jobPosting->employment_type }}
+                        <span class="inline-block px-4 py-2 rounded-full text-base font-semibold flex items-center gap-2
+                            @if($jobPosting->modality == 'remoto') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
+                            @elseif($jobPosting->modality == 'hibrido') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
+                            @else bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200 @endif">
+                            @if($jobPosting->modality == 'remoto')
+                                <i class="fas fa-house-laptop"></i> Remoto
+                            @elseif($jobPosting->modality == 'hibrido')
+                                <i class="fas fa-exchange-alt"></i> Híbrido
+                            @else
+                                <i class="fas fa-building"></i> Presencial
+                            @endif
                         </span>
                     </div>
                     <div class="flex flex-wrap gap-6 items-center justify-center md:justify-start">

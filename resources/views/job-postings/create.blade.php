@@ -101,6 +101,22 @@
                             @enderror
                         </div>
                         <div>
+                            <label for="modality" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Modalidad *</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-laptop-house"></i></span>
+                                <select name="modality" id="modality" required
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150">
+                                    <option value="">Seleccionar modalidad</option>
+                                    <option value="remoto" {{ old('modality') == 'remoto' ? 'selected' : '' }}>Remoto</option>
+                                    <option value="hibrido" {{ old('modality') == 'hibrido' ? 'selected' : '' }}>Híbrido</option>
+                                    <option value="presencial" {{ old('modality', 'presencial') == 'presencial' ? 'selected' : '' }}>Presencial</option>
+                                </select>
+                            </div>
+                            @error('modality')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
                             <label for="work_schedule" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Horario *</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-clock"></i></span>
@@ -116,6 +132,8 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="vacancies" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Vacantes *</label>
                             <div class="relative">
@@ -127,8 +145,6 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="min_salary" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salario Mínimo</label>
                             <div class="relative">

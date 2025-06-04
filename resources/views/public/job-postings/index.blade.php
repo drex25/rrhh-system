@@ -70,17 +70,17 @@
                 </div>
 
                 <div>
-                    <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipo de Contrato</label>
+                    <label for="modality" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Modalidad de Trabajo</label>
                     <div class="relative rounded-lg shadow-sm">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fas fa-file-contract text-gray-400"></i>
+                            <i class="fas fa-laptop-house text-gray-400"></i>
                         </div>
-                        <select name="type" id="type"
+                        <select name="modality" id="modality"
                             class="block w-full pl-11 pr-4 py-3 rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
-                            <option value="">Todos los tipos</option>
-                            <option value="Permanente" {{ request('type') == 'Permanente' ? 'selected' : '' }}>Permanente</option>
-                            <option value="Temporario" {{ request('type') == 'Temporario' ? 'selected' : '' }}>Temporario</option>
-                            <option value="Pasante" {{ request('type') == 'Pasante' ? 'selected' : '' }}>Pasante</option>
+                            <option value="">Todas las modalidades</option>
+                            <option value="remoto" {{ request('modality') == 'remoto' ? 'selected' : '' }}>Remoto</option>
+                            <option value="hibrido" {{ request('modality') == 'hibrido' ? 'selected' : '' }}>Híbrido</option>
+                            <option value="presencial" {{ request('modality') == 'presencial' ? 'selected' : '' }}>Presencial</option>
                         </select>
                     </div>
                 </div>
@@ -109,8 +109,17 @@
                                     {{ $jobPosting->department->name }} - {{ $jobPosting->position->title }}
                                 </p>
                             </div>
-                            <span class="px-4 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-200">
-                                {{ $jobPosting->employment_type }}
+                            <span class="px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2
+                                @if($jobPosting->modality == 'remoto') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
+                                @elseif($jobPosting->modality == 'hibrido') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
+                                @else bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200 @endif">
+                                @if($jobPosting->modality == 'remoto')
+                                    <i class="fas fa-house-laptop"></i> Remoto
+                                @elseif($jobPosting->modality == 'hibrido')
+                                    <i class="fas fa-exchange-alt"></i> Híbrido
+                                @else
+                                    <i class="fas fa-building"></i> Presencial
+                                @endif
                             </span>
                         </div>
 

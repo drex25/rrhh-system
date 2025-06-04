@@ -142,49 +142,100 @@
                         <i class="fas fa-paper-plane w-8 text-[#0A0E20]"></i>
                         <span class="ml-2">Aplicar Ahora</span>
                     </h2>
-                    <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-xl mx-auto">
                         @csrf
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre Completo</label>
-                            <input type="text" name="name" id="name" required
-                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        
+                        @if(session('error'))
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <span class="block sm:inline">{{ session('error') }}</span>
+                            </div>
+                        @endif
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre *</label>
+                                <input type="text" name="first_name" id="first_name" required value="{{ old('first_name') }}"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                @error('first_name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="last_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Apellido *</label>
+                                <input type="text" name="last_name" id="last_name" required value="{{ old('last_name') }}"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                @error('last_name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Correo Electrónico</label>
-                            <input type="email" name="email" id="email" required
-                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="years_of_experience" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Años de Experiencia</label>
+                                <input type="number" name="years_of_experience" id="years_of_experience" min="0" value="{{ old('years_of_experience') }}"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                @error('years_of_experience')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="education_level" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nivel de Educación</label>
+                                <select name="education_level" id="education_level"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Secundaria" {{ old('education_level') == 'Secundaria' ? 'selected' : '' }}>Secundaria</option>
+                                    <option value="Técnico" {{ old('education_level') == 'Técnico' ? 'selected' : '' }}>Técnico</option>
+                                    <option value="Universitario" {{ old('education_level') == 'Universitario' ? 'selected' : '' }}>Universitario</option>
+                                    <option value="Maestría" {{ old('education_level') == 'Maestría' ? 'selected' : '' }}>Maestría</option>
+                                    <option value="Doctorado" {{ old('education_level') == 'Doctorado' ? 'selected' : '' }}>Doctorado</option>
+                                </select>
+                                @error('education_level')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Teléfono</label>
-                            <input type="tel" name="phone" id="phone" required
-                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Correo Electrónico *</label>
+                                <input type="email" name="email" id="email" required value="{{ old('email') }}"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Teléfono *</label>
+                                <input type="tel" name="phone" id="phone" required value="{{ old('phone') }}"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">
+                                @error('phone')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="resume" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CV (PDF, DOC, DOCX) *</label>
+                                <input type="file" name="resume" id="resume" accept=".pdf,.doc,.docx" required
+                                    class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-[#0A0E20] file:text-white hover:file:bg-[#1E3A8A] dark:file:bg-[#0A0E20] dark:file:text-white transition duration-150 ease-in-out">
+                                @error('resume')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="cover_letter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Carta de Presentación</label>
+                                <textarea name="cover_letter" id="cover_letter" rows="4"
+                                    class="block w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-[#0A0E20] focus:ring-[#0A0E20] transition duration-150 px-4 py-3 text-base shadow-sm">{{ old('cover_letter') }}</textarea>
+                                @error('cover_letter')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full bg-[#0A0E20] hover:bg-[#1E3A8A] text-white font-bold py-3 px-6 rounded-xl transition duration-150 ease-in-out flex items-center justify-center text-lg shadow-md">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Enviar Aplicación
+                                </button>
+                            </div>
                         </div>
-
-                        <div>
-                            <label for="resume" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CV (PDF)</label>
-                            <input type="file" name="resume" id="resume" accept=".pdf" required
-                                class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-lg file:border-0
-                                file:text-sm file:font-medium
-                                file:bg-[#0A0E20] file:text-white
-                                hover:file:bg-[#1E3A8A]
-                                dark:file:bg-[#0A0E20] dark:file:text-white
-                                transition duration-150 ease-in-out">
-                        </div>
-
-                        <div>
-                            <label for="cover_letter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Carta de Presentación (Opcional)</label>
-                            <textarea name="cover_letter" id="cover_letter" rows="4"
-                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#0A0E20] focus:ring-[#0A0E20] dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150 ease-in-out"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full bg-[#0A0E20] hover:bg-[#1E3A8A] text-white font-bold py-3 px-6 rounded-lg transition duration-150 ease-in-out transform hover:scale-105 flex items-center justify-center">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Enviar Aplicación
-                        </button>
                     </form>
                 </div>
             </div>

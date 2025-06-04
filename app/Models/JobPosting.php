@@ -22,6 +22,7 @@ class JobPosting extends Model
         'position_id',
         'employment_type',
         'work_schedule',
+        'modality',
         'location',
         'min_salary',
         'max_salary',

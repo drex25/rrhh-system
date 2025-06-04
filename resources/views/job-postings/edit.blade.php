@@ -54,7 +54,7 @@
                                 <option value="">Seleccionar cargo</option>
                                 @foreach($positions as $position)
                                     <option value="{{ $position->id }}" {{ old('position_id', $jobPosting->position_id) == $position->id ? 'selected' : '' }}>
-                                        {{ $position->name }}
+                                        {{ $position->title }}
                                     </option>
                                 @endforeach
                             </select>

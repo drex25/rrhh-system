@@ -39,7 +39,7 @@
                         </div>
                         <div class="flex items-center text-blue-100 text-lg">
                             <i class="fas fa-briefcase w-6 mr-2"></i>
-                            {{ $jobPosting->position->name }}
+                            {{ $jobPosting->position->title }}
                         </div>
                         <div class="flex items-center text-blue-100 text-lg">
                             <i class="fas fa-map-marker-alt w-6 mr-2"></i>

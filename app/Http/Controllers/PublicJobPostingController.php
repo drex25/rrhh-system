@@ -115,7 +115,7 @@ class PublicJobPostingController extends Controller
             $candidate = Candidate::create($validated);
             \Log::info('Candidato creado exitosamente con ID: ' . $candidate->id);
 
-            return redirect()->route('public.job-postings.show', $jobPosting)
+            return redirect()->route('public.job-postings.index')
                 ->with('success', '¡Tu postulación ha sido enviada exitosamente! Te contactaremos pronto.');
 
         } catch (\Exception $e) {

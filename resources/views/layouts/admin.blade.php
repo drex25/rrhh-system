@@ -12,6 +12,36 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        .input-pro, .form-input-pro, select, textarea {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            padding: 0.85rem 1.2rem;
+            font-size: 1.08rem;
+            color: #374151;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
+            outline: none;
+        }
+        .input-pro:focus, .form-input-pro:focus, select:focus, textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px #6366f133;
+            background: #fff;
+        }
+        .input-pro[readonly], .form-input-pro[readonly] {
+            background: #f1f5f9;
+            color: #a1a1aa;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.95rem;
+            margin-top: 0.2rem;
+            display: block;
+        }
+    </style>
     <script>
         // Modal functions
         function openCreateModal() {
@@ -207,34 +237,6 @@
             }
         });
     </script>
-    <style>
-    .input-pro, .form-input-pro, select, textarea {
-        border: 1.5px solid #e5e7eb;
-        border-radius: 0.75rem;
-        background: #f8fafc;
-        padding: 0.85rem 1.2rem;
-        font-size: 1.08rem;
-        color: #374151;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        box-shadow: 0 1px 4px 0 rgba(99,102,241,0.04);
-        outline: none;
-    }
-    .input-pro:focus, .form-input-pro:focus, select:focus, textarea:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px #6366f133;
-        background: #fff;
-    }
-    .input-pro[readonly], .form-input-pro[readonly] {
-        background: #f1f5f9;
-        color: #a1a1aa;
-    }
-    .error-message {
-        color: #ef4444;
-        font-size: 0.95rem;
-        margin-top: 0.2rem;
-        display: block;
-    }
-    </style>
 </head>
 
 <body class="min-h-screen font-sans antialiased" 
@@ -248,109 +250,111 @@
     @if(Auth::user()->force_password_change && !request()->is('password/change'))
     showPasswordModal = true;
     @endif">
-    @if (Auth::user()->force_password_change && !request()->is('password/change'))
-        <!-- Modal de Cambio de Contraseña -->
-        <div x-show="showPasswordModal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title"
-            role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div x-show="showPasswordModal" x-transition:enter="ease-out duration-300"
-                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                    x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <div x-cloak x-show="true">
+        @if (Auth::user()->force_password_change && !request()->is('password/change'))
+            <!-- Modal de Cambio de Contraseña -->
+            <div x-show="showPasswordModal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title"
+                role="dialog" aria-modal="true">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div x-show="showPasswordModal" x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                        x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div x-show="showPasswordModal" x-transition:enter="ease-out duration-300"
-                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave="ease-in duration-200"
-                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <form action="{{ route('password.change') }}" method="POST" class="p-6"
-                        @submit="redirecting = true">
-                        @csrf
-                        <div>
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
-                                Cambio de Contraseña Requerido
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    Por seguridad, debes cambiar tu contraseña antes de continuar.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 space-y-4">
+                    <div x-show="showPasswordModal" x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave="ease-in duration-200"
+                        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                        <form action="{{ route('password.change') }}" method="POST" class="p-6"
+                            @submit="redirecting = true">
+                            @csrf
                             <div>
-                                <label for="current_password"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Contraseña Actual
-                                </label>
-                                <input type="password" name="current_password" id="current_password" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                    Cambio de Contraseña Requerido
+                                </h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        Por seguridad, debes cambiar tu contraseña antes de continuar.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <label for="password"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Nueva Contraseña
-                                </label>
-                                <input type="password" name="password" id="password" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <div class="mt-4 space-y-4">
+                                <div>
+                                    <label for="current_password"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Contraseña Actual
+                                    </label>
+                                    <input type="password" name="current_password" id="current_password" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                </div>
+
+                                <div>
+                                    <label for="password"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Nueva Contraseña
+                                    </label>
+                                    <input type="password" name="password" id="password" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                </div>
+
+                                <div>
+                                    <label for="password_confirmation"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Confirmar Nueva Contraseña
+                                    </label>
+                                    <input type="password" name="password_confirmation" id="password_confirmation" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                </div>
                             </div>
 
-                            <div>
-                                <label for="password_confirmation"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Confirmar Nueva Contraseña
-                                </label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            </div>
-                        </div>
+                            @if ($errors->any())
+                                <div
+                                    class="mt-4 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-md p-4">
+                                    <ul class="text-sm text-red-600 dark:text-red-400">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
-                        @if ($errors->any())
-                            <div
-                                class="mt-4 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-md p-4">
-                                <ul class="text-sm text-red-600 dark:text-red-400">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                            <div class="mt-6">
+                                <button type="submit"
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+                                    :disabled="redirecting">
+                                    <span x-show="!redirecting">Cambiar Contraseña</span>
+                                    <span x-show="redirecting" class="flex items-center">
+                                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                        Procesando...
+                                    </span>
+                                </button>
                             </div>
-                        @endif
-
-                        <div class="mt-6">
-                            <button type="submit"
-                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                                :disabled="redirecting">
-                                <span x-show="!redirecting">Cambiar Contraseña</span>
-                                <span x-show="redirecting" class="flex items-center">
-                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                            stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    Procesando...
-                                </span>
-                            </button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
+        @endif
+        @include('components.sidebar')
+        <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out" :class="[sidebarCollapsed ? 'ml-20' : 'ml-72', darkMode ? 'bg-gray-900' : 'bg-gray-100']">
+            @include('components.topbar')
+            <main class="flex-1 p-8 overflow-y-auto" :class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'" style="height:calc(100vh - 5rem)">
+                @yield('content')
+            </main>
         </div>
-    @endif
-    @include('components.sidebar')
-    <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out" :class="[sidebarCollapsed ? 'ml-20' : 'ml-72', darkMode ? 'bg-gray-900' : 'bg-gray-100']">
-        @include('components.topbar')
-        <main class="flex-1 p-8 overflow-y-auto" :class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'" style="height:calc(100vh - 5rem)">
-            @yield('content')
-        </main>
     </div>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>

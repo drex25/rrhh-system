@@ -85,6 +85,14 @@
         </div>
     </div>
 
+    <!-- Spinner Overlay -->
+    <div id="spinner-overlay" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="flex flex-col items-center">
+            <i class="fas fa-spinner fa-spin text-5xl text-white mb-4"></i>
+            <span class="text-white text-lg font-semibold">Enviando aplicación...</span>
+        </div>
+    </div>
+
     <!-- Contenido Principal -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -142,7 +150,7 @@
                         <i class="fas fa-paper-plane w-8 text-[#0A0E20]"></i>
                         <span class="ml-2">Aplicar Ahora</span>
                     </h2>
-                    <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-xl mx-auto">
+                    <form action="{{ route('public.job-postings.apply', $jobPosting) }}" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-2xl w-full mx-auto">
                         @csrf
                         
                         @if(session('error'))
@@ -242,4 +250,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action*="apply"]');
+        if(form) {
+            form.addEventListener('submit', function() {
+                document.getElementById('spinner-overlay').classList.remove('hidden');
+            });
+        }
+    });
+</script>
 @endsection 

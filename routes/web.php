@@ -22,6 +22,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PublicJobPostingController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\InterviewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -143,6 +144,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/candidates/{candidate}', [CandidateController::class, 'update'])->name('candidates.update');
     Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
     Route::get('/candidates/{candidate}/download-resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
+
+    // Rutas para entrevistas
+    Route::get('/interviews', [InterviewController::class, 'index'])->name('interviews.index');
+    Route::get('/interviews/create', [InterviewController::class, 'create'])->name('interviews.create');
+    Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store');
+    Route::get('/interviews/{interview}', [InterviewController::class, 'show'])->name('interviews.show');
+    Route::get('/interviews/{interview}/edit', [InterviewController::class, 'edit'])->name('interviews.edit');
+    Route::put('/interviews/{interview}', [InterviewController::class, 'update'])->name('interviews.update');
+    Route::delete('/interviews/{interview}', [InterviewController::class, 'destroy'])->name('interviews.destroy');
+    Route::post('/interviews/{interview}/complete', [InterviewController::class, 'complete'])->name('interviews.complete');
+    Route::post('/interviews/{interview}/cancel', [InterviewController::class, 'cancel'])->name('interviews.cancel');
+    Route::post('/interviews/{interview}/reschedule', [InterviewController::class, 'reschedule'])->name('interviews.reschedule');
 });
 
 Route::get('/api/countries', [LocationController::class, 'getCountries']);

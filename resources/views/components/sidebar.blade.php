@@ -200,29 +200,29 @@
                 </div>
             </div>
             @endrole
-            <!-- Reclutamiento (Submenú) -->
+            <!-- Reclutamiento -->
             @role('Admin')
             <div class="mt-6 mb-2 text-xs text-gray-400 uppercase pl-2 tracking-widest" x-show="!sidebarCollapsed" :class="darkMode ? 'text-gray-400' : ''">Reclutamiento</div>
             <div x-data="{ open: false }">
-                <button @click="open = !open"
-                        :class="[
-                           'flex items-center w-full rounded-none transition-all duration-200 group relative border-l-4 sidebar-link',
-                           sidebarCollapsed ? 'justify-center px-0 py-3 border-l-0' : 'gap-4 px-4 py-3',
-                           darkMode
-                             ? 'hover:bg-[#232B3E] text-white'
-                             : 'hover:bg-blue-100 text-blue-900'
-                        ]"
-                        class="focus:outline-none sidebar-link">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <span x-show="!sidebarCollapsed">Reclutamiento</span>
-                    <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid ml-auto transition-transform" x-show="!sidebarCollapsed"></i>
+                <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-plus w-5 h-5 mr-3"></i>
+                        <span>Reclutamiento</span>
+                    </div>
+                    <i class="fas fa-chevron-down" :class="{ 'transform rotate-180': open }"></i>
                 </button>
-                <div x-show="open && !sidebarCollapsed" x-transition class="pl-10 space-y-1 border-l-2 border-[#232B3E] ml-2">
-                    <a href="{{ route('job-postings.index') }}" :class="darkMode ? 'text-white hover:text-blue-400' : 'text-blue-900 hover:text-blue-400'" class="flex items-center gap-2 py-2 text-sm sidebar-link">
-                        <span class="w-2 h-2 bg-blue-400 rounded-full inline-block"></span> Vacantes
+                <div x-show="open" class="mt-2 space-y-1">
+                    <a href="{{ route('job-postings.index') }}" class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <i class="fas fa-briefcase w-5 h-5 mr-3"></i>
+                        Vacantes
                     </a>
-                    <a href="{{ route('candidates.index') }}" :class="darkMode ? 'text-white hover:text-blue-400' : 'text-blue-900 hover:text-blue-400'" class="flex items-center gap-2 py-2 text-sm sidebar-link">
-                        <span class="w-2 h-2 bg-blue-400 rounded-full inline-block"></span> Candidatos
+                    <a href="{{ route('candidates.index') }}" class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <i class="fas fa-users w-5 h-5 mr-3"></i>
+                        Candidatos
+                    </a>
+                    <a href="{{ route('interviews.index') }}" class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                        <i class="fas fa-calendar-check w-5 h-5 mr-3"></i>
+                        Entrevistas
                     </a>
                 </div>
             </div>

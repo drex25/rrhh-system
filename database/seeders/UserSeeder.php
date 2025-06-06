@@ -45,5 +45,14 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]
         )->assignRole('Employee');
+
+        // Crear usuario Interviewer
+        User::firstOrCreate(
+            ['email' => 'interviewer@company.com'],
+            [
+                'name' => 'Interviewer Demo',
+                'password' => Hash::make('password'),
+            ]
+        )->assignRole('Interviewer');
     }
 } 

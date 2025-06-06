@@ -1,21 +1,20 @@
 @component('mail::message')
 # Entrevista Cancelada
 
-Estimado/a {{ $interview->candidate->first_name }},
+Hola {{ $interview->candidate->first_name }},
 
-Lamentamos informarte que la entrevista programada para el puesto de **{{ $interview->jobPosting->title }}** ha sido cancelada.
-
-**Detalles de la entrevista cancelada:**
-
-- **Fecha y hora programada:** {{ $interview->scheduled_at->format('d/m/Y H:i') }}
-- **Tipo:** {{ ucfirst($interview->type) }}
+Te informamos que la entrevista programada para la posición de **{{ $interview->jobPosting->title }}** ha sido cancelada.
 
 @if($interview->notes)
-**Notas adicionales:**
+**Razón de la cancelación:**
 {{ $interview->notes }}
 @endif
 
-Nos pondremos en contacto contigo pronto para reprogramar la entrevista.
+Nos disculpamos por cualquier inconveniente que esto pueda causar. Te mantendremos informado sobre futuras oportunidades.
+
+@component('mail::button', ['url' => config('app.url')])
+Ver detalles
+@endcomponent
 
 Saludos cordiales,<br>
 {{ config('app.name') }}

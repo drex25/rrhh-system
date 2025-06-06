@@ -18,6 +18,7 @@ class Interview extends Model
         'status',
         'scheduled_at',
         'completed_at',
+        'cancelled_at',
         'location',
         'meeting_link',
         'notes',
@@ -28,6 +29,7 @@ class Interview extends Model
     protected $casts = [
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'rating' => 'integer'
     ];
 

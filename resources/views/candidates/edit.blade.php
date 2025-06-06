@@ -88,12 +88,27 @@
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <option value="pending" {{ old('status', $candidate->status) == 'pending' ? 'selected' : '' }}>Pendiente</option>
                                         <option value="reviewing" {{ old('status', $candidate->status) == 'reviewing' ? 'selected' : '' }}>En Revisión</option>
+                                        <option value="shortlisted" {{ old('status', $candidate->status) == 'shortlisted' ? 'selected' : '' }}>Preseleccionado</option>
+                                        <option value="interview_scheduled" {{ old('status', $candidate->status) == 'interview_scheduled' ? 'selected' : '' }}>Entrevista Programada</option>
                                         <option value="interviewed" {{ old('status', $candidate->status) == 'interviewed' ? 'selected' : '' }}>Entrevistado</option>
-                                        <option value="offered" {{ old('status', $candidate->status) == 'offered' ? 'selected' : '' }}>Oferta</option>
+                                        <option value="technical_test" {{ old('status', $candidate->status) == 'technical_test' ? 'selected' : '' }}>Prueba Técnica</option>
+                                        <option value="reference_check" {{ old('status', $candidate->status) == 'reference_check' ? 'selected' : '' }}>Verificación de Referencias</option>
+                                        <option value="offered" {{ old('status', $candidate->status) == 'offered' ? 'selected' : '' }}>Oferta Extendida</option>
+                                        <option value="accepted" {{ old('status', $candidate->status) == 'accepted' ? 'selected' : '' }}>Oferta Aceptada</option>
                                         <option value="hired" {{ old('status', $candidate->status) == 'hired' ? 'selected' : '' }}>Contratado</option>
                                         <option value="rejected" {{ old('status', $candidate->status) == 'rejected' ? 'selected' : '' }}>Rechazado</option>
+                                        <option value="withdrawn" {{ old('status', $candidate->status) == 'withdrawn' ? 'selected' : '' }}>Retirado</option>
                                     </select>
                                     @error('status')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div id="rejection_reason_container" class="hidden">
+                                    <label for="rejection_reason" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Razón del Rechazo</label>
+                                    <textarea name="rejection_reason" id="rejection_reason" rows="3"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">{{ old('rejection_reason', $candidate->rejection_reason) }}</textarea>
+                                    @error('rejection_reason')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -220,4 +235,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status');
+        const rejectionReasonContainer = document.getElementById('rejection_reason_container');
+
+        function toggleRejectionReason() {
+            if (statusSelect.value === 'rejected') {
+                rejectionReasonContainer.classList.remove('hidden');
+            } else {
+                rejectionReasonContainer.classList.add('hidden');
+            }
+        }
+
+        statusSelect.addEventListener('change', toggleRejectionReason);
+        toggleRejectionReason(); // Ejecutar al cargar la página
+    });
+    </script>
 @endsection 

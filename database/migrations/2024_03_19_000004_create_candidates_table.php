@@ -15,7 +15,21 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->string('phone')->nullable();
-            $table->enum('status', ['pending', 'reviewing', 'interviewed', 'offered', 'hired', 'rejected'])->default('pending');
+            $table->enum('status', [
+                'pending',
+                'reviewing',
+                'shortlisted',
+                'interview_scheduled',
+                'interviewed',
+                'technical_test',
+                'reference_check',
+                'offered',
+                'accepted',
+                'hired',
+                'rejected',
+                'withdrawn'
+            ])->default('pending');
+            $table->string('rejection_reason')->nullable();
             $table->string('current_position')->nullable();
             $table->string('current_company')->nullable();
             $table->integer('years_of_experience')->nullable();

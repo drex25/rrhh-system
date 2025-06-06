@@ -12,9 +12,15 @@ use App\Mail\InterviewRescheduled;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class InterviewController extends Controller
 {
+    use AuthorizesRequests, ValidatesRequests;
+
     /**
      * Display a listing of the interviews.
      */
@@ -22,7 +28,7 @@ class InterviewController extends Controller
     {
         $query = Interview::with(['candidate', 'jobPosting', 'interviewer']);
 
-        // Filtros
+        // Aplicar filtros
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -35,7 +41,12 @@ class InterviewController extends Controller
             $query->where('interviewer_id', $request->interviewer_id);
         }
 
-        $interviews = $query->latest()->paginate(10);
+        // Si el usuario es un entrevistador, solo mostrar sus entrevistas
+        if (Auth::user()->hasRole('interviewer')) {
+            $query->where('interviewer_id', Auth::id());
+        }
+
+        $interviews = $query->latest('scheduled_at')->paginate(10);
         $interviewers = User::role('interviewer')->get();
 
         return view('interviews.index', compact('interviews', 'interviewers'));
@@ -46,7 +57,7 @@ class InterviewController extends Controller
      */
     public function create()
     {
-        $candidates = Candidate::where('status', 'active')->get();
+        $candidates = Candidate::where('status', '!=', 'rejected')->get();
         $jobPostings = JobPosting::where('status', 'published')->get();
         $interviewers = User::role('interviewer')->get();
 
@@ -62,10 +73,10 @@ class InterviewController extends Controller
             'candidate_id' => 'required|exists:candidates,id',
             'job_posting_id' => 'required|exists:job_postings,id',
             'interviewer_id' => 'required|exists:users,id',
-            'type' => 'required|in:phone,video,in_person',
+            'type' => 'required|in:phone,video,in-person',
             'scheduled_at' => 'required|date|after:now',
-            'location' => 'required_if:type,in_person',
-            'meeting_link' => 'required_if:type,video|url',
+            'location' => 'required_if:type,in-person',
+            'meeting_link' => 'required_if:type,video',
             'notes' => 'nullable|string',
         ]);
 
@@ -77,20 +88,18 @@ class InterviewController extends Controller
                 'job_posting_id' => $validated['job_posting_id'],
                 'interviewer_id' => $validated['interviewer_id'],
                 'type' => $validated['type'],
+                'status' => 'scheduled',
                 'scheduled_at' => $validated['scheduled_at'],
                 'location' => $validated['location'] ?? null,
                 'meeting_link' => $validated['meeting_link'] ?? null,
                 'notes' => $validated['notes'] ?? null,
-                'status' => 'scheduled',
             ]);
 
-            // Enviar email al candidato
-            Mail::to($interview->candidate->email)
-                ->send(new InterviewScheduled($interview));
+            // Enviar correo al candidato
+            Mail::to($interview->candidate->email)->send(new InterviewScheduled($interview));
 
-            // Enviar email al entrevistador
-            Mail::to($interview->interviewer->email)
-                ->send(new InterviewScheduled($interview));
+            // Enviar correo al entrevistador
+            Mail::to($interview->interviewer->email)->send(new InterviewScheduled($interview));
 
             DB::commit();
 
@@ -125,7 +134,7 @@ class InterviewController extends Controller
                 ->with('error', 'No se puede editar una entrevista completada.');
         }
 
-        $candidates = Candidate::where('status', 'active')->get();
+        $candidates = Candidate::where('status', '!=', 'rejected')->get();
         $jobPostings = JobPosting::where('status', 'published')->get();
         $interviewers = User::role('interviewer')->get();
 
@@ -140,17 +149,17 @@ class InterviewController extends Controller
         if ($interview->status === 'completed') {
             return redirect()
                 ->route('interviews.show', $interview)
-                ->with('error', 'No se puede editar una entrevista completada.');
+                ->with('error', 'No se puede modificar una entrevista completada.');
         }
 
         $validated = $request->validate([
             'candidate_id' => 'required|exists:candidates,id',
             'job_posting_id' => 'required|exists:job_postings,id',
             'interviewer_id' => 'required|exists:users,id',
-            'type' => 'required|in:phone,video,in_person',
+            'type' => 'required|in:phone,video,in-person',
             'scheduled_at' => 'required|date|after:now',
-            'location' => 'required_if:type,in_person',
-            'meeting_link' => 'required_if:type,video|url',
+            'location' => 'required_if:type,in-person',
+            'meeting_link' => 'required_if:type,video',
             'notes' => 'nullable|string',
         ]);
 
@@ -168,12 +177,9 @@ class InterviewController extends Controller
                 'notes' => $validated['notes'] ?? null,
             ]);
 
-            // Enviar email de reprogramación
-            Mail::to($interview->candidate->email)
-                ->send(new InterviewRescheduled($interview));
-
-            Mail::to($interview->interviewer->email)
-                ->send(new InterviewRescheduled($interview));
+            // Enviar correo de reprogramación
+            Mail::to($interview->candidate->email)->send(new InterviewRescheduled($interview));
+            Mail::to($interview->interviewer->email)->send(new InterviewRescheduled($interview));
 
             DB::commit();
 
@@ -202,12 +208,9 @@ class InterviewController extends Controller
         try {
             DB::beginTransaction();
 
-            // Enviar email de cancelación
-            Mail::to($interview->candidate->email)
-                ->send(new InterviewCancelled($interview));
-
-            Mail::to($interview->interviewer->email)
-                ->send(new InterviewCancelled($interview));
+            // Enviar correo de cancelación
+            Mail::to($interview->candidate->email)->send(new InterviewCancelled($interview));
+            Mail::to($interview->interviewer->email)->send(new InterviewCancelled($interview));
 
             $interview->delete();
 
@@ -218,24 +221,22 @@ class InterviewController extends Controller
                 ->with('success', 'Entrevista eliminada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()
-                ->with('error', 'Error al eliminar la entrevista: ' . $e->getMessage());
+            return back()->with('error', 'Error al eliminar la entrevista: ' . $e->getMessage());
         }
     }
 
     /**
-     * Mark the interview as completed.
+     * Mark an interview as completed.
      */
     public function complete(Request $request, Interview $interview)
     {
-        if ($interview->status === 'completed') {
-            return back()->with('error', 'La entrevista ya está completada.');
+        if ($interview->status !== 'scheduled') {
+            return back()->with('error', 'Solo se pueden completar entrevistas programadas.');
         }
 
         $validated = $request->validate([
             'feedback' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
-            'recommendation' => 'required|in:hire,maybe,reject',
         ]);
 
         try {
@@ -243,11 +244,13 @@ class InterviewController extends Controller
 
             $interview->update([
                 'status' => 'completed',
+                'completed_at' => now(),
                 'feedback' => $validated['feedback'],
                 'rating' => $validated['rating'],
-                'recommendation' => $validated['recommendation'],
-                'completed_at' => now(),
             ]);
+
+            // Actualizar el estado del candidato
+            $interview->candidate->update(['status' => 'interviewed']);
 
             DB::commit();
 
@@ -256,18 +259,17 @@ class InterviewController extends Controller
                 ->with('success', 'Entrevista marcada como completada.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()
-                ->with('error', 'Error al completar la entrevista: ' . $e->getMessage());
+            return back()->with('error', 'Error al completar la entrevista: ' . $e->getMessage());
         }
     }
 
     /**
-     * Cancel the interview.
+     * Cancel an interview.
      */
     public function cancel(Request $request, Interview $interview)
     {
-        if ($interview->status === 'completed') {
-            return back()->with('error', 'No se puede cancelar una entrevista completada.');
+        if ($interview->status !== 'scheduled') {
+            return back()->with('error', 'Solo se pueden cancelar entrevistas programadas.');
         }
 
         $validated = $request->validate([
@@ -279,16 +281,13 @@ class InterviewController extends Controller
 
             $interview->update([
                 'status' => 'cancelled',
-                'cancellation_reason' => $validated['cancellation_reason'],
                 'cancelled_at' => now(),
+                'notes' => $interview->notes . "\n\nRazón de cancelación: " . $validated['cancellation_reason'],
             ]);
 
-            // Enviar email de cancelación
-            Mail::to($interview->candidate->email)
-                ->send(new InterviewCancelled($interview));
-
-            Mail::to($interview->interviewer->email)
-                ->send(new InterviewCancelled($interview));
+            // Enviar correo de cancelación
+            Mail::to($interview->candidate->email)->send(new InterviewCancelled($interview));
+            Mail::to($interview->interviewer->email)->send(new InterviewCancelled($interview));
 
             DB::commit();
 
@@ -297,18 +296,17 @@ class InterviewController extends Controller
                 ->with('success', 'Entrevista cancelada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()
-                ->with('error', 'Error al cancelar la entrevista: ' . $e->getMessage());
+            return back()->with('error', 'Error al cancelar la entrevista: ' . $e->getMessage());
         }
     }
 
     /**
-     * Reschedule the interview.
+     * Reschedule an interview.
      */
     public function reschedule(Request $request, Interview $interview)
     {
-        if ($interview->status === 'completed') {
-            return back()->with('error', 'No se puede reprogramar una entrevista completada.');
+        if ($interview->status !== 'scheduled') {
+            return back()->with('error', 'Solo se pueden reprogramar entrevistas programadas.');
         }
 
         $validated = $request->validate([
@@ -321,15 +319,12 @@ class InterviewController extends Controller
 
             $interview->update([
                 'scheduled_at' => $validated['scheduled_at'],
-                'reschedule_reason' => $validated['reschedule_reason'],
+                'notes' => $interview->notes . "\n\nRazón de reprogramación: " . $validated['reschedule_reason'],
             ]);
 
-            // Enviar email de reprogramación
-            Mail::to($interview->candidate->email)
-                ->send(new InterviewRescheduled($interview));
-
-            Mail::to($interview->interviewer->email)
-                ->send(new InterviewRescheduled($interview));
+            // Enviar correo de reprogramación
+            Mail::to($interview->candidate->email)->send(new InterviewRescheduled($interview));
+            Mail::to($interview->interviewer->email)->send(new InterviewRescheduled($interview));
 
             DB::commit();
 
@@ -338,8 +333,7 @@ class InterviewController extends Controller
                 ->with('success', 'Entrevista reprogramada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()
-                ->with('error', 'Error al reprogramar la entrevista: ' . $e->getMessage());
+            return back()->with('error', 'Error al reprogramar la entrevista: ' . $e->getMessage());
         }
     }
 } 

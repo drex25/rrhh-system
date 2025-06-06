@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
@@ -46,9 +46,9 @@
                                     @if($interview->status === 'scheduled')
                                         Programada para {{ $interview->scheduled_at->format('d/m/Y H:i') }}
                                     @elseif($interview->status === 'completed')
-                                        Completada el {{ $interview->completed_at->format('d/m/Y H:i') }}
+                                        Completada el {{ $interview->completed_at ? $interview->completed_at->format('d/m/Y H:i') : 'N/A' }}
                                     @elseif($interview->status === 'cancelled')
-                                        Cancelada el {{ $interview->cancelled_at->format('d/m/Y H:i') }}
+                                        Cancelada el {{ $interview->cancelled_at ? $interview->cancelled_at->format('d/m/Y H:i') : 'N/A' }}
                                     @endif
                                 </p>
                             </div>

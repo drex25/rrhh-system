@@ -146,16 +146,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/candidates/{candidate}/download-resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
 
     // Rutas para entrevistas
-    Route::get('/interviews', [InterviewController::class, 'index'])->name('interviews.index');
-    Route::get('/interviews/create', [InterviewController::class, 'create'])->name('interviews.create');
-    Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store');
-    Route::get('/interviews/{interview}', [InterviewController::class, 'show'])->name('interviews.show');
-    Route::get('/interviews/{interview}/edit', [InterviewController::class, 'edit'])->name('interviews.edit');
-    Route::put('/interviews/{interview}', [InterviewController::class, 'update'])->name('interviews.update');
-    Route::delete('/interviews/{interview}', [InterviewController::class, 'destroy'])->name('interviews.destroy');
-    Route::post('/interviews/{interview}/complete', [InterviewController::class, 'complete'])->name('interviews.complete');
-    Route::post('/interviews/{interview}/cancel', [InterviewController::class, 'cancel'])->name('interviews.cancel');
-    Route::post('/interviews/{interview}/reschedule', [InterviewController::class, 'reschedule'])->name('interviews.reschedule');
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/interviews', [InterviewController::class, 'index'])->name('interviews.index');
+        Route::get('/interviews/create', [InterviewController::class, 'create'])->name('interviews.create');
+        Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store');
+        Route::get('/interviews/{interview}', [InterviewController::class, 'show'])->name('interviews.show');
+        Route::get('/interviews/{interview}/edit', [InterviewController::class, 'edit'])->name('interviews.edit');
+        Route::put('/interviews/{interview}', [InterviewController::class, 'update'])->name('interviews.update');
+        Route::delete('/interviews/{interview}', [InterviewController::class, 'destroy'])->name('interviews.destroy');
+        Route::post('/interviews/{interview}/complete', [InterviewController::class, 'complete'])->name('interviews.complete');
+        Route::post('/interviews/{interview}/cancel', [InterviewController::class, 'cancel'])->name('interviews.cancel');
+        Route::post('/interviews/{interview}/reschedule', [InterviewController::class, 'reschedule'])->name('interviews.reschedule');
+    });
 });
 
 Route::get('/api/countries', [LocationController::class, 'getCountries']);

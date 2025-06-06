@@ -95,6 +95,10 @@ class InterviewController extends Controller
                 'notes' => $validated['notes'] ?? null,
             ]);
 
+            // Actualizar el estado del candidato a 'interview_scheduled'
+            $candidate = Candidate::find($validated['candidate_id']);
+            $candidate->update(['status' => 'interview_scheduled']);
+
             // Enviar correo al candidato
             Mail::to($interview->candidate->email)->send(new InterviewScheduled($interview));
 
@@ -104,7 +108,7 @@ class InterviewController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('interviews.show', $interview)
+                ->route('candidates.show', $candidate)
                 ->with('success', 'Entrevista programada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -249,13 +253,13 @@ class InterviewController extends Controller
                 'rating' => $validated['rating'],
             ]);
 
-            // Actualizar el estado del candidato
+            // Actualizar el estado del candidato a 'interviewed'
             $interview->candidate->update(['status' => 'interviewed']);
 
             DB::commit();
 
             return redirect()
-                ->route('interviews.show', $interview)
+                ->route('candidates.show', $interview->candidate)
                 ->with('success', 'Entrevista marcada como completada.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -335,5 +339,16 @@ class InterviewController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error al reprogramar la entrevista: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Show the form for creating a new interview from candidate view.
+     */
+    public function createFromCandidate(Candidate $candidate)
+    {
+        $jobPostings = JobPosting::where('status', 'published')->get();
+        $interviewers = User::role('interviewer')->get();
+
+        return view('interviews.create', compact('candidate', 'jobPostings', 'interviewers'));
     }
 } 

@@ -7,6 +7,7 @@ use App\Models\JobPosting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CandidateController extends Controller
 {
@@ -118,7 +119,8 @@ class CandidateController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'job_posting_id' => 'required|exists:job_postings,id',
-            'status' => 'required|string|in:pending,reviewing,interviewed,offered,hired,rejected',
+            'status' => 'required|string|in:pending,reviewing,shortlisted,interview_scheduled,interviewed,technical_test,reference_check,offered,accepted,hired,rejected,withdrawn',
+            'rejection_reason' => 'nullable|required_if:status,rejected|string|max:255',
             'current_position' => 'nullable|string|max:255',
             'current_company' => 'nullable|string|max:255',
             'years_of_experience' => 'nullable|integer|min:0',
@@ -143,10 +145,75 @@ class CandidateController extends Controller
             $validated['resume_path'] = $path;
         }
 
+        // Actualizar el estado y manejar la lógica de transición
+        $oldStatus = $candidate->status;
+        $newStatus = $validated['status'];
+
+        // Si el estado cambió a rechazado, asegurarse de que haya una razón
+        if ($newStatus === 'rejected' && empty($validated['rejection_reason'])) {
+            return back()->with('error', 'Debe proporcionar una razón para el rechazo.');
+        }
+
+        // Si el estado cambió a contratado, verificar que haya pasado por todos los estados necesarios
+        if ($newStatus === 'hired' && !in_array($oldStatus, ['accepted'])) {
+            return back()->with('error', 'El candidato debe haber aceptado la oferta antes de ser contratado.');
+        }
+
         $candidate->update($validated);
+
+        // Notificar al candidato sobre el cambio de estado
+        if ($oldStatus !== $newStatus) {
+            // Aquí iría la lógica para enviar notificaciones por email
+            // TODO: Implementar notificaciones por email
+        }
 
         return redirect()->route('candidates.show', $candidate)
             ->with('success', 'Candidato actualizado exitosamente.');
+    }
+
+    /**
+     * Actualiza el estado del candidato.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Candidate  $candidate
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateStatus(Request $request, Candidate $candidate)
+    {
+        $request->validate([
+            'status' => ['required', 'string', Rule::in([
+                'pending',
+                'reviewing',
+                'shortlisted',
+                'interview_scheduled',
+                'interviewed',
+                'technical_test',
+                'reference_check',
+                'offered',
+                'accepted',
+                'hired',
+                'rejected',
+                'withdrawn'
+            ])],
+            'rejection_reason' => ['required_if:status,rejected', 'nullable', 'string', 'max:1000'],
+        ]);
+
+        // Verificar si se requiere una razón para el rechazo
+        if ($request->status === 'rejected' && empty($request->rejection_reason)) {
+            return back()->withErrors(['rejection_reason' => 'La razón del rechazo es requerida.']);
+        }
+
+        // Actualizar el estado y la razón de rechazo si corresponde
+        $candidate->update([
+            'status' => $request->status,
+            'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
+        ]);
+
+        // Notificar al candidato sobre el cambio de estado
+        // TODO: Implementar notificación por email
+
+        return redirect()->route('candidates.show', $candidate)
+            ->with('success', 'Estado del candidato actualizado correctamente.');
     }
 
     /**

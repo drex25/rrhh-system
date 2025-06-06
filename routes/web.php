@@ -135,7 +135,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/job-postings/{jobPosting}/toggle-status', [JobPostingController::class, 'toggleStatus'])->name('job-postings.toggle-status');
     Route::post('/job-postings/{jobPosting}/toggle-featured', [JobPostingController::class, 'toggleFeatured'])->name('job-postings.toggle-featured');
 
-    // Rutas para candidatos
+    // Rutas de Candidatos
     Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
     Route::get('/candidates/create', [CandidateController::class, 'create'])->name('candidates.create');
     Route::post('/candidates', [CandidateController::class, 'store'])->name('candidates.store');
@@ -143,12 +143,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/candidates/{candidate}/edit', [CandidateController::class, 'edit'])->name('candidates.edit');
     Route::put('/candidates/{candidate}', [CandidateController::class, 'update'])->name('candidates.update');
     Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
-    Route::get('/candidates/{candidate}/download-resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
+    Route::get('/candidates/{candidate}/resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
+    Route::put('/candidates/{candidate}/status', [CandidateController::class, 'updateStatus'])->name('candidates.update-status');
 
     // Rutas para entrevistas
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/interviews', [InterviewController::class, 'index'])->name('interviews.index');
         Route::get('/interviews/create', [InterviewController::class, 'create'])->name('interviews.create');
+        Route::get('/candidates/{candidate}/interviews/create', [InterviewController::class, 'createFromCandidate'])->name('interviews.create-from-candidate');
         Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store');
         Route::get('/interviews/{interview}', [InterviewController::class, 'show'])->name('interviews.show');
         Route::get('/interviews/{interview}/edit', [InterviewController::class, 'edit'])->name('interviews.edit');

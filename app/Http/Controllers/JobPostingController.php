@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JobPosting;
 use App\Models\Department;
 use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -55,17 +56,18 @@ class JobPostingController extends Controller
     {
         $departments = Department::where('is_active', true)->get();
         $positions = Position::where('is_active', true)->get();
-        
-        return view('job-postings.create', compact('departments', 'positions'));
+        $users = User::where('is_active', true)->get();
+        return view('job-postings.create', compact('departments', 'positions', 'users'));
     }
 
     public function store(Request $request)
     {
+        \Log::info('Request recibido en store', $request->all());
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'requirements' => 'required|string',
-            'responsibilities' => 'required|string',
+            'requirements' => 'nullable|string',
+            'responsibilities' => 'nullable|string',
             'benefits' => 'nullable|string',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
@@ -73,20 +75,47 @@ class JobPostingController extends Controller
             'work_schedule' => 'required|string',
             'modality' => 'required|in:remoto,hibrido,presencial',
             'location' => 'required|string',
-            'salary_min' => 'nullable|numeric',
-            'salary_max' => 'nullable|numeric',
+            'min_salary' => 'nullable|numeric',
+            'max_salary' => 'nullable|numeric',
             'status' => 'required|in:draft,published,closed',
             'closing_date' => 'nullable|date',
             'vacancies' => 'required|integer|min:1',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'interviewers' => 'nullable|array',
+            'interviewers.*' => 'exists:users,id',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
-        $validated['is_featured'] = $request->has('is_featured');
-        $validated['is_active'] = $request->has('is_active');
+        // Map form fields to database columns
+        $data = [
+            'title' => $validated['title'],
+            'description' => $request->input('description'),
+            'requirements' => $request->input('requirements'),
+            'responsibilities' => $request->input('responsibilities'),
+            'benefits' => $request->input('benefits'),
+            'department_id' => $validated['department_id'],
+            'position_id' => $validated['position_id'],
+            'employment_type' => $validated['employment_type'],
+            'work_schedule' => $validated['work_schedule'],
+            'modality' => $validated['modality'],
+            'location' => $validated['location'],
+            'min_salary' => $request->input('salary_min'),
+            'max_salary' => $request->input('salary_max'),
+            'status' => $validated['status'],
+            'closing_date' => $validated['closing_date'],
+            'application_deadline' => $validated['closing_date'],
+            'vacancies' => $validated['vacancies'],
+            'is_featured' => $request->has('is_featured'),
+            'is_active' => $request->has('is_active'),
+        ];
 
-        JobPosting::create($validated);
+        $jobPosting = JobPosting::create($data);
+        \Log::info('Vacante creada:', ['jobPosting' => $jobPosting]);
+
+        if ($request->filled('interviewers')) {
+            \Log::info('Sincronizando entrevistadores en store', ['ids' => $request->input('interviewers')]);
+            $jobPosting->interviewers()->sync($request->input('interviewers'));
+        }
 
         return redirect()->route('job-postings.index')
             ->with('success', 'Vacante creada exitosamente.');
@@ -100,19 +129,21 @@ class JobPostingController extends Controller
 
     public function edit(JobPosting $jobPosting)
     {
+        $jobPosting->load('interviewers');
         $departments = Department::where('is_active', true)->get();
         $positions = Position::where('is_active', true)->get();
-        
-        return view('job-postings.edit', compact('jobPosting', 'departments', 'positions'));
+        $users = User::where('is_active', true)->get();
+        return view('job-postings.edit', compact('jobPosting', 'departments', 'positions', 'users'));
     }
 
     public function update(Request $request, JobPosting $jobPosting)
     {
+        \Log::info('Request recibido en update', $request->all());
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'requirements' => 'required|string',
-            'responsibilities' => 'required|string',
+            'requirements' => 'nullable|string',
+            'responsibilities' => 'nullable|string',
             'benefits' => 'nullable|string',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
@@ -120,14 +151,39 @@ class JobPostingController extends Controller
             'work_schedule' => 'required|string',
             'modality' => 'required|in:remoto,hibrido,presencial',
             'location' => 'required|string',
-            'salary_min' => 'nullable|numeric',
-            'salary_max' => 'nullable|numeric',
+            'min_salary' => 'nullable|numeric',
+            'max_salary' => 'nullable|numeric',
             'status' => 'required|in:draft,published,closed',
             'closing_date' => 'nullable|date',
             'vacancies' => 'required|integer|min:1',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'interviewers' => 'nullable|array',
+            'interviewers.*' => 'exists:users,id',
         ]);
+
+        // Map form fields to database columns
+        $data = [
+            'title' => $validated['title'],
+            'description' => $request->input('description'),
+            'requirements' => $request->input('requirements'),
+            'responsibilities' => $request->input('responsibilities'),
+            'benefits' => $request->input('benefits'),
+            'department_id' => $validated['department_id'],
+            'position_id' => $validated['position_id'],
+            'employment_type' => $validated['employment_type'],
+            'work_schedule' => $validated['work_schedule'],
+            'modality' => $validated['modality'],
+            'location' => $validated['location'],
+            'min_salary' => $request->input('salary_min'),
+            'max_salary' => $request->input('salary_max'),
+            'status' => $validated['status'],
+            'closing_date' => $validated['closing_date'],
+            'application_deadline' => $validated['closing_date'],
+            'vacancies' => $validated['vacancies'],
+            'is_featured' => $request->has('is_featured'),
+            'is_active' => $request->has('is_active'),
+        ];
 
         // Slug único ignorando el registro actual
         $baseSlug = Str::slug($validated['title']);
@@ -141,14 +197,19 @@ class JobPostingController extends Controller
             $slug = $baseSlug . '-' . $counter;
             $counter++;
         }
-        $validated['slug'] = $slug;
+        $data['slug'] = $slug;
 
-        $validated['is_featured'] = $request->has('is_featured');
-        $validated['is_active'] = $request->has('is_active');
+        $jobPosting->update($data);
 
-        $jobPosting->update($validated);
+        if ($request->filled('interviewers')) {
+            \Log::info('Sincronizando entrevistadores en update', ['ids' => $request->input('interviewers')]);
+            $jobPosting->interviewers()->sync($request->input('interviewers'));
+        } else {
+            \Log::info('Sincronizando entrevistadores en update: vacío');
+            $jobPosting->interviewers()->sync([]);
+        }
 
-        return redirect()->route('job-postings.index')
+        return redirect()->route('job-postings.show', $jobPosting)
             ->with('success', 'Vacante actualizada exitosamente.');
     }
 

@@ -11,36 +11,120 @@ class Candidate extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'job_posting_id',
+        'name',
         'first_name',
         'last_name',
         'email',
         'phone',
         'resume_path',
-        'cover_letter',
         'status',
-        'rejection_reason',
+        'job_posting_id',
         'notes',
-        'interview_schedule',
-        'expected_salary',
-        'current_position',
-        'current_company',
+        'interview_date',
+        'interview_type',
+        'interview_location',
+        'interview_notes',
+        'technical_test_path',
+        'technical_test_score',
+        'reference_check_notes',
+        'preoccupational_test_date',
+        'preoccupational_test_location',
+        'offer_details',
+        'offer_accepted_at',
+        'hired_at',
+        'rejection_reason',
+        'withdrawn_reason',
+        'calendly_link',
+        'meet_link',
+        'interviewer_name',
         'years_of_experience',
         'education_level',
+        'current_position',
+        'current_company',
+        'expected_salary',
+        'cover_letter',
         'source',
-        'is_active'
     ];
 
     protected $casts = [
-        'interview_schedule' => 'array',
-        'expected_salary' => 'decimal:2',
-        'is_active' => 'boolean',
+        'interview_date' => 'datetime',
+        'offer_accepted_at' => 'datetime',
+        'hired_at' => 'datetime',
+        'preoccupational_test_date' => 'datetime',
     ];
 
-    protected $appends = [
-        'full_name',
-        'status_badge',
-    ];
+    const STATUS_PENDING = 'pending';
+    const STATUS_REVIEWING = 'reviewing';
+    const STATUS_SHORTLISTED = 'shortlisted';
+    const STATUS_INTERVIEW_SCHEDULED = 'interview_scheduled';
+    const STATUS_INTERVIEWED = 'interviewed';
+    const STATUS_TECHNICAL_TEST = 'technical_test';
+    const STATUS_REFERENCE_CHECK = 'reference_check';
+    const STATUS_PREOCCUPATIONAL = 'preoccupational';
+    const STATUS_OFFERED = 'offered';
+    const STATUS_ACCEPTED = 'accepted';
+    const STATUS_HIRED = 'hired';
+    const STATUS_REJECTED = 'rejected';
+    const STATUS_WITHDRAWN = 'withdrawn';
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_PENDING => 'Postulación Pendiente',
+            self::STATUS_REVIEWING => 'En Revisión',
+            self::STATUS_SHORTLISTED => 'Preseleccionado',
+            self::STATUS_INTERVIEW_SCHEDULED => 'Entrevista Programada',
+            self::STATUS_INTERVIEWED => 'Entrevistado',
+            self::STATUS_TECHNICAL_TEST => 'Prueba Técnica',
+            self::STATUS_REFERENCE_CHECK => 'Verificación de Referencias',
+            self::STATUS_PREOCCUPATIONAL => 'Examen Preocupacional',
+            self::STATUS_OFFERED => 'Oferta Extendida',
+            self::STATUS_ACCEPTED => 'Oferta Aceptada',
+            self::STATUS_HIRED => 'Contratado',
+            self::STATUS_REJECTED => 'No Aplicar',
+            self::STATUS_WITHDRAWN => 'Retirado',
+        ];
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return match($this->status) {
+            self::STATUS_PENDING => 'yellow',
+            self::STATUS_REVIEWING => 'blue',
+            self::STATUS_SHORTLISTED => 'purple',
+            self::STATUS_INTERVIEW_SCHEDULED => 'purple',
+            self::STATUS_INTERVIEWED => 'pink',
+            self::STATUS_TECHNICAL_TEST => 'orange',
+            self::STATUS_REFERENCE_CHECK => 'green',
+            self::STATUS_PREOCCUPATIONAL => 'yellow',
+            self::STATUS_OFFERED => 'green',
+            self::STATUS_ACCEPTED => 'green',
+            self::STATUS_HIRED => 'green',
+            self::STATUS_REJECTED => 'red',
+            self::STATUS_WITHDRAWN => 'gray',
+            default => 'gray',
+        };
+    }
+
+    public function getStatusIconAttribute()
+    {
+        return match($this->status) {
+            self::STATUS_PENDING => 'fas fa-clock',
+            self::STATUS_REVIEWING => 'fas fa-search',
+            self::STATUS_SHORTLISTED => 'fas fa-user-check',
+            self::STATUS_INTERVIEW_SCHEDULED => 'fas fa-calendar-check',
+            self::STATUS_INTERVIEWED => 'fas fa-comments',
+            self::STATUS_TECHNICAL_TEST => 'fas fa-code',
+            self::STATUS_REFERENCE_CHECK => 'fas fa-phone',
+            self::STATUS_PREOCCUPATIONAL => 'fas fa-heartbeat',
+            self::STATUS_OFFERED => 'fas fa-handshake',
+            self::STATUS_ACCEPTED => 'fas fa-check-circle',
+            self::STATUS_HIRED => 'fas fa-user-tie',
+            self::STATUS_REJECTED => 'fas fa-times-circle',
+            self::STATUS_WITHDRAWN => 'fas fa-sign-out-alt',
+            default => 'fas fa-question-circle',
+        };
+    }
 
     // Relaciones
     public function jobPosting()
@@ -72,7 +156,8 @@ class Candidate extends Model
 
     public function getStatusBadgeAttribute()
     {
-        return match($this->status) {
+        $statusText = self::getStatuses()[$this->status] ?? 'Desconocido';
+        $statusClass = match($this->status) {
             'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
             'reviewing' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
             'shortlisted' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300',
@@ -87,6 +172,11 @@ class Candidate extends Model
             'withdrawn' => 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
             default => 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
         };
+
+        return [
+            'class' => $statusClass,
+            'text' => $statusText
+        ];
     }
 
     // Métodos de estado

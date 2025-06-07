@@ -109,7 +109,7 @@
                             Descripción
                         </h2>
                         <div class="prose dark:prose-invert max-w-none">
-                            {!! nl2br(e($jobPosting->description)) !!}
+                            {!! $jobPosting->description !!}
                         </div>
                     </div>
 
@@ -119,7 +119,7 @@
                             Requisitos
                         </h2>
                         <div class="prose dark:prose-invert max-w-none">
-                            {!! nl2br(e($jobPosting->requirements)) !!}
+                            {!! $jobPosting->requirements !!}
                         </div>
                     </div>
 
@@ -129,7 +129,7 @@
                             Responsabilidades
                         </h2>
                         <div class="prose dark:prose-invert max-w-none">
-                            {!! nl2br(e($jobPosting->responsibilities)) !!}
+                            {!! $jobPosting->responsibilities !!}
                         </div>
                     </div>
 
@@ -140,7 +140,7 @@
                                 Beneficios
                             </h2>
                             <div class="prose dark:prose-invert max-w-none">
-                                {!! nl2br(e($jobPosting->benefits)) !!}
+                                {!! $jobPosting->benefits !!}
                             </div>
                         </div>
                     @endif
@@ -193,4 +193,21 @@
         </div>
     </div>
 </div>
+
+@if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '{{ session('success') }}',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2500,
+                customClass: { popup: 'rounded-xl' }
+            });
+        });
+    </script>
+@endif
 @endsection 

@@ -105,7 +105,7 @@
                         <span class="ml-2">Descripción del Puesto</span>
                     </h2>
                     <div class="prose dark:prose-invert max-w-none">
-                        {!! nl2br(e($jobPosting->description)) !!}
+                        {!! $jobPosting->description !!}
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@
                         <span class="ml-2">Requisitos</span>
                     </h2>
                     <div class="prose dark:prose-invert max-w-none">
-                        {!! nl2br(e($jobPosting->requirements)) !!}
+                        {!! $jobPosting->requirements !!}
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
                         <span class="ml-2">Responsabilidades</span>
                     </h2>
                     <div class="prose dark:prose-invert max-w-none">
-                        {!! nl2br(e($jobPosting->responsibilities)) !!}
+                        {!! $jobPosting->responsibilities !!}
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@
                         <span class="ml-2">Beneficios</span>
                     </h2>
                     <div class="prose dark:prose-invert max-w-none">
-                        {!! nl2br(e($jobPosting->benefits)) !!}
+                        {!! $jobPosting->benefits !!}
                     </div>
                 </div>
             </div>

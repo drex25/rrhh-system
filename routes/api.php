@@ -16,4 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-}); 
+});
+
+// Calendly Webhook
+Route::post('/calendly/webhook', [App\Http\Controllers\CalendlyWebhookController::class, 'handle']); 

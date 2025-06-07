@@ -145,6 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
     Route::get('/candidates/{candidate}/resume', [CandidateController::class, 'downloadResume'])->name('candidates.download-resume');
     Route::put('/candidates/{candidate}/status', [CandidateController::class, 'updateStatus'])->name('candidates.update-status');
+    Route::put('/candidates/{candidate}/notes', [CandidateController::class, 'updateNotes'])->name('candidates.update-notes');
 
     // Rutas para entrevistas
     Route::middleware(['auth', 'verified'])->group(function () {

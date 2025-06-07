@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Services\CalendlyService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\ShortlistedWithCalendly;
+use App\Mail\ApplicationRejected;
 
 class CandidateController extends Controller
 {
@@ -113,62 +119,53 @@ class CandidateController extends Controller
      */
     public function update(Request $request, Candidate $candidate)
     {
+        \Log::info('Iniciando actualización de candidato', ['id' => $candidate->id, 'status_actual' => $candidate->status, 'input' => $request->all()]);
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'job_posting_id' => 'required|exists:job_postings,id',
-            'status' => 'required|string|in:pending,reviewing,shortlisted,interview_scheduled,interviewed,technical_test,reference_check,offered,accepted,hired,rejected,withdrawn',
-            'rejection_reason' => 'nullable|required_if:status,rejected|string|max:255',
-            'current_position' => 'nullable|string|max:255',
-            'current_company' => 'nullable|string|max:255',
-            'years_of_experience' => 'nullable|integer|min:0',
-            'education_level' => 'nullable|string|max:255',
-            'expected_salary' => 'nullable|numeric|min:0',
-            'resume' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'cover_letter' => 'nullable|string',
+            'status' => 'required|in:' . implode(',', array_keys(Candidate::getStatuses())),
             'notes' => 'nullable|string',
-            'source' => 'nullable|string|max:255',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string',
+            'withdrawn_reason' => 'required_if:status,withdrawn|nullable|string',
         ]);
 
-        // Manejar la subida del CV
-        if ($request->hasFile('resume')) {
-            // Eliminar el CV anterior si existe
-            if ($candidate->resume_path) {
-                Storage::disk('public')->delete($candidate->resume_path);
+        try {
+            DB::beginTransaction();
+
+            $oldStatus = $candidate->status;
+            $candidate->update($validated);
+
+            // Si el estado cambió a shortlisted, generar enlace de Calendly y enviar correo
+            if ($validated['status'] === Candidate::STATUS_SHORTLISTED && $oldStatus !== Candidate::STATUS_SHORTLISTED) {
+                \Log::info('Candidato preseleccionado, generando enlace de Calendly', ['id' => $candidate->id]);
+                $calendlyService = app(\App\Services\CalendlyService::class);
+                $calendlyLink = $calendlyService->generateSchedulingLink($candidate);
+
+                if ($calendlyLink) {
+                    $candidate->update(['calendly_link' => $calendlyLink]);
+                    \Log::info('Enviando correo de preselección con Calendly', ['id' => $candidate->id, 'email' => $candidate->email, 'calendly_link' => $calendlyLink]);
+                    \Mail::to($candidate->email)->send(new \App\Mail\ShortlistedWithCalendly($candidate, $calendlyLink));
+                } else {
+                    \Log::error('No se pudo generar el enlace de Calendly', ['id' => $candidate->id]);
+                }
             }
 
-            $file = $request->file('resume');
-            $filename = Str::slug($validated['first_name'] . '-' . $validated['last_name']) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('resumes', $filename, 'public');
-            $validated['resume_path'] = $path;
+            // Si el estado cambió a rejected, enviar correo de rechazo
+            if ($validated['status'] === Candidate::STATUS_REJECTED && $oldStatus !== Candidate::STATUS_REJECTED) {
+                \Log::info('Enviando correo de rechazo', ['id' => $candidate->id, 'email' => $candidate->email]);
+                \Mail::to($candidate->email)->send(new \App\Mail\ApplicationRejected($candidate));
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('candidates.show', $candidate)
+                ->with('success', 'Estado del candidato actualizado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error al actualizar el estado del candidato', ['id' => $candidate->id, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return back()
+                ->withInput()
+                ->with('error', 'Error al actualizar el estado del candidato: ' . $e->getMessage());
         }
-
-        // Actualizar el estado y manejar la lógica de transición
-        $oldStatus = $candidate->status;
-        $newStatus = $validated['status'];
-
-        // Si el estado cambió a rechazado, asegurarse de que haya una razón
-        if ($newStatus === 'rejected' && empty($validated['rejection_reason'])) {
-            return back()->with('error', 'Debe proporcionar una razón para el rechazo.');
-        }
-
-        // Si el estado cambió a contratado, verificar que haya pasado por todos los estados necesarios
-        if ($newStatus === 'hired' && !in_array($oldStatus, ['accepted'])) {
-            return back()->with('error', 'El candidato debe haber aceptado la oferta antes de ser contratado.');
-        }
-
-        $candidate->update($validated);
-
-        // Notificar al candidato sobre el cambio de estado
-        if ($oldStatus !== $newStatus) {
-            // Aquí iría la lógica para enviar notificaciones por email
-            // TODO: Implementar notificaciones por email
-        }
-
-        return redirect()->route('candidates.show', $candidate)
-            ->with('success', 'Candidato actualizado exitosamente.');
     }
 
     /**
@@ -180,6 +177,8 @@ class CandidateController extends Controller
      */
     public function updateStatus(Request $request, Candidate $candidate)
     {
+        \Log::info('Iniciando actualización de estado del candidato', ['id' => $candidate->id, 'status_actual' => $candidate->status, 'input' => $request->all()]);
+        
         $request->validate([
             'status' => ['required', 'string', Rule::in([
                 'pending',
@@ -198,22 +197,49 @@ class CandidateController extends Controller
             'rejection_reason' => ['required_if:status,rejected', 'nullable', 'string', 'max:1000'],
         ]);
 
-        // Verificar si se requiere una razón para el rechazo
-        if ($request->status === 'rejected' && empty($request->rejection_reason)) {
-            return back()->withErrors(['rejection_reason' => 'La razón del rechazo es requerida.']);
+        try {
+            DB::beginTransaction();
+
+            $oldStatus = $candidate->status;
+            
+            // Actualizar el estado y la razón de rechazo si corresponde
+            $candidate->update([
+                'status' => $request->status,
+                'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
+            ]);
+
+            // Si el estado cambió a shortlisted, generar enlace de Calendly y enviar correo
+            if ($request->status === Candidate::STATUS_SHORTLISTED && $oldStatus !== Candidate::STATUS_SHORTLISTED) {
+                \Log::info('Candidato preseleccionado, generando enlace de Calendly', ['id' => $candidate->id]);
+                $calendlyService = app(\App\Services\CalendlyService::class);
+                $calendlyLink = $calendlyService->generateSchedulingLink($candidate);
+
+                if ($calendlyLink) {
+                    $candidate->update(['calendly_link' => $calendlyLink]);
+                    \Log::info('Enviando correo de preselección con Calendly', ['id' => $candidate->id, 'email' => $candidate->email, 'calendly_link' => $calendlyLink]);
+                    \Mail::to($candidate->email)->send(new \App\Mail\ShortlistedWithCalendly($candidate, $calendlyLink));
+                } else {
+                    \Log::error('No se pudo generar el enlace de Calendly', ['id' => $candidate->id]);
+                }
+            }
+
+            // Si el estado cambió a rejected, enviar correo de rechazo
+            if ($request->status === Candidate::STATUS_REJECTED && $oldStatus !== Candidate::STATUS_REJECTED) {
+                \Log::info('Enviando correo de rechazo', ['id' => $candidate->id, 'email' => $candidate->email]);
+                \Mail::to($candidate->email)->send(new \App\Mail\ApplicationRejected($candidate));
+            }
+
+            DB::commit();
+
+            return redirect()->route('candidates.show', $candidate)
+                ->with('success', 'Estado del candidato actualizado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error al actualizar el estado del candidato', ['id' => $candidate->id, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return back()
+                ->withInput()
+                ->with('error', 'Error al actualizar el estado del candidato: ' . $e->getMessage());
         }
-
-        // Actualizar el estado y la razón de rechazo si corresponde
-        $candidate->update([
-            'status' => $request->status,
-            'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
-        ]);
-
-        // Notificar al candidato sobre el cambio de estado
-        // TODO: Implementar notificación por email
-
-        return redirect()->route('candidates.show', $candidate)
-            ->with('success', 'Estado del candidato actualizado correctamente.');
     }
 
     /**
@@ -239,5 +265,18 @@ class CandidateController extends Controller
         }
 
         return Storage::disk('public')->download($candidate->resume_path);
+    }
+
+    public function updateNotes(Request $request, Candidate $candidate)
+    {
+        $validated = $request->validate([
+            'notes' => 'nullable|string'
+        ]);
+
+        $candidate->update($validated);
+
+        return redirect()
+            ->route('candidates.show', $candidate)
+            ->with('success', 'Notas actualizadas correctamente.');
     }
 }

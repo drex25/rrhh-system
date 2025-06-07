@@ -27,9 +27,8 @@ class JobPosting extends Model
         'min_salary',
         'max_salary',
         'status',
-        'application_deadline',
+        'closing_date',
         'vacancies',
-        'applications_count',
         'is_featured',
         'is_active'
     ];
@@ -37,6 +36,7 @@ class JobPosting extends Model
     protected $casts = [
         'min_salary' => 'decimal:2',
         'max_salary' => 'decimal:2',
+        'closing_date' => 'date',
         'application_deadline' => 'date',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
@@ -58,6 +58,11 @@ class JobPosting extends Model
     public function candidates()
     {
         return $this->hasMany(Candidate::class);
+    }
+
+    public function interviewers()
+    {
+        return $this->belongsToMany(User::class, 'job_posting_user');
     }
 
     // Scopes

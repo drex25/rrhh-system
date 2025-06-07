@@ -160,8 +160,7 @@
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Puesto *</label>
-                            <input type="hidden" name="description" id="description">
-                            <div id="description-editor" class="bg-white dark:bg-gray-700 rounded-lg">{{ old('description') }}</div>
+                            <textarea name="description" id="description" class="tinymce-editor w-full">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -169,8 +168,7 @@
 
                         <div class="space-y-2">
                             <label for="requirements" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Requisitos *</label>
-                            <input type="hidden" name="requirements" id="requirements">
-                            <div id="requirements-editor" class="bg-white dark:bg-gray-700 rounded-lg">{{ old('requirements') }}</div>
+                            <textarea name="requirements" id="requirements" class="tinymce-editor w-full">{{ old('requirements') }}</textarea>
                             @error('requirements')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -178,8 +176,7 @@
 
                         <div class="space-y-2">
                             <label for="responsibilities" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Responsabilidades *</label>
-                            <input type="hidden" name="responsibilities" id="responsibilities">
-                            <div id="responsibilities-editor" class="bg-white dark:bg-gray-700 rounded-lg">{{ old('responsibilities') }}</div>
+                            <textarea name="responsibilities" id="responsibilities" class="tinymce-editor w-full">{{ old('responsibilities') }}</textarea>
                             @error('responsibilities')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -187,8 +184,7 @@
 
                         <div class="space-y-2">
                             <label for="benefits" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Beneficios</label>
-                            <input type="hidden" name="benefits" id="benefits">
-                            <div id="benefits-editor" class="bg-white dark:bg-gray-700 rounded-lg">{{ old('benefits') }}</div>
+                            <textarea name="benefits" id="benefits" class="tinymce-editor w-full">{{ old('benefits') }}</textarea>
                             @error('benefits')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -220,13 +216,55 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label for="application_deadline" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha Límite de Aplicación</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-calendar-alt"></i></span>
-                                <input type="date" name="application_deadline" id="application_deadline" value="{{ old('application_deadline') }}"
-                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            @error('application_deadline')
+                            <label for="interviewers" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Entrevistadores *</label>
+                            <select name="interviewers[]" id="interviewers" multiple required
+                                class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ in_array($user->id, old('interviewers', [])) ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Seleccione los entrevistadores que participarán en el proceso</p>
+                            @error('interviewers')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="closing_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha límite de postulación</label>
+                            <input type="date" name="closing_date" id="closing_date" value="{{ old('closing_date') }}"
+                                class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('closing_date')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="vacancies" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número de Vacantes *</label>
+                            <input type="number" name="vacancies" id="vacancies" value="{{ old('vacancies', 1) }}" min="1" required
+                                class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('vacancies')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="salary_min" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Salario Mínimo</label>
+                            <input type="number" name="salary_min" id="salary_min" value="{{ old('salary_min') }}" step="0.01"
+                                class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('salary_min')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="salary_max" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Salario Máximo</label>
+                            <input type="number" name="salary_max" id="salary_max" value="{{ old('salary_max') }}" step="0.01"
+                                class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('salary_max')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>

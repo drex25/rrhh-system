@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'calendly' => [
+        'token' => env('CALENDLY_TOKEN'),
+        'webhook_signing_key' => env('CALENDLY_WEBHOOK_SIGNING_KEY'),
+        'event_type_url' => env('CALENDLY_EVENT_TYPE_URL', 'https://calendly.com/tsgroup420/entrevista-laboral'),
+        'owner' => env('CALENDLY_OWNER', 'tsgroup420'),
+    ],
+
 ];

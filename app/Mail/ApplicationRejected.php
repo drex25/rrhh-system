@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class InterviewScheduled extends Mailable
+class ApplicationRejected extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +20,7 @@ class InterviewScheduled extends Mailable
 
     public function build()
     {
-        return $this->subject('Entrevista Programada - ' . config('app.name'))
-                    ->markdown('emails.interview-scheduled');
+        return $this->subject('Actualización de tu postulación - ' . config('app.name'))
+                    ->markdown('emails.application-rejected');
     }
 } 

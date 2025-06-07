@@ -14,6 +14,7 @@
     <!-- Quill JS -->
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-head.tinymce-config/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <style>
@@ -390,6 +391,47 @@
                 timerProgressBar: true
             });
         @endif
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tom Select para entrevistadores
+        if(document.getElementById('interviewers')) {
+            new TomSelect('#interviewers', {
+                plugins: ['remove_button'],
+                persist: false,
+                create: false,
+                maxItems: null,
+                searchField: ['text'],
+                placeholder: 'Buscar y seleccionar entrevistadores...'
+            });
+        }
+
+        // Quill para campos de texto enriquecido
+        const quillFields = [
+            { editor: '#description-editor', input: '#description' },
+            { editor: '#requirements-editor', input: '#requirements' },
+            { editor: '#responsibilities-editor', input: '#responsibilities' },
+            { editor: '#benefits-editor', input: '#benefits' }
+        ];
+        let quillInstances = {};
+        quillFields.forEach(function(field) {
+            if(document.querySelector(field.editor)) {
+                quillInstances[field.input] = new Quill(field.editor, { theme: 'snow' });
+            }
+        });
+        // Copiar contenido de Quill a los inputs antes de enviar el formulario
+        const form = document.querySelector('form');
+        if(form) {
+            form.addEventListener('submit', function() {
+                Object.keys(quillInstances).forEach(function(inputId) {
+                    const quill = quillInstances[inputId];
+                    if(document.querySelector(inputId)) {
+                        document.querySelector(inputId).value = quill.root.innerHTML;
+                    }
+                });
+            });
+        }
+    });
     </script>
 </body>
 

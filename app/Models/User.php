@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Employee::class);
     }
+
+    public function interviewJobPostings()
+    {
+        return $this->belongsToMany(JobPosting::class, 'job_posting_user');
+    }
 }

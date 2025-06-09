@@ -48,11 +48,11 @@
             min-width: 100vw;
         }
     }
-    
+
     .animate-float {
         animation: float 6s ease-in-out infinite;
     }
-    
+
     @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-20px); }
@@ -368,7 +368,7 @@
                     Transforma tu <span class="gradient-text">Gestión de RRHH</span>
                 </h1>
                 <p class="text-2xl mb-12 text-white/90 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
-                    Un sistema integral que revoluciona la gestión de recursos humanos, 
+                    Un sistema integral que revoluciona la gestión de recursos humanos,
                     automatizando procesos y potenciando el talento de tu organización.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center" data-aos="fade-up" data-aos-delay="300">
@@ -443,8 +443,8 @@
             @endphp
 
             @foreach($features as $index => $feature)
-                <div class="feature-card flex flex-col items-center text-center p-8 rounded-2xl shadow-lg hover:shadow-xl transition bg-{{ $feature['color'] }}-50" 
-                     data-aos="fade-up" 
+                <div class="feature-card flex flex-col items-center text-center p-8 rounded-2xl shadow-lg hover:shadow-xl transition bg-{{ $feature['color'] }}-50"
+                     data-aos="fade-up"
                      data-aos-delay="{{ $index * 100 }}">
                     <div class="bg-{{ $feature['color'] }}-100 p-5 rounded-full mb-6">
                         <i class="fas fa-{{ $feature['icon'] }} text-3xl text-{{ $feature['color'] }}-600"></i>
@@ -464,7 +464,7 @@
             <span class="text-blue-600 font-semibold text-lg" data-aos="fade-up">Beneficios</span>
             <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-3" data-aos="fade-up" data-aos-delay="100">¿Por qué elegir nuestro sistema?</h2>
             <p class="text-gray-600 mt-6 max-w-2xl mx-auto text-lg" data-aos="fade-up" data-aos-delay="200">
-                Descubre las ventajas que hacen de nuestra plataforma la mejor opción para tu empresa
+                Descubre las ventajas que hacen de nuestra plataforma la mejor opción para tu empresaaaaaaaaaaaaaaaaaaaaaaa
             </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -559,4 +559,4 @@
     });
 </script>
 @endpush
-@endsection 
+@endsection

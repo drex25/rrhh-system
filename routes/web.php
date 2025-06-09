@@ -23,6 +23,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PublicJobPostingController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -173,5 +174,9 @@ Route::get('/employees/{id}/pdf', [App\Http\Controllers\EmployeeController::clas
 Route::get('/vacantes', [PublicJobPostingController::class, 'index'])->name('public.job-postings.index');
 Route::get('/vacantes/{jobPosting}', [PublicJobPostingController::class, 'show'])->name('public.job-postings.show');
 Route::post('/vacantes/{jobPosting}/apply', [PublicJobPostingController::class, 'apply'])->name('public.job-postings.apply');
+
+// Landing Page Routes
+Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
+Route::post('/contact', [LandingPageController::class, 'store'])->name('landing.store');
 
 require __DIR__.'/auth.php';

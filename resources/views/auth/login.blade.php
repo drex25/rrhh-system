@@ -3,242 +3,166 @@
 @section('content')
     @php
         $demoUsers = [
-            ['role' => 'Admin', 'email' => 'admin@company.com', 'icon' => '👑'],
-            ['role' => 'HR', 'email' => 'hr@company.com', 'icon' => '👥'],
-            ['role' => 'Manager', 'email' => 'manager@company.com', 'icon' => '📊'],
-            ['role' => 'Employee', 'email' => 'employee@company.com', 'icon' => '👤'],
+            ['role' => 'Admin', 'email' => 'admin@company.com', 'icon' => '👑', 'color' => 'from-purple-500 to-pink-500'],
+            ['role' => 'HR', 'email' => 'hr@company.com', 'icon' => '👥', 'color' => 'from-blue-500 to-cyan-500'],
+            ['role' => 'Manager', 'email' => 'manager@company.com', 'icon' => '📊', 'color' => 'from-green-500 to-emerald-500'],
+            ['role' => 'Employee', 'email' => 'employee@company.com', 'icon' => '👤', 'color' => 'from-orange-500 to-yellow-500'],
         ];
     @endphp
 
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-100 dark:from-gray-900 dark:to-blue-950 py-8 px-2" 
-         x-data="{ 
-            darkMode: localStorage.getItem('darkMode') === 'true', 
-            showPassword: false, 
-            loading: false, 
-            email: '', 
-            password: '',
-            hoveredUser: null,
-            shake: false
-         }" 
-         :class="{ 'dark': darkMode }" 
-         x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val)); email = '{{ old('email') }}'">
-        
-        <!-- Floating particles background -->
-        <div class="fixed inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-blue-100/30 dark:from-blue-900/30 dark:to-blue-950/30 backdrop-blur-sm"></div>
-            <div class="particles-container"></div>
-        </div>
+    <div class="min-h-screen w-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+        <!-- Main Container -->
+        <div class="w-full max-w-6xl flex flex-col md:flex-row gap-8 items-stretch" x-data="{ showPassword: false, loading: false, email: '', password: '', highlight: false }">
+            <!-- Left Panel: Welcome & Demo Users -->
+            <div class="w-full md:w-1/2 flex flex-col gap-8">
+                <!-- Welcome Section -->
+                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 dark:border-white/20 shadow-2xl flex-1 flex flex-col">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo" class="w-10 h-10">
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">TSGroup</h1>
+                            <p class="text-blue-700 dark:text-blue-200">Sistema de Gestión</p>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">¡Bienvenido!</h2>
+                        <p class="text-gray-700 dark:text-gray-300 text-lg">Gestiona tu talento de forma simple, profesional y moderna.</p>
+                    </div>
+                </div>
 
-        <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
-            <button @click="darkMode = !darkMode" 
-                    class="p-2 rounded-full text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-300 hover:scale-110" 
-                    aria-label="Cambiar modo oscuro">
-                <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Demo Users Section SIEMPRE visible y mejorada -->
+                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-blue-200 dark:border-blue-400/30 shadow-2xl flex-1 flex flex-col mt-4">
+                    <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Cuentas Demo
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Haz clic en una cuenta para autocompletar el login con usuario y contraseña demo.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                        @foreach($demoUsers as $user)
+                            <div class="group cursor-pointer transform transition-all duration-300 hover:scale-105"
+                                 @click="email = '{{ $user['email'] }}'; password = 'password'; highlight = true; $nextTick(() => { $refs.emailInput.focus(); })">
+                                <div class="bg-gradient-to-br {{ $user['color'] }} rounded-2xl p-4 shadow-lg h-full flex items-center gap-3">
+                                    <span class="text-3xl">{{ $user['icon'] }}</span>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-bold text-white text-lg truncate">{{ $user['role'] }}</div>
+                                        <div class="text-sm text-white/90 truncate select-all">{{ $user['email'] }}</div>
+                                    </div>
+                                    <button type="button" class="px-3 py-1 bg-white/30 dark:bg-white/20 hover:bg-white/40 dark:hover:bg-white/30 text-white rounded-lg text-sm transition-colors duration-200 pointer-events-none opacity-80">
+                                        Usar
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Login Form -->
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 dark:border-white/20 shadow-2xl h-full flex flex-col justify-center">
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-purple-500 rounded-full p-4 shadow-lg mb-2">
+                            <!-- Ícono de login -->
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.67 0-8 1.337-8 4v2a1 1 0 001 1h14a1 1 0 001-1v-2c0-2.663-5.33-4-8-4z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Iniciar Sesión</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Ingresa tus credenciales para continuar</p>
+                    </div>
+
+                    <form method="POST" action="{{ route('login') }}" class="space-y-6 flex-1 flex flex-col justify-center" @submit="loading = true">
+                        @csrf
+                        <div class="space-y-4 flex-1">
+                            <div class="relative group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-500 dark:to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                        </svg>
+                                    </span>
+                                    <input id="email" name="email" type="email" required autofocus autocomplete="username" aria-label="Correo electrónico"
+                                           placeholder="Correo electrónico" 
+                                           class="w-full pl-12 pr-4 py-3 bg-white/90 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500 transition-all duration-200 shadow-sm focus:shadow-lg"
+                                           x-model="email" x-ref="emailInput" :class="highlight ? 'border-blue-500' : ''" @animationend="highlight = false" @focus="error = ''">
+                                </div>
+                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                            </div>
+
+                            <div class="relative group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-500 dark:to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </span>
+                                    <input :type="showPassword ? 'text' : 'password'" id="password" name="password" required 
+                                           autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña"
+                                           class="w-full pl-12 pr-12 py-3 bg-white/90 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500 transition-all duration-200 shadow-sm focus:shadow-lg"
+                                           x-ref="passwordInput" x-model="password" :class="highlight ? 'border-blue-500' : ''" @animationend="highlight = false" @focus="error = ''">
+                                    <button type="button" @click="showPassword = !showPassword" 
+                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-400 transition-colors">
+                                        <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-6">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="remember" class="rounded border-gray-400 dark:border-gray-600 text-blue-500 shadow-sm focus:ring-blue-500 bg-white/80 dark:bg-white/5">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-400">Recordarme</span>
+                            </label>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            @endif
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center mt-6"
+                                :disabled="loading">
+                            <svg x-show="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>INGRESAR</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+                class="p-2 rounded-full bg-white/10 hover:bg-white/20 text-gray-700 dark:text-white shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110">
+            <template x-if="!darkMode">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                 </svg>
-                <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            </template>
+            <template x-if="darkMode">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
-            </button>
-        </div>
-
-        <div class="w-full max-w-6xl min-h-[700px] bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl shadow-blue-100/40 flex flex-col md:flex-row overflow-hidden transition-all duration-300 animate-fade-in-up relative">
-            <!-- Glassmorphism effect -->
-            <div class="absolute inset-0 bg-gradient-to-br from-white/50 to-white/30 dark:from-gray-800/50 dark:to-gray-800/30 backdrop-blur-sm"></div>
-            
-            <!-- Left: Branding & Welcome -->
-            <div class="md:w-1/2 bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-900 dark:to-blue-700 p-16 flex flex-col justify-center items-center text-white relative overflow-hidden">
-                <!-- Animated background pattern -->
-                <div class="absolute inset-0 opacity-10">
-                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent animate-pulse"></div>
-                </div>
-                
-                <div class="flex flex-col items-center animate-fade-in relative z-10">
-                    <div class="relative">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="TSGroup Logo" 
-                             class="w-24 h-24 mb-8 animate-float">
-                        <div class="absolute -inset-4 bg-blue-400/20 rounded-full blur-xl animate-pulse"></div>
-                    </div>
-                    <h1 class="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">Bienvenido a TSGroup</h1>
-                    <p class="mb-8 text-lg text-center text-blue-50">Gestiona tu talento de forma simple y profesional</p>
-                    
-                    <!-- Modern SVG Illustration -->
-                    <div class="relative w-[220px] h-[150px]">
-                        <svg width="220" height="150" viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-float-slow">
-                            <rect x="20" y="60" width="140" height="40" rx="8" fill="#2563eb" class="animate-pulse"/>
-                            <rect x="60" y="30" width="60" height="40" rx="8" fill="#fff"/>
-                            <circle cx="90" cy="50" r="12" fill="#2563eb" class="animate-bounce"/>
-                            <rect x="80" y="70" width="20" height="30" rx="5" fill="#fff"/>
-                        </svg>
-                        <div class="absolute inset-0 bg-blue-400/20 rounded-full blur-xl animate-pulse"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Login Form -->
-            <div class="md:w-1/2 p-16 flex flex-col justify-center relative z-10">
-                <h2 class="text-3xl font-bold text-blue-700 dark:text-blue-400 mb-4 flex items-center gap-2">
-                    <svg class="w-7 h-7 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 0v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
-                    </svg>
-                    Inicia sesión
-                </h2>
-                <p class="text-gray-500 dark:text-gray-300 mb-8">Accede a tu cuenta corporativa</p>
-
-                <!-- Session Status -->
-                <x-auth-session-status class="mb-4" :status="session('status')" />
-
-                <form method="POST" action="{{ route('login') }}" class="space-y-6" @submit="loading = true">
-                    @csrf
-                    <!-- Email -->
-                    <div class="relative group">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 transition-colors duration-200 group-focus-within:text-blue-600 z-10 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="4" width="20" height="16" rx="4"/>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                        </span>
-                        <input id="email" name="email" type="email" required autofocus autocomplete="username" 
-                               placeholder="Correo electrónico" 
-                               class="pl-12 pr-4 py-3 w-full border rounded-xl bg-white/80 dark:bg-gray-700/80 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all duration-200 text-base shadow-sm group-hover:shadow-md" 
-                               x-model="email"
-                               @invalid="shake = true; setTimeout(() => shake = false, 500)">
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
-
-                    <!-- Password -->
-                    <div class="relative group">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 transition-colors duration-200 group-focus-within:text-blue-600 z-10 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                            </svg>
-                        </span>
-                        <input :type="showPassword ? 'text' : 'password'" id="password" name="password" required 
-                               autocomplete="current-password" placeholder="Contraseña" 
-                               class="pl-12 pr-12 py-3 w-full border rounded-xl bg-white/80 dark:bg-gray-700/80 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all duration-200 text-base shadow-sm group-hover:shadow-md" 
-                               x-model="password" x-ref="passwordInput"
-                               @invalid="shake = true; setTimeout(() => shake = false, 500)">
-                        <button type="button" @click="showPassword = !showPassword" tabindex="-1" 
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none transition-colors duration-200 z-10" 
-                                :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-                            <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                            </svg>
-                        </button>
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-
-                    <!-- Remember Me -->
-                    <div class="flex items-center">
-                        <input id="remember_me" type="checkbox" 
-                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 transition-colors duration-200" 
-                               name="remember">
-                        <label for="remember_me" class="ml-2 text-sm text-gray-600 dark:text-gray-300">Recordarme</label>
-                    </div>
-
-                    <button type="submit" 
-                            class="w-full py-3 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-xl shadow-md transition-all duration-300 active:scale-95 flex items-center justify-center disabled:opacity-60 hover:shadow-lg" 
-                            :disabled="loading">
-                        <svg x-show="loading" class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                        </svg>
-                        <span>INGRESAR</span>
-                    </button>
-
-                    <div class="flex justify-between items-center mt-2">
-                        @if (Route::has('password.request'))
-                            <a class="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-300 dark:hover:text-blue-400 transition-colors duration-200" 
-                               href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
-                        @endif
-                    </div>
-                </form>
-
-                <!-- Demo users -->
-                <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-                    @foreach($demoUsers as $user)
-                        <div class="flex items-center bg-white/50 dark:bg-blue-900/50 backdrop-blur-sm rounded-xl px-4 py-3 shadow-sm gap-3 hover:shadow-lg transition-all duration-300 cursor-pointer w-full transform hover:-translate-y-1" 
-                             @mouseover="hoveredUser = '{{ $user['role'] }}'" 
-                             @mouseleave="hoveredUser = null"
-                             @click="email = '{{ $user['email'] }}'; $nextTick(() => { $refs.passwordInput.focus(); })">
-                            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-lg transition-transform duration-300"
-                                  :class="{ 'scale-110': hoveredUser === '{{ $user['role'] }}' }">
-                                {{ $user['icon'] }}
-                            </span>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-semibold text-blue-700 dark:text-blue-200 text-base truncate transition-colors duration-200"
-                                     :class="{ 'text-blue-600 dark:text-blue-100': hoveredUser === '{{ $user['role'] }}' }">
-                                    {{ $user['role'] }}
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-300 truncate">{{ $user['email'] }}</div>
-                            </div>
-                            <button type="button" 
-                                    class="ml-2 px-3 py-1 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded shadow transition-all duration-300 flex items-center gap-1 transform hover:scale-105" 
-                                    @click.stop="email = '{{ $user['email'] }}'; password = 'password'; $nextTick(() => { $refs.passwordInput.focus(); })">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 17l-4 4m0 0l-4-4m4 4V3"/>
-                                </svg>
-                                Usar
-                            </button>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="text-center text-gray-400 dark:text-gray-500 text-xs mt-10">© 2025 TSGroup. Todos los derechos reservados.</div>
-            </div>
-        </div>
-
-        <!-- Add particles.js -->
-        <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                particlesJS('particles-container', {
-                    particles: {
-                        number: { value: 80, density: { enable: true, value_area: 800 } },
-                        color: { value: '#3b82f6' },
-                        shape: { type: 'circle' },
-                        opacity: { value: 0.5, random: true },
-                        size: { value: 3, random: true },
-                        line_linked: {
-                            enable: true,
-                            distance: 150,
-                            color: '#3b82f6',
-                            opacity: 0.2,
-                            width: 1
-                        },
-                        move: {
-                            enable: true,
-                            speed: 2,
-                            direction: 'none',
-                            random: true,
-                            straight: false,
-                            out_mode: 'out',
-                            bounce: false
-                        }
-                    },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: {
-                            onhover: { enable: true, mode: 'grab' },
-                            onclick: { enable: true, mode: 'push' },
-                            resize: true
-                        },
-                        modes: {
-                            grab: { distance: 140, line_linked: { opacity: 0.5 } },
-                            push: { particles_nb: 4 }
-                        }
-                    },
-                    retina_detect: true
-                });
-            });
-        </script>
-        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+            </template>
+        </button>
     </div>
 @endsection
 
@@ -248,35 +172,54 @@
     50% { transform: translateY(-10px); }
 }
 
-@keyframes float-slow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 .animate-float {
     animation: float 3s ease-in-out infinite;
 }
 
-.animate-float-slow {
-    animation: float-slow 4s ease-in-out infinite;
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
 }
 
-.animate-shake {
-    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+/* Glassmorphism effects */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.particles-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0;
+/* Gradient animations */
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 </style>

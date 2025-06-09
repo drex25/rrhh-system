@@ -126,7 +126,7 @@
         </div>
     </div>
 
-    <!-- Total Payslips Card -->
+    <!-- Total Payslips Card.. -->
     <div class="rounded-xl shadow p-6 hover:shadow-lg transition-all duration-300 border transform hover:scale-105" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>

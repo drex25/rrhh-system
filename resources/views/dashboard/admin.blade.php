@@ -9,6 +9,29 @@
             <p :class="darkMode ? 'text-gray-300' : 'text-gray-600'" class="mt-1 text-sm">Bienvenido a tu panel de control</p>
         </div>
         <div class="mt-4 md:mt-0 flex items-center space-x-3">
+            <div class="relative">
+                <button @click="showDateRangePicker = !showDateRangePicker" class="inline-flex items-center px-4 py-2 bg-[#232B3E] border border-[#232B3E] rounded-lg shadow text-sm font-medium text-gray-200 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Filtrar por Fecha
+                </button>
+                <div x-show="showDateRangePicker" @click.away="showDateRangePicker = false" class="absolute right-0 mt-2 w-80 bg-white dark:bg-[#232B3E] rounded-lg shadow-lg p-4 z-50">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Desde</label>
+                            <input type="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Hasta</label>
+                            <input type="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        </div>
+                        <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Aplicar Filtro
+                        </button>
+                    </div>
+                </div>
+            </div>
             <button class="inline-flex items-center px-4 py-2 bg-[#232B3E] border border-[#232B3E] rounded-lg shadow text-sm font-medium text-gray-200 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -25,10 +48,60 @@
     </div>
 </div>
 
+<!-- Quick Actions -->
+<div class="mb-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button class="p-4 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium">Nuevo Empleado</p>
+                    <p class="text-xs opacity-75">Agregar personal</p>
+                </div>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+            </div>
+        </button>
+        <button class="p-4 rounded-lg bg-gradient-to-br from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium">Nueva Licencia</p>
+                    <p class="text-xs opacity-75">Gestionar ausencias</p>
+                </div>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </div>
+        </button>
+        <button class="p-4 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium">Generar Nómina</p>
+                    <p class="text-xs opacity-75">Procesar pagos</p>
+                </div>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+        </button>
+        <button class="p-4 rounded-lg bg-gradient-to-br from-yellow-500 to-yellow-600 text-white hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium">Reportes</p>
+                    <p class="text-xs opacity-75">Ver estadísticas</p>
+                </div>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+            </div>
+        </button>
+    </div>
+</div>
+
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Employees Card -->
-    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-all duration-300 border transform hover:scale-105" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Total Empleados</p>
@@ -54,7 +127,7 @@
     </div>
 
     <!-- Total Payslips Card -->
-    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-all duration-300 border transform hover:scale-105" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Total Recibos</p>
@@ -80,7 +153,7 @@
     </div>
 
     <!-- Pending Leave Requests Card -->
-    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-all duration-300 border transform hover:scale-105" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Licencias Pendientes</p>
@@ -106,7 +179,7 @@
     </div>
 
     <!-- Total Departments Card -->
-    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-300 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 hover:shadow-lg transition-all duration-300 border transform hover:scale-105" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-gray-400">Departamentos</p>
@@ -135,10 +208,15 @@
 <!-- Charts Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Employees by Department Chart -->
-    <div class="rounded-xl shadow p-6 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 border hover:shadow-lg transition-all duration-300" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-white">Empleados por Departamento</h3>
             <div class="flex items-center space-x-2">
+                <select class="text-sm rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                    <option>Último mes</option>
+                    <option>Últimos 3 meses</option>
+                    <option>Último año</option>
+                </select>
                 <button class="p-2 text-gray-400 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -152,10 +230,15 @@
     </div>
 
     <!-- Leave Requests by Month Chart -->
-    <div class="rounded-xl shadow p-6 border" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+    <div class="rounded-xl shadow p-6 border hover:shadow-lg transition-all duration-300" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-white">Licencias por Mes</h3>
             <div class="flex items-center space-x-2">
+                <select class="text-sm rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                    <option>Último mes</option>
+                    <option>Últimos 3 meses</option>
+                    <option>Último año</option>
+                </select>
                 <button class="p-2 text-gray-400 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -170,16 +253,24 @@
 </div>
 
 <!-- Recent Activity Section -->
-<div class="rounded-xl shadow p-6 border mb-8" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
+<div class="rounded-xl shadow p-6 border mb-8 hover:shadow-lg transition-all duration-300" :class="darkMode ? 'bg-[#232B3E] border-[#232B3E]' : 'bg-white border-gray-200'">
     <div class="flex items-center justify-between mb-6">
         <h3 :class="darkMode ? 'text-white' : 'text-blue-900'" class="text-lg font-semibold">Actividad Reciente</h3>
-        <button class="text-sm text-blue-400 hover:text-blue-300">
-            Ver todo
-        </button>
+        <div class="flex items-center space-x-4">
+            <select class="text-sm rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                <option>Todas las actividades</option>
+                <option>Empleados</option>
+                <option>Licencias</option>
+                <option>Nóminas</option>
+            </select>
+            <button class="text-sm text-blue-400 hover:text-blue-300">
+                Ver todo
+            </button>
+        </div>
     </div>
     <div class="space-y-4">
         <!-- Activity Items -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <div class="flex-shrink-0">
                 <div class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +291,7 @@
             </div>
         </div>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <div class="flex-shrink-0">
                 <div class="w-10 h-10 rounded-full bg-green-800 flex items-center justify-center">
                     <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +312,7 @@
             </div>
         </div>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <div class="flex-shrink-0">
                 <div class="w-10 h-10 rounded-full bg-purple-800 flex items-center justify-center">
                     <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,6 +383,16 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
+                    tooltip: {
+                        backgroundColor: colors.bg,
+                        titleColor: colors.text,
+                        bodyColor: colors.text,
+                        borderColor: colors.grid,
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                    }
                 },
                 scales: {
                     x: {
@@ -302,6 +403,10 @@
                         grid: { color: colors.grid },
                         ticks: { color: colors.text }
                     }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
@@ -343,7 +448,21 @@
                                 size: 12
                             }
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: colors.bg,
+                        titleColor: colors.text,
+                        bodyColor: colors.text,
+                        borderColor: colors.grid,
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
                     }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
                 }
             }
         });

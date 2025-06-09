@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -37,24 +40,14 @@
     @endif
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-20">
                 <div class="flex">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
-                        <a href="{{ route('public.job-postings.index') }}" class="flex items-center">
-                            <img src="{{ asset('images/tsg.png') }}" alt="TS Group Logo" class="h-10 w-auto">
-                        </a>
-                    </div>
-
-                    <!-- Navigation Links -->
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('public.job-postings.index') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }} text-sm font-medium leading-5 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
-                            Inicio
-                        </a>
-                        <a href="{{ route('public.job-postings.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('public.job-postings.show') ? 'border-blue-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }} text-sm font-medium leading-5 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
-                            Empleos
+                        <a href="{{ route('landing.index') }}" class="flex items-center">
+                            <img src="{{ asset('images/tsg.png') }}" alt="TS Group Logo" class="h-12 w-auto">
                         </a>
                     </div>
                 </div>
@@ -95,17 +88,15 @@
                     @else
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('login') }}" 
-                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                               class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                 <i class="fas fa-sign-in-alt mr-2"></i>
-                                Iniciar sesión
+                                Acceder al Sistema
                             </a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" 
-                                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                                    <i class="fas fa-user-plus mr-2"></i>
-                                    Registrarse
-                                </a>
-                            @endif
+                            <a href="#contact" 
+                               class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <i class="fas fa-headset mr-2"></i>
+                                Soporte
+                            </a>
                         </div>
                     @endauth
                 </div>
@@ -114,37 +105,48 @@
     </nav>
 
     <!-- Page Content -->
-    <main class="min-h-screen pt-16">
+    <main class="@yield('main-classes', 'min-h-screen pt-20')">
         @yield('content')
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <!-- Company Info -->
                 <div class="space-y-4">
                     <div class="flex items-center">
-                        <img src="{{ asset('images/tsg.png') }}" alt="TS Group Logo" class="h-8 w-auto mr-2">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white"></h3>
+                        <img src="{{ asset('images/tsg.png') }}" alt="TS Group Logo" class="h-10 w-auto mr-3">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">TS Group</h3>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400">
                         Soluciones integrales para el desarrollo de tu carrera profesional.
                     </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Quick Links -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Enlaces Rápidos</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <li>
-                            <a href="{{ route('public.job-postings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                Inicio
+                            <a href="{{ route('public.job-postings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-150">
+                                <i class="fas fa-home mr-2"></i>Inicio
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('public.job-postings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                Empleos
+                            <a href="{{ route('public.job-postings.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-150">
+                                <i class="fas fa-briefcase mr-2"></i>Empleos
                             </a>
                         </li>
                     </ul>
@@ -153,25 +155,38 @@
                 <!-- Contact Info -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Contacto</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class="fas fa-envelope mr-2"></i>
+                            <i class="fas fa-envelope mr-3 text-blue-600"></i>
                             <span>contacto@tsgroup.com.ar</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class="fas fa-phone mr-2"></i>
+                            <i class="fas fa-phone mr-3 text-blue-600"></i>
                             <span>+123 456 7890</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-center text-gray-600 dark:text-gray-400">
                     &copy; {{ date('Y') }} TSGroup. Todos los derechos reservados.
                 </p>
             </div>
         </div>
     </footer>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                mirror: false
+            });
+        });
+    </script>
 </body>
 </html> 

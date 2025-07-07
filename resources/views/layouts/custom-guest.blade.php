@@ -18,6 +18,14 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <script>
+        // Prevent flash of wrong theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 <body class="antialiased min-h-screen bg-gray-100 dark:bg-gray-900">
     @yield('content')

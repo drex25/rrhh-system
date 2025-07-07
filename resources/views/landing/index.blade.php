@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Transforma la Gestión de RRHH')
+@section('title', 'Soluciones Integrales de RRHH')
 
 @push('styles')
 <style>
@@ -8,16 +8,7 @@
         max-width: 100vw;
         overflow-x: hidden;
     }
-    body, main {
-        background: none !important;
-        padding-top: 0 !important;
-        max-width: 100vw;
-        overflow-x: hidden;
-    }
-    .hero-gradient, .hero-pattern, .hero-particles, .custom-shape-divider {
-        max-width: 100vw;
-        overflow-x: hidden;
-    }
+    
     .container {
         max-width: 1200px;
         margin-left: auto;
@@ -27,310 +18,97 @@
         padding-right: 1rem;
         box-sizing: border-box;
     }
-    @media (max-width: 1024px) {
-        .hero-image {
-            max-width: 350px;
-        }
-        .container {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
-    }
-    @media (max-width: 768px) {
-        .hero-image {
-            display: none !important;
-        }
-        .container {
-            padding-left: 0.25rem;
-            padding-right: 0.25rem;
-        }
-        .hero-gradient, .hero-pattern, .hero-particles, .custom-shape-divider {
-            min-width: 100vw;
-        }
-    }
 
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
+    /* Modern animations and effects */
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+    .animate-slide-up { animation: slideUp 0.8s ease-out forwards; }
+    .animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
+    .animate-scale { animation: scale 0.5s ease-out forwards; }
+    .animate-pulse { animation: pulse 2s infinite; }
+    
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes scale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    
+    /* Modern design elements */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
     }
-
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-        100% { transform: translateY(0px); }
-    }
-
+    
     .gradient-text {
-        background: linear-gradient(45deg, #3B82F6, #8B5CF6);
+        background: linear-gradient(90deg, #3B82F6, #8B5CF6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-
-    .hover-scale {
+    
+    .gradient-bg {
+        background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    }
+    
+    .feature-card {
         transition: all 0.3s ease;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
-
-    .hover-scale:hover {
-        transform: scale(1.05);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
-
-    .glass-effect {
+    
+    .btn-primary {
+        background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    .feature-card {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
     }
-
-    .feature-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transform: translateX(-100%);
-        transition: 0.5s;
+    
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .hero-image { max-width: 400px; }
     }
-
-    .feature-card:hover::before {
-        transform: translateX(100%);
+    
+    @media (max-width: 768px) {
+        .hero-image { max-width: 300px; }
+        .hero-heading { font-size: 2.5rem; }
     }
-
-    .feature-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .stats-card {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .stats-card::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: linear-gradient(90deg, #3B82F6, #8B5CF6);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.5s ease;
-    }
-
-    .stats-card:hover::after {
-        transform: scaleX(1);
-    }
-
-    .stats-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .scroll-reveal {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .scroll-reveal.active {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .scroll-reveal-left {
-        opacity: 0;
-        transform: translateX(-50px);
-        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .scroll-reveal-left.active {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .scroll-reveal-right {
-        opacity: 0;
-        transform: translateX(50px);
-        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .scroll-reveal-right.active {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .custom-shape-divider {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        overflow: hidden;
-        line-height: 0;
-    }
-
-    .custom-shape-divider svg {
-        position: relative;
-        display: block;
-        width: calc(100% + 1.3px);
-        height: 150px;
-    }
-
-    .custom-shape-divider .shape-fill {
-        fill: #FFFFFF;
-    }
-
-    .benefit-card {
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .benefit-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .parallax-bg {
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
-    .text-gradient {
-        background: linear-gradient(45deg, #3B82F6, #8B5CF6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .animate-pulse-slow {
-        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: .5;
-        }
-    }
-
-    .animate-bounce-slow {
-        animation: bounce 3s infinite;
-    }
-
-    @keyframes bounce {
-        0%, 100% {
-            transform: translateY(-5%);
-            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-        }
-        50% {
-            transform: translateY(0);
-            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-        }
-    }
-
-    .hero-particles {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    .particle {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 50%;
-        animation: particle-float 15s infinite linear;
-    }
-
-    @keyframes particle-float {
-        0% {
-            transform: translateY(0) translateX(0);
-            opacity: 0;
-        }
-        50% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-100vh) translateX(100px);
-            opacity: 0;
-        }
-    }
-
-    .glow {
-        position: relative;
-    }
-
-    .glow::after {
-        content: '';
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(45deg, #3B82F6, #8B5CF6, #3B82F6);
-        border-radius: inherit;
-        z-index: -1;
-        animation: glow-animation 3s linear infinite;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .glow:hover::after {
-        opacity: 1;
-    }
-
-    @keyframes glow-animation {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-    .hero-gradient {
-        background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
-    }
-
-    .hero-pattern {
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .floating {
-        animation: floating 3s ease-in-out infinite;
-    }
-
-    @keyframes floating {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-        100% { transform: translateY(0px); }
-    }
-
-    .hero-image {
-        animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(2deg); }
-        100% { transform: translateY(0px) rotate(0deg); }
+    
+    @media (max-width: 640px) {
+        .hero-image { display: none; }
+        .hero-heading { font-size: 2rem; }
     }
 </style>
 @endpush
@@ -338,186 +116,357 @@
 @section('main-classes', 'p-0 m-0 min-h-screen')
 
 @section('content')
-<!-- HERO RRHH INTEGRAL -->
-<section class="relative hero-gradient hero-pattern min-h-screen flex items-center pt-0 overflow-hidden">
-    <div class="hero-particles">
-        @for ($i = 0; $i < 50; $i++)
-            <div class="particle" style="
-                left: {{ rand(0, 100) }}%;
-                top: {{ rand(0, 100) }}%;
-                animation-delay: {{ rand(0, 15) }}s;
-                animation-duration: {{ rand(10, 20) }}s;
-            "></div>
-        @endfor
-    </div>
-    <div class="absolute inset-0">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-indigo-900/50"></div>
+<!-- Hero Section - Modern and Immersive -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full">
-            <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-            <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: -2s"></div>
-            <div class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: -4s"></div>
+            <!-- Animated gradient blobs -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 animate-float"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 animate-float" style="animation-delay: -3s"></div>
+            <div class="absolute top-1/2 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-float" style="animation-delay: -5s"></div>
         </div>
+        
+        <!-- Grid pattern overlay -->
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg2MHY2MEgweiIvPjwvZz48L2c+PC9zdmc+')] bg-[30px_30px]"></div>
     </div>
-    <div class="container mx-auto px-4 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="text-center lg:text-left">
-                <div class="inline-block px-6 py-3 rounded-full glass-effect mb-8" data-aos="fade-up">
-                    <span class="text-white/90 text-sm font-medium">Sistema Integral de RRHH</span>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <!-- Left content -->
+            <div class="w-full lg:w-1/2 text-center lg:text-left">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6 animate-fade-in">
+                    <span class="w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                    <span class="text-white/90 text-sm font-medium">Plataforma Integral de RRHH</span>
                 </div>
-                <h1 class="text-5xl md:text-7xl font-extrabold mb-8 text-white drop-shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                    Transforma tu <span class="gradient-text">Gestión de RRHH</span>
+                
+                <h1 class="hero-heading text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-white leading-tight animate-slide-up" style="animation-delay: 0.2s">
+                    Potencia tu <span class="gradient-text">Capital Humano</span>
                 </h1>
-                <p class="text-2xl mb-12 text-white/90 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
-                    Un sistema integral que revoluciona la gestión de recursos humanos,
-                    automatizando procesos y potenciando el talento de tu organización.
+                
+                <p class="text-xl text-white/80 leading-relaxed mb-10 max-w-2xl animate-slide-up" style="animation-delay: 0.4s">
+                    Transforma la gestión de talento con nuestra plataforma integral. Automatiza procesos, 
+                    mejora la experiencia de tus colaboradores y toma decisiones basadas en datos.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center" data-aos="fade-up" data-aos-delay="300">
-                    <a href="{{ route('login') }}" class="glow inline-block bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 px-12 py-4 rounded-full font-bold text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                        <i class="fas fa-play-circle mr-2"></i>Ver demo
+                
+                <div class="flex flex-col sm:flex-row gap-4 animate-slide-up" style="animation-delay: 0.6s">
+                    <a href="{{ route('login') }}" class="btn-primary">
+                        <span class="flex items-center justify-center">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Comenzar ahora
+                        </span>
                     </a>
-                    <a href="#contact" class="glow inline-block glass-effect text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                        <i class="fas fa-calendar-check mr-2"></i>Solicitar demo
+                    <a href="#contact" class="btn-secondary">
+                        <span class="flex items-center justify-center">
+                            <i class="fas fa-headset mr-2"></i>
+                            Solicitar demo
+                        </span>
                     </a>
                 </div>
+                
+                <!-- Trust indicators -->
+                <div class="mt-12 grid grid-cols-3 gap-4 animate-slide-up" style="animation-delay: 0.8s">
+                    <div class="flex flex-col items-center lg:items-start">
+                        <div class="text-4xl font-bold text-white mb-1">98%</div>
+                        <div class="text-sm text-white/70">Satisfacción</div>
+                    </div>
+                    <div class="flex flex-col items-center lg:items-start">
+                        <div class="text-4xl font-bold text-white mb-1">500+</div>
+                        <div class="text-sm text-white/70">Empresas</div>
+                    </div>
+                    <div class="flex flex-col items-center lg:items-start">
+                        <div class="text-4xl font-bold text-white mb-1">24/7</div>
+                        <div class="text-sm text-white/70">Soporte</div>
+                    </div>
+                </div>
             </div>
-            <div class="hidden lg:block" data-aos="fade-left" data-aos-delay="400">
-                <img src="{{ asset('images/rrhh.svg') }}" alt="HR Management" class="hero-image w-full max-w-lg mx-auto">
+            
+            <!-- Right content - Hero image -->
+            <div class="w-full lg:w-1/2 flex justify-center lg:justify-end animate-slide-in-right">
+                <img src="https://cdn.pixabay.com/photo/2022/05/08/03/10/dashboard-7181959_1280.png" alt="HR Dashboard" class="hero-image w-full max-w-xl rounded-2xl shadow-2xl border border-white/10">
             </div>
         </div>
     </div>
-    <div class="custom-shape-divider">
-        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+    
+    <!-- Wave divider -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-[100px] text-white">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
         </svg>
     </div>
 </section>
 
-<!-- ESTADÍSTICAS -->
+<!-- Features Section - Modern Card Layout -->
 <section class="py-24 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="stats-card text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-up">
-                <div class="text-5xl font-bold text-blue-600 mb-3">98%</div>
-                <div class="text-gray-600 font-medium">Satisfacción de usuarios</div>
-            </div>
-            <div class="stats-card text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
-                <div class="text-5xl font-bold text-blue-600 mb-3">+500</div>
-                <div class="text-gray-600 font-medium">Empresas activas</div>
-            </div>
-            <div class="stats-card text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
-                <div class="text-5xl font-bold text-blue-600 mb-3">50k+</div>
-                <div class="text-gray-600 font-medium">Empleados gestionados</div>
-            </div>
-            <div class="stats-card text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
-                <div class="text-5xl font-bold text-blue-600 mb-3">24/7</div>
-                <div class="text-gray-600 font-medium">Soporte técnico</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- MÓDULOS PRINCIPALES -->
-<section class="py-24 bg-gradient-to-br from-gray-50 to-white">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-20">
-            <span class="text-blue-600 font-semibold text-lg" data-aos="fade-up">Módulos</span>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-3" data-aos="fade-up" data-aos-delay="100">Sistema Integral de RRHH</h2>
-            <p class="text-gray-600 mt-6 max-w-2xl mx-auto text-lg" data-aos="fade-up" data-aos-delay="200">
-                Una suite completa de herramientas diseñadas para optimizar cada aspecto de la gestión de recursos humanos
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6" data-aos="fade-up">Soluciones Completas</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                Una plataforma integral diseñada para optimizar cada aspecto de la gestión de recursos humanos
             </p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            @php
-                $features = [
-                    ['icon' => 'user-plus', 'title' => 'Reclutamiento', 'color' => 'blue', 'description' => 'Publica vacantes, gestiona candidatos y automatiza el proceso de selección.'],
-                    ['icon' => 'folder-open', 'title' => 'Legajos', 'color' => 'green', 'description' => 'Centraliza la información y documentación de cada empleado.'],
-                    ['icon' => 'calendar-check', 'title' => 'Asistencias', 'color' => 'yellow', 'description' => 'Registra y controla la asistencia y puntualidad del personal.'],
-                    ['icon' => 'plane-departure', 'title' => 'Licencias', 'color' => 'pink', 'description' => 'Gestiona vacaciones, ausencias y permisos de manera eficiente.'],
-                    ['icon' => 'star', 'title' => 'Evaluaciones', 'color' => 'indigo', 'description' => 'Evalúa el desempeño y planifica el desarrollo de tu equipo.'],
-                    ['icon' => 'chalkboard-teacher', 'title' => 'Capacitación', 'color' => 'teal', 'description' => 'Organiza y registra cursos, capacitaciones y formaciones.'],
-                    ['icon' => 'file-alt', 'title' => 'Documentos', 'color' => 'orange', 'description' => 'Gestiona contratos, recibos y toda la documentación laboral.'],
-                    ['icon' => 'chart-bar', 'title' => 'Reportes', 'color' => 'purple', 'description' => 'Obtén reportes y estadísticas en tiempo real de todos los procesos.'],
-                    ['icon' => 'money-check-alt', 'title' => 'Nómina', 'color' => 'gray', 'description' => 'Administra sueldos, liquidaciones y recibos de sueldo.'],
-                    ['icon' => 'user-circle', 'title' => 'Portal del Empleado', 'color' => 'blue', 'description' => 'Acceso para empleados a recibos, licencias y autogestión.']
-                ];
-            @endphp
-
-            @foreach($features as $index => $feature)
-                <div class="feature-card flex flex-col items-center text-center p-8 rounded-2xl shadow-lg hover:shadow-xl transition bg-{{ $feature['color'] }}-50"
-                     data-aos="fade-up"
-                     data-aos-delay="{{ $index * 100 }}">
-                    <div class="bg-{{ $feature['color'] }}-100 p-5 rounded-full mb-6">
-                        <i class="fas fa-{{ $feature['icon'] }} text-3xl text-{{ $feature['color'] }}-600"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-3">{{ $feature['title'] }}</h3>
-                    <p class="text-sm text-gray-600">{{ $feature['description'] }}</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-user-plus text-2xl text-blue-600"></i>
                 </div>
-            @endforeach
+                <h3 class="text-2xl font-bold mb-4">Reclutamiento</h3>
+                <p class="text-gray-600 mb-6">Optimiza tu proceso de selección con un sistema completo de gestión de candidatos, entrevistas y evaluaciones.</p>
+                <a href="#" class="text-blue-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-folder-open text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Legajos Digitales</h3>
+                <p class="text-gray-600 mb-6">Centraliza toda la información de tus colaboradores en un solo lugar, accesible y seguro.</p>
+                <a href="#" class="text-purple-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 rounded-2xl bg-pink-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-calendar-check text-2xl text-pink-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Gestión de Licencias</h3>
+                <p class="text-gray-600 mb-6">Administra vacaciones, ausencias y permisos de manera eficiente y transparente para todo tu equipo.</p>
+                <a href="#" class="text-pink-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-chart-line text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Evaluaciones</h3>
+                <p class="text-gray-600 mb-6">Implementa ciclos de feedback continuo y evaluaciones de desempeño para potenciar el desarrollo profesional.</p>
+                <a href="#" class="text-green-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- Feature 5 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="500">
+                <div class="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-money-check-alt text-2xl text-yellow-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Nómina</h3>
+                <p class="text-gray-600 mb-6">Automatiza el cálculo y generación de recibos de sueldo, integrando todas las variables salariales.</p>
+                <a href="#" class="text-yellow-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- Feature 6 -->
+            <div class="feature-card bg-white p-8" data-aos="fade-up" data-aos-delay="600">
+                <div class="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mb-6">
+                    <i class="fas fa-user-circle text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Portal del Empleado</h3>
+                <p class="text-gray-600 mb-6">Empodera a tus colaboradores con acceso a sus recibos, solicitudes y gestiones personales.</p>
+                <a href="#" class="text-indigo-600 font-semibold flex items-center">
+                    Conocer más <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- BENEFICIOS GLOBALES -->
+<!-- Benefits Section - With Image -->
 <section class="py-24 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-20">
-            <span class="text-blue-600 font-semibold text-lg" data-aos="fade-up">Beneficios</span>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-3" data-aos="fade-up" data-aos-delay="100">¿Por qué elegir nuestro sistema?</h2>
-            <p class="text-gray-600 mt-6 max-w-2xl mx-auto text-lg" data-aos="fade-up" data-aos-delay="200">
-                Descubre las ventajas que hacen de nuestra plataforma la mejor opción para tu empresaaaaaaaaaaaaaaaaaaaaaaa
-            </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="benefit-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-right">
-                <div class="bg-blue-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                    <i class="fas fa-rocket text-2xl text-blue-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-4">Implementación Rápida</h3>
-                <p class="text-gray-600">Configuración en tiempo récord y capacitación inmediata para tu equipo.</p>
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col lg:flex-row items-center gap-16">
+            <!-- Left side image -->
+            <div class="w-full lg:w-1/2" data-aos="fade-right">
+                <img src="https://cdn.pixabay.com/photo/2017/07/31/11/21/people-2557396_1280.jpg" alt="Team Collaboration" class="rounded-3xl shadow-2xl w-full">
             </div>
-            <div class="benefit-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-up">
-                <div class="bg-green-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                    <i class="fas fa-shield-alt text-2xl text-green-600"></i>
+            
+            <!-- Right side content -->
+            <div class="w-full lg:w-1/2" data-aos="fade-left">
+                <h2 class="text-4xl font-bold mb-8">Beneficios que <span class="gradient-text">transforman</span></h2>
+                
+                <div class="space-y-8">
+                    <!-- Benefit 1 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-tachometer-alt text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Eficiencia Operativa</h3>
+                            <p class="text-gray-600">Reduce hasta un 70% el tiempo dedicado a tareas administrativas con nuestros procesos automatizados.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefit 2 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                            <i class="fas fa-chart-pie text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Decisiones Estratégicas</h3>
+                            <p class="text-gray-600">Accede a datos en tiempo real y análisis avanzados para tomar decisiones informadas sobre tu capital humano.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefit 3 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-users text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Experiencia Mejorada</h3>
+                            <p class="text-gray-600">Ofrece a tus colaboradores una experiencia digital intuitiva que aumenta su satisfacción y compromiso.</p>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold mb-4">Seguridad Garantizada</h3>
-                <p class="text-gray-600">Protección de datos y cumplimiento de normativas de privacidad.</p>
-            </div>
-            <div class="benefit-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300" data-aos="fade-left">
-                <div class="bg-purple-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                    <i class="fas fa-headset text-2xl text-purple-600"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-4">Soporte 24/7</h3>
-                <p class="text-gray-600">Asistencia técnica permanente y resolución de incidencias inmediata.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="py-24 bg-gradient-to-br from-blue-900 via-blue-700 to-indigo-900 relative overflow-hidden">
-    <div class="hero-particles">
-        @for ($i = 0; $i < 30; $i++)
-            <div class="particle" style="
-                left: {{ rand(0, 100) }}%;
-                top: {{ rand(0, 100) }}%;
-                animation-delay: {{ rand(0, 15) }}s;
-                animation-duration: {{ rand(10, 20) }}s;
-            "></div>
-        @endfor
-    </div>
-    <div class="container mx-auto px-4 relative z-10">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-8" data-aos="fade-up">¿Listo para transformar tu gestión de RRHH?</h2>
-            <p class="text-xl text-white/90 mb-12" data-aos="fade-up" data-aos-delay="100">
-                Únete a cientos de empresas que ya están optimizando sus procesos de recursos humanos
+<!-- Testimonials Section -->
+<section class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-6" data-aos="fade-up">Lo que dicen nuestros clientes</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                Empresas de todos los tamaños confían en nuestra plataforma para transformar su gestión de RRHH
             </p>
-            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center" data-aos="fade-up" data-aos-delay="200">
-                <a href="{{ route('login') }}" class="glow inline-block bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 px-12 py-4 rounded-full font-bold text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                    <i class="fas fa-play-circle mr-2"></i>Ver demo
-                </a>
-                <a href="#contact" class="glow inline-block glass-effect text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                    <i class="fas fa-calendar-check mr-2"></i>Solicitar demo
-                </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-gray-50 p-8 rounded-3xl shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                        <span class="text-blue-600 font-bold text-xl">M</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">María Rodríguez</h4>
+                        <p class="text-sm text-gray-500">Directora de RRHH, TechCorp</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 italic">"Implementamos la plataforma hace 6 meses y ha transformado completamente nuestra gestión de personal. Los procesos son más ágiles y nuestro equipo está más satisfecho."</p>
+                <div class="mt-4 flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="bg-gray-50 p-8 rounded-3xl shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                        <span class="text-purple-600 font-bold text-xl">J</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Juan Martínez</h4>
+                        <p class="text-sm text-gray-500">CEO, Innovatech</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 italic">"La implementación fue rápida y el soporte es excepcional. Hemos reducido costos administrativos y mejorado la experiencia de nuestros colaboradores."</p>
+                <div class="mt-4 flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="bg-gray-50 p-8 rounded-3xl shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                        <span class="text-green-600 font-bold text-xl">L</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Laura Sánchez</h4>
+                        <p class="text-sm text-gray-500">Gerente de RRHH, GlobalServices</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 italic">"Los reportes y análisis nos han permitido tomar decisiones estratégicas basadas en datos reales. La plataforma es intuitiva y nuestro equipo la adoptó rápidamente."</p>
+                <div class="mt-4 flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-24 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900 relative overflow-hidden">
+    <!-- Background elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full">
+            <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 animate-float"></div>
+            <div class="absolute bottom-1/3 left-1/3 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 animate-float" style="animation-delay: -4s"></div>
+        </div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg2MHY2MEgweiIvPjwvZz48L2c+PC9zdmc+')] bg-[30px_30px]"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6" data-aos="fade-up">¿Listo para transformar tu gestión de RRHH?</h2>
+                <p class="text-xl text-white/80 mb-8" data-aos="fade-up" data-aos-delay="100">
+                    Solicita una demostración personalizada y descubre cómo podemos ayudarte
+                </p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20" data-aos="fade-up" data-aos-delay="200">
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-white/80 text-sm font-medium mb-2">Nombre completo</label>
+                        <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="Tu nombre">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-white/80 text-sm font-medium mb-2">Correo electrónico</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="tu@email.com">
+                    </div>
+                    
+                    <div>
+                        <label for="company" class="block text-white/80 text-sm font-medium mb-2">Empresa</label>
+                        <input type="text" id="company" name="company" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="Nombre de tu empresa">
+                    </div>
+                    
+                    <div>
+                        <label for="phone" class="block text-white/80 text-sm font-medium mb-2">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="Tu número de contacto">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="message" class="block text-white/80 text-sm font-medium mb-2">Mensaje</label>
+                        <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="¿Cómo podemos ayudarte?"></textarea>
+                    </div>
+                    
+                    <div class="md:col-span-2 flex justify-center">
+                        <button type="submit" class="btn-primary w-full md:w-auto">
+                            <span class="flex items-center justify-center">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Solicitar demostración
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -525,38 +474,42 @@
 
 @push('scripts')
 <script>
-    // Animación de números
-    const animateValue = (element, start, end, duration) => {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const value = Math.floor(progress * (end - start) + start);
-            element.textContent = value + (element.textContent.includes('+') ? '+' : '%');
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    };
-
-    // Iniciar animación de números cuando los elementos son visibles
-    const numberObserver = new IntersectionObserver((entries) => {
+// Counter animation
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.text-4xl.font-bold');
+    
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const element = entry.target;
-                const value = parseInt(element.textContent);
-                animateValue(element, 0, value, 2000);
-                numberObserver.unobserve(element);
+                const target = entry.target;
+                const countTo = parseInt(target.innerText.replace(/\D/g, ''));
+                let count = 0;
+                const interval = setInterval(() => {
+                    count += Math.ceil(countTo / 30);
+                    if (count >= countTo) {
+                        target.innerText = target.innerText.includes('+') ? 
+                            countTo + '+' : 
+                            target.innerText.includes('%') ? 
+                                countTo + '%' : 
+                                countTo;
+                        clearInterval(interval);
+                    } else {
+                        target.innerText = target.innerText.includes('+') ? 
+                            count + '+' : 
+                            target.innerText.includes('%') ? 
+                                count + '%' : 
+                                count;
+                    }
+                }, 30);
+                observer.unobserve(target);
             }
         });
-    }, {
-        threshold: 0.5
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => {
+        observer.observe(counter);
     });
-
-    document.querySelectorAll('.stats-card .text-5xl').forEach((element) => {
-        numberObserver.observe(element);
-    });
+});
 </script>
 @endpush
 @endsection

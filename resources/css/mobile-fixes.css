@@ -1,0 +1,327 @@
+/* Global overflow prevention and mobile optimization */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Container improvements */
+.container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 640px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* Grid responsive improvements */
+.grid {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.grid > * {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Section spacing improvements */
+section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+    section {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* Image responsiveness */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Text wrapping */
+h1, h2, h3, h4, h5, h6, p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 767px) {
+    .mobile-menu-hidden {
+        display: none;
+    }
+    
+    .mobile-nav-button {
+        padding: 0.5rem;
+    }
+}
+
+/* Animation improvements for mobile */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+    .hover\:scale-105:hover {
+        transform: none;
+    }
+    
+    .hover\:shadow-xl:hover {
+        box-shadow: inherit;
+    }
+}
+
+/* Scroll improvements */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Component specific fixes */
+.hero-section {
+    overflow-x: hidden;
+}
+
+.features-grid,
+.pricing-section,
+.testimonials-section,
+.integrations-section,
+.success-stories-section {
+    overflow-x: hidden;
+}
+
+/* Large text improvements */
+@media (max-width: 640px) {
+    .text-5xl {
+        font-size: 2.5rem;
+        line-height: 1.1;
+    }
+    
+    .text-6xl {
+        font-size: 3rem;
+        line-height: 1.1;
+    }
+    
+    .text-7xl {
+        font-size: 3.5rem;
+        line-height: 1.1;
+    }
+}
+
+/* Card grid improvements */
+@media (max-width: 640px) {
+    .grid-cols-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Button improvements */
+@media (max-width: 640px) {
+    .flex-col.sm\:flex-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .inline-flex {
+        justify-content: center;
+        text-align: center;
+        min-width: 100%;
+    }
+}
+
+/* Backdrop and floating elements */
+.backdrop-blur-xl,
+.backdrop-blur-md,
+.backdrop-blur-sm {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* Ensure no horizontal scroll on animated elements */
+.animate-pulse,
+.animate-fade-in {
+    will-change: auto;
+}
+
+/* Navigation improvements */
+.nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: auto;
+    min-width: 200px;
+    max-width: 300px;
+}
+
+/* Mega menu specific styles */
+.mega-menu-dropdown {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+}
+
+/* Center mega menu relative to viewport from button position */
+.mega-menu-dropdown > div {
+    transform: translateX(calc(-50vw + 50%)) !important;
+}
+
+/* Fix navigation items wrapping */
+nav .hidden.md\\:flex {
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+    min-width: 0 !important;
+}
+
+nav .hidden.md\\:flex > * {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Ensure dropdown doesn't affect parent layout */
+nav .relative.group {
+    position: relative !important;
+}
+
+nav .relative.group > div[class*="absolute"] {
+    position: absolute !important;
+    top: 100% !important;
+    z-index: 9999 !important;
+    left: 0 !important;
+}
+
+/* Better responsive handling */
+@media (max-width: 1536px) {
+    .mega-menu-dropdown > div {
+        max-width: 60rem !important;
+    }
+}
+
+@media (max-width: 1280px) {
+    .mega-menu-dropdown > div {
+        max-width: 56rem !important;
+        transform: translateX(calc(-45vw + 50%)) !important;
+    }
+    
+    nav .hidden.md\\:flex {
+        margin-left: 1rem !important;
+    }
+    
+    nav .hidden.md\\:flex > * {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .mega-menu-dropdown > div {
+        max-width: 95vw !important;
+        transform: translateX(calc(-40vw + 50%)) !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .nav-dropdown {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+    }
+    
+    .mega-menu-dropdown {
+        display: none !important;
+    }
+}
+
+/* Form improvements */
+@media (max-width: 640px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+/* Rounded elements on small screens */
+@media (max-width: 640px) {
+    .rounded-3xl {
+        border-radius: 1.5rem;
+    }
+    
+    .rounded-2xl {
+        border-radius: 1rem;
+    }
+}
+
+/* Prevent layout shift */
+.prevent-layout-shift {
+    contain: layout style paint;
+}
+
+/* Safe area adjustments for notched devices */
+@supports (padding: max(0px)) {
+    .safe-top {
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
+    
+    .safe-bottom {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+    
+    .safe-left {
+        padding-left: max(1rem, env(safe-area-inset-left));
+    }
+    
+    .safe-right {
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+}

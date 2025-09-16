@@ -1,30 +1,18 @@
 @extends('layouts.custom-guest')
 
 @section('content')
-    <div class="min-h-screen w-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-        <!-- Main Container -->
-        <div class="w-full max-w-6xl flex flex-col md:flex-row gap-8 items-stretch" x-data="{ showPassword: false, loading: false, email: '', password: '', highlight: false }">
-            <!-- Left Panel: Welcome & Demo Users -->
-            <div class="w-full md:w-1/2 flex flex-col gap-8">
-                <!-- Welcome Section -->
-                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 dark:border-white/20 shadow-2xl flex-1 flex flex-col">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo" class="w-10 h-10">
-                        </div>
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">TSGroup</h1>
-                            <p class="text-blue-700 dark:text-blue-200">Sistema de Gestión</p>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-center">
-                        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">¡Bienvenido!</h2>
-                        <p class="text-gray-700 dark:text-gray-300 text-lg">Gestiona tu talento de forma simple, profesional y moderna.</p>
-                    </div>
+    @php
+        $demoUsers = [
+            ['role' => 'Admin', 'email' => 'admin@company.com', 'icon' => '👑', 'color' => 'from-purple-500 to-pink-500'],
+            ['role' => 'HR', 'email' => 'hr@company.com', 'icon' => '👥', 'color' => 'from-blue-500 to-cyan-500'],
+            ['role' => 'Manager', 'email' => 'manager@company.com', 'icon' => '📊', 'color' => 'from-green-500 to-emerald-500'],
+            ['role' => 'Employee', 'email' => 'employee@company.com', 'icon' => '👤', 'color' => 'from-orange-500 to-yellow-500'],
+        ];
+    @endphp
 
     <div class="min-h-screen w-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
         <!-- Main Container -->
-        <div class="w-full max-w-6xl flex flex-col md:flex-row gap-8 items-stretch" x-data="{ showPassword: false, loading: false, email: '', password: '', highlight: false }">
+        <div class="w-full max-w-6xl flex flex-col md:flex-row gap-8 items-stretch" x-data="{ showPassword: false, loading: false, email: '', password: '', highlight: false, darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
             <!-- Left Panel: Welcome & Demo Users -->
             <div class="w-full md:w-1/2 flex flex-col gap-8">
                 <!-- Welcome Section -->
@@ -44,8 +32,8 @@
                     </div>
                 </div>
 
-                <!-- Demo Users Section SIEMPRE visible y mejorada -->
-                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-blue-200 dark:border-blue-400/30 shadow-2xl flex-1 flex flex-col mt-4">
+                <!-- Demo Users Section -->
+                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-blue-200 dark:border-blue-400/30 shadow-2xl flex-1 flex flex-col">
                     <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -86,80 +74,6 @@
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Iniciar Sesión</h2>
                         <p class="text-gray-600 dark:text-gray-400 text-sm">Ingresa tus credenciales para continuar</p>
                     </div>
-
-                    <form method="POST" action="{{ route('login') }}" class="space-y-6 flex-1 flex flex-col justify-center" @submit="loading = true">
-                        @csrf
-                        <div class="space-y-4 flex-1">
-                            <div class="relative group">
-                                <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-500 dark:to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                                        </svg>
-                                    </span>
-                                    <input id="email" name="email" type="email" required autofocus autocomplete="username" aria-label="Correo electrónico"
-                                           placeholder="Correo electrónico" 
-                                           class="w-full pl-12 pr-4 py-3 bg-white/90 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500 transition-all duration-200 shadow-sm focus:shadow-lg"
-                                           x-model="email" x-ref="emailInput" :class="highlight ? 'border-blue-500' : ''" @animationend="highlight = false" @focus="error = ''">
-                                </div>
-                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                            </div>
-
-                            <div class="relative group">
-                                <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-500 dark:to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                                <div class="relative">
-
-                <!-- Demo Users Section SIEMPRE visible y mejorada -->
-                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-blue-200 dark:border-blue-400/30 shadow-2xl flex-1 flex flex-col mt-4">
-                    <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Cuentas Demo
-                    </h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Haz clic en una cuenta para autocompletar el login con usuario y contraseña demo.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-                        @php
-                            $demoUsers = [
-                                ['role' => 'Admin', 'email' => 'admin@company.com', 'icon' => '👑', 'color' => 'from-purple-500 to-pink-500'],
-                                ['role' => 'HR', 'email' => 'hr@company.com', 'icon' => '👥', 'color' => 'from-blue-500 to-cyan-500'],
-                                ['role' => 'Manager', 'email' => 'manager@company.com', 'icon' => '📊', 'color' => 'from-green-500 to-emerald-500'],
-                                ['role' => 'Employee', 'email' => 'employee@company.com', 'icon' => '👤', 'color' => 'from-orange-500 to-yellow-500'],
-                            ];
-                        @endphp
-                        @foreach($demoUsers as $user)
-                            <div class="group cursor-pointer transform transition-all duration-300 hover:scale-105"
-                                 @click="email = '{{ $user['email'] }}'; password = 'password'; highlight = true; $nextTick(() => { $refs.emailInput.focus(); })">
-                                <div class="bg-gradient-to-br {{ $user['color'] }} rounded-2xl p-4 shadow-lg h-full flex items-center gap-3">
-                                    <span class="text-3xl">{{ $user['icon'] }}</span>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="font-bold text-white text-lg truncate">{{ $user['role'] }}</div>
-                                        <div class="text-sm text-white/90 truncate select-all">{{ $user['email'] }}</div>
-                                    </div>
-                                    <button type="button" class="px-3 py-1 bg-white/30 dark:bg-white/20 hover:bg-white/40 dark:hover:bg-white/30 text-white rounded-lg text-sm transition-colors duration-200 pointer-events-none opacity-80">
-                                        Usar
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel: Login Form -->
-            <div class="w-full md:w-1/2 flex flex-col justify-center">
-                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 dark:border-white/20 shadow-2xl h-full flex flex-col justify-center">
-                    <div class="flex flex-col items-center mb-6">
-                        <div class="bg-gradient-to-br from-blue-500 to-purple-500 rounded-full p-4 shadow-lg mb-2">
-                            <!-- Ícono de login -->
-                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.67 0-8 1.337-8 4v2a1 1 0 001 1h14a1 1 0 001-1v-2c0-2.663-5.33-4-8-4z" />
-                            </svg>
-                                    </button>
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Iniciar Sesión</h2>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">Ingresa tus credenciales para continuar</p>
-                                <input type="checkbox" name="remember" class="rounded border-gray-400 dark:border-gray-600 text-blue-500 shadow-sm focus:ring-blue-500 bg-white/80 dark:bg-white/5">
 
                     <form method="POST" action="{{ route('login') }}" class="space-y-6 flex-1 flex flex-col justify-center" @submit="loading = true">
                         @csrf
@@ -250,82 +164,7 @@
             </template>
         </button>
     </div>
-
-    <!-- Dark Mode Toggle -->
-    <div class="fixed top-4 right-4 z-50">
-        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
-                class="p-2 rounded-full bg-white/10 hover:bg-white/20 text-gray-700 dark:text-white shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110">
-            <template x-if="!darkMode">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-            </template>
-            <template x-if="darkMode">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-            </template>
-        </button>
-    </div>
 @endsection
-
-<style>
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-.animate-pulse {
-    animation: pulse 2s ease-in-out infinite;
-}
-
-/* Glassmorphism effects */
-.glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Gradient animations */
-@keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 15s ease infinite;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-</style>
 
 <style>
 @keyframes float {

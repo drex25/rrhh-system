@@ -1,11 +1,62 @@
 @extends('layouts.public')
 
+@push('head')
+<!-- SaaS Meta Tags -->
+<meta name="description" content="Plataforma SaaS de RRHH: reclutamiento, nómina, desempeño, analytics y más en una sola suite. Optimiza tu gestión de talento con IA." />
+<link rel="canonical" href="{{ url('/') }}" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Gestión Integral de RRHH con IA" />
+<meta property="og:description" content="Reclutamiento, nómina, desempeño, asistencia y analytics en un solo lugar. Empieza gratis 14 días." />
+<meta property="og:url" content="{{ url('/') }}" />
+<meta property="og:image" content="{{ asset('images/og-rrhh-saas.png') }}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Suite SaaS de RRHH" />
+<meta name="twitter:description" content="Centraliza y automatiza tus procesos de recursos humanos." />
+<meta name="twitter:image" content="{{ asset('images/og-rrhh-saas.png') }}" />
+
+<!-- JSON-LD: Organization (simplified to avoid Blade parsing issues) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ addslashes(config('app.name', 'TS Group')) }}",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('images/tsg.png') }}",
+    "sameAs": [
+        "https://www.linkedin.com/company/ts-group",
+        "https://twitter.com/tsgroup"
+    ]
+}
+</script>
+<!-- JSON-LD: Product minimal (dynamic offers can re-added later after variable init) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Plataforma SaaS de RRHH",
+    "description": "Software integral para gestión de talento: reclutamiento, nómina, desempeño y analytics.",
+    "brand": {
+        "@type": "Brand",
+        "name": "{{ addslashes(config('app.name', 'TS Group')) }}"
+    }
+}
+</script>
+<!-- JSON-LD: FAQ (static minimal; dynamic map removed to prevent parse error) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage"
+}
+</script>
+@endpush
+
 @section('title', 'Plataforma SaaS de RRHH - Transforma tu Gestión de Capital Humano')
 
-@section('main-classes', 'p-0 m-0 min-h-screen')
+@section('main-classes', 'p-0 m-0 min-h-screen') {{-- Mantener, el offset lo manejamos en el panel --}}
 
 @section('content')
 @php
+use App\Models\Plan;
 // Data for all sections
 $features = [
     [
@@ -46,57 +97,29 @@ $features = [
     ]
 ];
 
-$plans = [
-    [
-        'name' => 'Starter',
-        'price' => '29',
+// Dynamic plans from DB (fallback if none)
+$plans = Plan::where('is_active', true)->orderBy('price_cents')->get()->map(function($p){
+    $isFree = $p->price_cents == 0;
+    $annualCents = $p->yearly_price_cents ?? ($p->price_cents*12*0.8);
+    return [
+        'name' => $p->name,
+        'price' => $isFree ? '0' : number_format($p->price_cents/100, 0),
+        'annual_price' => $isFree ? '0' : number_format($annualCents/100, 0),
         'period' => 'mes',
-        'description' => 'Perfecto para pequeñas empresas que inician su transformación digital',
-        'features' => [
-            'Hasta 25 empleados',
-            'Gestión básica de personal',
-            'Control de asistencia',
-            'Reportes básicos',
-            'Soporte por email'
-        ],
-        'popular' => false,
-        'cta' => 'Comenzar Prueba Gratuita'
-    ],
-    [
-        'name' => 'Professional',
-        'price' => '59',
-        'period' => 'mes',
-        'description' => 'La opción más popular para empresas en crecimiento',
-        'features' => [
-            'Hasta 100 empleados',
-            'Todas las funciones de Starter',
-            'Reclutamiento avanzado',
-            'Evaluaciones de desempeño',
-            'Gestión de nómina',
-            'Integraciones',
-            'Soporte prioritario'
-        ],
-        'popular' => true,
-        'cta' => 'Comenzar Prueba Gratuita'
-    ],
-    [
-        'name' => 'Enterprise',
-        'price' => '99',
-        'period' => 'mes',
-        'description' => 'Solución completa para empresas grandes y complejas',
-        'features' => [
-            'Empleados ilimitados',
-            'Todas las funciones de Professional',
-            'Analytics avanzados',
-            'API completa',
-            'Onboarding personalizado',
-            'Manager dedicado',
-            'SLA 99.9%'
-        ],
-        'popular' => false,
-        'cta' => 'Contactar Ventas'
-    ]
-];
+        'description' => $p->description,
+        'features' => $p->features ?? [],
+        'popular' => $p->code === 'pro',
+        'cta' => $p->code === 'enterprise' ? 'Contactar Ventas' : 'Comenzar Prueba Gratuita',
+        'link' => $p->code === 'enterprise' ? '#contact' : route('signup.show')
+    ];
+})->toArray();
+if(empty($plans)){
+    $plans = [
+        [ 'name'=>'Free','price'=>'0','period'=>'mes','description'=>'Comienza sin costo','features'=>['Hasta 5 empleados','1 vacante','Soporte básico'],'popular'=>false,'cta'=>'Crear Cuenta','link'=>route('signup.show') ],
+        [ 'name'=>'Pro','price'=>'49','period'=>'mes','description'=>'Escala tu operación','features'=>['Hasta 100 empleados','Vacantes ilimitadas','Soporte prioritario'],'popular'=>true,'cta'=>'Comenzar Prueba','link'=>route('signup.show') ],
+        [ 'name'=>'Enterprise','price'=>'199','period'=>'mes','description'=>'Máximo nivel y soporte dedicado','features'=>['Empleados ilimitados','Integraciones avanzadas','SLA 99.9%'],'popular'=>false,'cta'=>'Contactar Ventas','link'=>'#contact' ]
+    ];
+}
 
 $testimonials = [
     [
@@ -200,9 +223,9 @@ $successStories = [
     title="Transforma tu Gestión de RRHH con Inteligencia Artificial"
     subtitle="La plataforma SaaS más completa para optimizar todos tus procesos de capital humano. Desde reclutamiento hasta nómina, todo en un solo lugar."
     buttonText="Comenzar Prueba Gratuita"
-    buttonLink="{{ route('login') }}"
+    buttonLink="{{ route('signup.show') }}"
     secondaryButtonText="Ver Demo en Vivo"
-    secondaryButtonLink="#contact"
+    secondaryButtonLink="{{ config('demo.enabled') ? route('demo.login') : '#contact' }}"
     :showStats="true"
 />
 
@@ -250,41 +273,51 @@ $successStories = [
 
 @push('scripts')
 <script>
-// Counter animation
+// Preserve existing scripts (could be refactored later)
+// Landing mini limits component
+if(typeof Alpine !== 'undefined'){
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('landingLimits', () => ({
+            loaded:false, plan:null, trialEndsAt:null, limits:{}, usage:{}, remaining:{}, currentCompany:null,
+            get limitedKeys(){ return Object.keys(this.limits).slice(0,4); },
+            async init(){ await this.fetch(); },
+            async fetch(){ try { const [cur, lim] = await Promise.all([
+                    axios.get('/api/company/current'), axios.get('/api/company/limits')
+                ]); this.currentCompany = cur.data.data; if(lim.data.data){
+                    const d = lim.data.data; this.plan = d.plan; this.limits = d.limits; this.usage = d.usage; this.remaining = d.remaining; this.trialEndsAt = d.trial_ends_at || null; }
+                this.loaded = true; } catch(e){ console.error(e); }
+            },
+            progressStyle(key){ const limit=this.limits[key]; if(limit===null) return 'width:100%'; const used=this.usage[key]??0; return `width:${Math.min(100,(used/limit)*100)}%`; }
+        }))
+    });
+}
+
+// Counter animation (restricted to explicit data-counter only to avoid NaN on headings)
 document.addEventListener('DOMContentLoaded', function() {
-    const counters = document.querySelectorAll('.text-4xl.font-bold, [data-counter]');
-    
+    const counters = document.querySelectorAll('[data-counter]');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = entry.target;
-                const countTo = parseInt(target.getAttribute('data-counter') || target.innerText.replace(/\D/g, ''));
-                let count = 0;
-                const interval = setInterval(() => {
-                    count += Math.ceil(countTo / 30);
-                    if (count >= countTo) {
-                        target.innerText = target.innerText.includes('+') ? 
-                            countTo + '+' : 
-                            target.innerText.includes('%') ? 
-                                countTo + '%' : 
-                                countTo;
-                        clearInterval(interval);
-                    } else {
-                        target.innerText = target.innerText.includes('+') ? 
-                            count + '+' : 
-                            target.innerText.includes('%') ? 
-                                count + '%' : 
-                                count;
-                    }
-                }, 30);
-                observer.unobserve(target);
-            }
+            if (!entry.isIntersecting) return;
+            const target = entry.target;
+            const raw = target.getAttribute('data-counter');
+            const countTo = parseInt((raw||'').replace(/[^0-9]/g,''));
+            if (isNaN(countTo) || countTo <= 0) { observer.unobserve(target); return; }
+            let count = 0;
+            const hasPlus = /\+$/.test(raw);
+            const hasPercent = /%$/.test(raw);
+            const step = Math.max(1, Math.ceil(countTo / 30));
+            const interval = setInterval(() => {
+                count += step;
+                if (count >= countTo) {
+                    count = countTo;
+                    clearInterval(interval);
+                }
+                target.textContent = hasPlus ? `${count}${hasPlus && count===countTo?'+':''}` : hasPercent ? `${count}%` : `${count}`;
+            }, 30);
+            observer.unobserve(target);
         });
     }, { threshold: 0.5 });
-    
-    counters.forEach(counter => {
-        observer.observe(counter);
-    });
+    counters.forEach(c => observer.observe(c));
 });
 
 // Form handling
@@ -304,17 +337,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset form
             this.reset();
-        });
-    }
-});
-
-// Pricing toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const toggle = document.getElementById('pricing-toggle');
-    if (toggle) {
-        toggle.addEventListener('change', function() {
-            // Toggle pricing logic here
-            console.log('Pricing toggle changed:', this.checked);
         });
     }
 });

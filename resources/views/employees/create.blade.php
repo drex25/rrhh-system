@@ -664,51 +664,124 @@
             });
         }
 
-        // Cargar países
+        // Cargar países con estados de carga y sincronización de nacionalidad
+        const countrySelect = document.getElementById('birth_country');
+        const nationalitySelect = document.getElementById('nationality');
+        let nationalityDirty = false; // si el usuario modificó manualmente
+        let isAutoSettingNationality = false; // evita marcar dirty en set programático
+
+        // Estado de carga inicial
+        function setLoading(select, text) {
+            select.disabled = true;
+            if (select.tomselect) select.tomselect.disable();
+            const firstOption = select.querySelector('option');
+            if (firstOption) firstOption.textContent = text;
+        }
+        function clearAndInit(select, placeholder) {
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+        }
+        setLoading(countrySelect, 'Cargando países...');
+        setLoading(nationalitySelect, 'Cargando nacionalidades...');
+
         fetch('/api/countries')
-            .then(response => response.json())
+            .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
             .then(countries => {
-                const countrySelect = document.getElementById('birth_country');
-                const nationalitySelect = document.getElementById('nationality');
+                clearAndInit(countrySelect, 'Seleccione un país...');
+                clearAndInit(nationalitySelect, 'Seleccione una nacionalidad...');
                 countries.forEach(country => {
-                    const option = new Option(country.name, country.name);
-                    countrySelect.add(option);
-                    nationalitySelect.add(new Option(country.name, country.name));
+                    const opt1 = new Option(country.name, country.name);
+                    const opt2 = new Option(country.name, country.name);
+                    countrySelect.add(opt1);
+                    nationalitySelect.add(opt2);
                 });
-                // Restaurar valores antiguos si existen
-                @if(old('birth_country'))
-                    countrySelect.value = "{{ old('birth_country') }}";
-                    checkCountry();
-                @endif
-                @if(old('nationality'))
-                    nationalitySelect.value = "{{ old('nationality') }}";
-                @endif
-                // Inicializar Tom Select después de cargar opciones
+
+                // Inicializar TomSelect (una sola vez)
                 if (window.TomSelect) {
                     if (!countrySelect.tomselect) new TomSelect(countrySelect, { create: false, sortField: 'text', placeholder: 'Buscar país...' });
                     if (!nationalitySelect.tomselect) new TomSelect(nationalitySelect, { create: false, sortField: 'text', placeholder: 'Buscar nacionalidad...' });
                 }
+
+                // Restaurar valores antiguos si existen
+                @if(old('birth_country'))
+                    countrySelect.value = "{{ old('birth_country') }}";
+                    if (countrySelect.tomselect) countrySelect.tomselect.setValue("{{ old('birth_country') }}", true);
+                    checkCountry();
+                @endif
+                @if(old('nationality'))
+                    nationalitySelect.value = "{{ old('nationality') }}";
+                    if (nationalitySelect.tomselect) nationalitySelect.tomselect.setValue("{{ old('nationality') }}", true);
+                    nationalityDirty = true; // el usuario ya tenía un valor
+                @endif
+
+                // Auto-sincronizar nacionalidad si está vacía
+                const tryAutoSync = () => {
+                    if (!nationalityDirty) {
+                        const val = countrySelect.value;
+                        if (val) {
+                            isAutoSettingNationality = true;
+                            if (nationalitySelect.tomselect) nationalitySelect.tomselect.setValue(val, true);
+                            else nationalitySelect.value = val;
+                            // próximo change no marca dirty
+                            setTimeout(() => { isAutoSettingNationality = false; }, 0);
+                        }
+                    }
+                };
+                if (!nationalitySelect.value) tryAutoSync();
+
+                // Listeners de cambios
+                countrySelect.addEventListener('change', () => {
+                    checkCountry();
+                    tryAutoSync();
+                });
+                nationalitySelect.addEventListener('change', () => {
+                    if (!isAutoSettingNationality) nationalityDirty = true;
+                });
+
+                // Habilitar selects
+                countrySelect.disabled = false;
+                nationalitySelect.disabled = false;
+                if (countrySelect.tomselect) countrySelect.tomselect.enable();
+                if (nationalitySelect.tomselect) nationalitySelect.tomselect.enable();
+            })
+            .catch(() => {
+                const setError = (select, text) => {
+                    select.innerHTML = `<option value="">${text}</option>`;
+                    select.disabled = true;
+                    if (select.tomselect) select.tomselect.disable();
+                };
+                setError(countrySelect, 'No se pudieron cargar los países');
+                setError(nationalitySelect, 'No se pudieron cargar las nacionalidades');
             });
 
-        // Cargar provincias
+        // Cargar provincias con estado de carga
+        const provinceSelect = document.getElementById('birth_province');
+        const citySelect = document.getElementById('birth_city');
+        setLoading(provinceSelect, 'Cargando provincias...');
         fetch('/api/provinces')
-            .then(response => response.json())
+            .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
             .then(provinces => {
-                const provinceSelect = document.getElementById('birth_province');
+                clearAndInit(provinceSelect, 'Seleccione una provincia...');
                 provinces.forEach(province => {
                     provinceSelect.add(new Option(province.name, province.id));
                 });
+                // Inicializar Tom Select después de cargar opciones
+                if (window.TomSelect && !provinceSelect.tomselect) new TomSelect(provinceSelect, { create: false, sortField: 'text', placeholder: 'Buscar provincia...' });
                 // Restaurar valor antiguo si existe
                 @if(old('birth_province'))
                     provinceSelect.value = "{{ old('birth_province') }}";
+                    if (provinceSelect.tomselect) provinceSelect.tomselect.setValue("{{ old('birth_province') }}", true);
                     loadCities("{{ old('birth_province') }}");
                 @endif
-                // Inicializar Tom Select después de cargar opciones
-                if (window.TomSelect && !provinceSelect.tomselect) new TomSelect(provinceSelect, { create: false, sortField: 'text', placeholder: 'Buscar provincia...' });
+                provinceSelect.disabled = false;
+                if (provinceSelect.tomselect) provinceSelect.tomselect.enable();
+            })
+            .catch(() => {
+                provinceSelect.innerHTML = '<option value="">No se pudieron cargar las provincias</option>';
+                provinceSelect.disabled = true;
+                if (provinceSelect.tomselect) provinceSelect.tomselect.disable();
             });
 
-        // Manejar cambio de país
-        document.getElementById('birth_country').addEventListener('change', checkCountry);
+    // Manejar cambio de país (listeners añadidos tras cargar países)
 
         // Manejar cambio de provincia
         document.getElementById('birth_province').addEventListener('change', function() {
@@ -729,27 +802,40 @@
                 cityField.style.display = 'none';
                 document.getElementById('birth_province').required = false;
                 document.getElementById('birth_city').required = false;
+                // limpiar valores cuando no es Argentina
+                if (provinceSelect.tomselect) provinceSelect.tomselect.clear();
+                else provinceSelect.value = '';
+                if (citySelect.tomselect) citySelect.tomselect.clear();
+                else citySelect.value = '';
             }
         }
 
         function loadCities(province) {
-            const citySelect = document.getElementById('birth_city');
-            citySelect.innerHTML = '<option value="">Seleccione una ciudad...</option>';
+            citySelect.innerHTML = '<option value="">Cargando ciudades...</option>';
 
             if (province) {
                 fetch(`/api/cities?province=${province}`)
-                    .then(response => response.json())
+                    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
                     .then(cities => {
+                        citySelect.innerHTML = '<option value="">Seleccione una ciudad...</option>';
                         cities.forEach(city => {
                             citySelect.add(new Option(city.name, city.name));
                         });
                         // Restaurar valor antiguo si existe
                         @if(old('birth_city'))
                             citySelect.value = "{{ old('birth_city') }}";
+                            if (citySelect.tomselect) citySelect.tomselect.setValue("{{ old('birth_city') }}", true);
                         @endif
                         // Inicializar Tom Select después de cargar opciones
                         if (window.TomSelect) {
                             if (citySelect.tomselect) citySelect.tomselect.destroy();
+                            new TomSelect(citySelect, { create: false, sortField: 'text', placeholder: 'Buscar ciudad...' });
+                        }
+                    })
+                    .catch(() => {
+                        citySelect.innerHTML = '<option value="">No se pudieron cargar las ciudades</option>';
+                        if (citySelect.tomselect) {
+                            citySelect.tomselect.destroy();
                             new TomSelect(citySelect, { create: false, sortField: 'text', placeholder: 'Buscar ciudad...' });
                         }
                     });

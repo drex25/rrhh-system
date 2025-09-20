@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Log\Logger;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $logger = $this->app['log'];
+        if ($logger instanceof Logger) {
+            $logger->getLogger()->pushProcessor(function (array $record) {
+                if (function_exists('company_id') && company_id()) {
+                    $record['extra']['company_id'] = company_id();
+                }
+                return $record;
+            });
+        }
     }
 }

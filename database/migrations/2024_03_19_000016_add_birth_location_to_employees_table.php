@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->string('birth_country')->nullable()->after('birth_date');
-            $table->string('birth_province')->nullable()->after('birth_country');
-            $table->string('birth_city')->nullable()->after('birth_province');
-            $table->string('nationality')->nullable()->after('birth_city');
+            if (!Schema::hasColumn('employees', 'birth_country')) {
+                $table->string('birth_country')->nullable();
+            }
+            if (!Schema::hasColumn('employees', 'birth_province')) {
+                $table->string('birth_province')->nullable();
+            }
+            if (!Schema::hasColumn('employees', 'birth_city')) {
+                $table->string('birth_city')->nullable();
+            }
+            if (!Schema::hasColumn('employees', 'nationality')) {
+                $table->string('nationality')->nullable();
+            }
         });
     }
 
@@ -25,7 +33,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn(['birth_country', 'birth_province', 'birth_city', 'nationality']);
+            foreach (['nationality','birth_city','birth_province','birth_country'] as $col) {
+                if (Schema::hasColumn('employees', $col)) {
+                    $table->dropColumn($col);
+                }
+            }
         });
     }
 }; 

@@ -1,6 +1,7 @@
 <header :class="darkMode ? 'bg-[#181F2A] border-[#232B3E]' : 'bg-white border-gray-200'" class="sticky top-0 z-20 w-full backdrop-blur-lg shadow-md flex items-center justify-between px-8 h-20 transition-all border-b">
     <div class="flex items-center gap-4">
-        <button @click="sidebarCollapsed = !sidebarCollapsed" :class="darkMode ? 'bg-[#232B3E] text-gray-300 hover:text-white' : 'bg-gray-200 text-blue-900 hover:text-blue-700'" class="p-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 shadow">
+        <!-- Desktop: colapsar, Mobile: abrir drawer -->
+        <button @click="window.innerWidth < 1024 ? (sidebarOpen = true) : (sidebarCollapsed = !sidebarCollapsed)" :class="darkMode ? 'bg-[#232B3E] text-gray-300 hover:text-white' : 'bg-gray-200 text-blue-900 hover:text-blue-700'" class="p-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 shadow" :aria-expanded="(window.innerWidth < 1024 ? sidebarOpen : !sidebarCollapsed).toString()" aria-controls="sidebar">
             <i class="fa-solid fa-bars text-2xl"></i>
         </button>
         <span :class="darkMode ? 'text-white' : 'text-blue-900'" class="text-2xl font-bold drop-shadow">Panel de Administración</span>

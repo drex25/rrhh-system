@@ -667,53 +667,117 @@
 <script>
 // --- Script para campos dinámicos de país, provincia, ciudad y nacionalidad ---
 document.addEventListener('DOMContentLoaded', function() {
+    const countrySelect = document.getElementById('birth_country');
+    const nationalitySelect = document.getElementById('nationality');
+    const provinceSelect = document.getElementById('birth_province');
+    const citySelect = document.getElementById('birth_city');
+    let nationalityDirty = false;
+    let isAutoSettingNationality = false;
+
+    function setLoading(select, text) {
+        select.disabled = true;
+        if (select.tomselect) select.tomselect.disable();
+        const firstOption = select.querySelector('option');
+        if (firstOption) firstOption.textContent = text;
+    }
+    function clearAndInit(select, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+    }
+
     // Cargar países
+    setLoading(countrySelect, 'Cargando países...');
+    setLoading(nationalitySelect, 'Cargando nacionalidades...');
     fetch('/api/countries')
-        .then(response => response.json())
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
         .then(countries => {
-            const countrySelect = document.getElementById('birth_country');
-            const nationalitySelect = document.getElementById('nationality');
+            clearAndInit(countrySelect, 'Seleccione un país...');
+            clearAndInit(nationalitySelect, 'Seleccione una nacionalidad...');
             countries.forEach(country => {
-                const option = new Option(country.name, country.name);
-                countrySelect.add(option);
+                countrySelect.add(new Option(country.name, country.name));
                 nationalitySelect.add(new Option(country.name, country.name));
             });
-            // Restaurar valores antiguos si existen
-            @if(old('birth_country', $employee->birth_country))
-                countrySelect.value = "{{ old('birth_country', $employee->birth_country) }}";
-                checkCountry();
-            @endif
-            @if(old('nationality', $employee->nationality))
-                nationalitySelect.value = "{{ old('nationality', $employee->nationality) }}";
-            @endif
-            // Inicializar Tom Select después de cargar opciones
+            // Inicializar TomSelect
             if (window.TomSelect) {
                 if (!countrySelect.tomselect) new TomSelect(countrySelect, { create: false, sortField: 'text', placeholder: 'Buscar país...' });
                 if (!nationalitySelect.tomselect) new TomSelect(nationalitySelect, { create: false, sortField: 'text', placeholder: 'Buscar nacionalidad...' });
             }
+            // Restaurar valores
+            @if(old('birth_country', $employee->birth_country))
+                countrySelect.value = "{{ old('birth_country', $employee->birth_country) }}";
+                if (countrySelect.tomselect) countrySelect.tomselect.setValue("{{ old('birth_country', $employee->birth_country) }}", true);
+                checkCountry();
+            @endif
+            @if(old('nationality', $employee->nationality))
+                nationalitySelect.value = "{{ old('nationality', $employee->nationality) }}";
+                if (nationalitySelect.tomselect) nationalitySelect.tomselect.setValue("{{ old('nationality', $employee->nationality) }}", true);
+                nationalityDirty = true;
+            @endif
+
+            const tryAutoSync = () => {
+                if (!nationalityDirty) {
+                    const v = countrySelect.value;
+                    if (v) {
+                        isAutoSettingNationality = true;
+                        if (nationalitySelect.tomselect) nationalitySelect.tomselect.setValue(v, true);
+                        else nationalitySelect.value = v;
+                        setTimeout(() => { isAutoSettingNationality = false; }, 0);
+                    }
+                }
+            };
+            if (!nationalitySelect.value) tryAutoSync();
+
+            countrySelect.addEventListener('change', () => {
+                checkCountry();
+                tryAutoSync();
+            });
+            nationalitySelect.addEventListener('change', () => {
+                if (!isAutoSettingNationality) nationalityDirty = true;
+            });
+
+            countrySelect.disabled = false;
+            nationalitySelect.disabled = false;
+            if (countrySelect.tomselect) countrySelect.tomselect.enable();
+            if (nationalitySelect.tomselect) nationalitySelect.tomselect.enable();
+        })
+        .catch(() => {
+            const setError = (select, text) => {
+                select.innerHTML = `<option value="">${text}</option>`;
+                select.disabled = true;
+                if (select.tomselect) select.tomselect.disable();
+            };
+            setError(countrySelect, 'No se pudieron cargar los países');
+            setError(nationalitySelect, 'No se pudieron cargar las nacionalidades');
         });
+
     // Cargar provincias
+    setLoading(provinceSelect, 'Cargando provincias...');
     fetch('/api/provinces')
-        .then(response => response.json())
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
         .then(provinces => {
-            const provinceSelect = document.getElementById('birth_province');
+            clearAndInit(provinceSelect, 'Seleccione una provincia...');
             provinces.forEach(province => {
                 provinceSelect.add(new Option(province.name, province.id));
             });
-            // Restaurar valor antiguo si existe
+            if (window.TomSelect && !provinceSelect.tomselect) new TomSelect(provinceSelect, { create: false, sortField: 'text', placeholder: 'Buscar provincia...' });
             @if(old('birth_province', $employee->birth_province))
                 provinceSelect.value = "{{ old('birth_province', $employee->birth_province) }}";
+                if (provinceSelect.tomselect) provinceSelect.tomselect.setValue("{{ old('birth_province', $employee->birth_province) }}", true);
                 loadCities("{{ old('birth_province', $employee->birth_province) }}");
             @endif
-            // Inicializar Tom Select después de cargar opciones
-            if (window.TomSelect && !provinceSelect.tomselect) new TomSelect(provinceSelect, { create: false, sortField: 'text', placeholder: 'Buscar provincia...' });
+            provinceSelect.disabled = false;
+            if (provinceSelect.tomselect) provinceSelect.tomselect.enable();
+        })
+        .catch(() => {
+            provinceSelect.innerHTML = '<option value="">No se pudieron cargar las provincias</option>';
+            provinceSelect.disabled = true;
+            if (provinceSelect.tomselect) provinceSelect.tomselect.disable();
         });
-    // Manejar cambio de país
-    document.getElementById('birth_country').addEventListener('change', checkCountry);
+
     // Manejar cambio de provincia
     document.getElementById('birth_province').addEventListener('change', function() {
         loadCities(this.value);
     });
+
     function checkCountry() {
         const country = document.getElementById('birth_country').value;
         const argentinaFields = document.getElementById('argentina_fields');
@@ -728,25 +792,38 @@ document.addEventListener('DOMContentLoaded', function() {
             cityField.style.display = 'none';
             document.getElementById('birth_province').required = false;
             document.getElementById('birth_city').required = false;
+            // limpiar valores cuando no es Argentina
+            if (provinceSelect.tomselect) provinceSelect.tomselect.clear();
+            else provinceSelect.value = '';
+            if (citySelect.tomselect) citySelect.tomselect.clear();
+            else citySelect.value = '';
         }
     }
     function loadCities(province) {
-        const citySelect = document.getElementById('birth_city');
-        citySelect.innerHTML = '<option value="">Seleccione una ciudad...</option>';
+        citySelect.innerHTML = '<option value="">Cargando ciudades...</option>';
         if (province) {
             fetch(`/api/cities?province=${province}`)
-                .then(response => response.json())
+                .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
                 .then(cities => {
+                    citySelect.innerHTML = '<option value="">Seleccione una ciudad...</option>';
                     cities.forEach(city => {
                         citySelect.add(new Option(city.name, city.name));
                     });
                     // Restaurar valor antiguo si existe
                     @if(old('birth_city', $employee->birth_city))
                         citySelect.value = "{{ old('birth_city', $employee->birth_city) }}";
+                        if (citySelect.tomselect) citySelect.tomselect.setValue("{{ old('birth_city', $employee->birth_city) }}", true);
                     @endif
                     // Inicializar Tom Select después de cargar opciones
                     if (window.TomSelect) {
                         if (citySelect.tomselect) citySelect.tomselect.destroy();
+                        new TomSelect(citySelect, { create: false, sortField: 'text', placeholder: 'Buscar ciudad...' });
+                    }
+                })
+                .catch(() => {
+                    citySelect.innerHTML = '<option value="">No se pudieron cargar las ciudades</option>';
+                    if (citySelect.tomselect) {
+                        citySelect.tomselect.destroy();
                         new TomSelect(citySelect, { create: false, sortField: 'text', placeholder: 'Buscar ciudad...' });
                     }
                 });

@@ -24,6 +24,9 @@ use App\Http\Controllers\PublicJobPostingController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\DemoController;
+use App\Http\Controllers\SignupController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,14 +41,18 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-// Redirect root to job postings
-Route::get('/', function () {
-    return redirect()->route('public.job-postings.index');
-});
+// Root landing (principal)
+// (Si se desea redirigir a vacantes se puede hacer condicional después)
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// Onboarding para nuevos usuarios
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/onboarding', [App\Http\Controllers\OnboardingController::class, 'show'])->name('onboarding.show');
+    Route::post('/onboarding', [App\Http\Controllers\OnboardingController::class, 'store'])->name('onboarding.store');
+});
 
 // Rutas protegidas por roles
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -65,6 +72,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Rutas de administración de recibos (Admin y HR)
         Route::resource('payslips', PayslipController::class);
         Route::get('/payslips/{payslip}/download-pdf', [PayslipController::class, 'downloadPdf'])->name('payslips.downloadPdf');
+            // Companies overview page (admin/HR roles typical)
+            Route::get('/admin/companies', function(){
+                return view('admin.companies');
+            })->name('admin.companies');
+            
+        // Settings routes (only for Admin)
+        Route::middleware(['role:Admin'])->group(function () {
+            Route::get('/settings/company', [SettingsController::class, 'company'])->name('settings.company');
+            Route::put('/settings/company', [SettingsController::class, 'updateCompany'])->name('settings.company.update');
+            Route::delete('/settings/company/logo', [SettingsController::class, 'removeLogo'])->name('settings.company.remove-logo');
+        });
     });
 
     // Rutas para cambio de contraseña forzado
@@ -164,9 +182,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::get('/api/countries', [LocationController::class, 'getCountries']);
-Route::get('/api/provinces', [LocationController::class, 'getProvinces']);
-Route::get('/api/cities', [LocationController::class, 'getCities']);
+
 
 Route::get('/employees/{id}/pdf', [App\Http\Controllers\EmployeeController::class, 'downloadPdf'])->name('employees.downloadPdf')->middleware('auth');
 
@@ -175,8 +191,21 @@ Route::get('/vacantes', [PublicJobPostingController::class, 'index'])->name('pub
 Route::get('/vacantes/{jobPosting}', [PublicJobPostingController::class, 'show'])->name('public.job-postings.show');
 Route::post('/vacantes/{jobPosting}/apply', [PublicJobPostingController::class, 'apply'])->name('public.job-postings.apply');
 
+// Billing / Pricing
+use App\Http\Controllers\BillingController; // appended import inline (PHP allows after other code though style-wise could move up)
+Route::get('/pricing', [BillingController::class,'pricing'])->name('pricing');
+Route::middleware(['auth','verified'])->group(function(){
+    Route::post('/billing/subscribe', [BillingController::class,'subscribe'])->name('billing.subscribe');
+    Route::post('/billing/cancel', [BillingController::class,'cancel'])->name('billing.cancel');
+});
+
 // Landing Page Routes
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
+// Ruta demo auto-login
+Route::get('/demo', [DemoController::class, 'login'])->name('demo.login');
+// Rutas de signup para nuevas empresas
+Route::get('/signup', [SignupController::class, 'show'])->name('signup.show');
+Route::post('/signup', [SignupController::class, 'store'])->name('signup.store');
 Route::post('/contact', [LandingPageController::class, 'store'])->name('landing.store');
 
 require __DIR__.'/auth.php';

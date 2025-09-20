@@ -245,16 +245,30 @@
 </head>
 
 <body class="min-h-screen font-sans antialiased" 
-    x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', userMenu: false, showPasswordModal: false, redirecting: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" 
+    x-data="{ 
+        darkMode: localStorage.getItem('darkMode') === 'true', 
+        userMenu: false, 
+        showPasswordModal: false, 
+        redirecting: false, 
+        sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+        sidebarOpen: false
+    }" 
     :class="darkMode ? 'dark bg-gray-900' : 'bg-gray-100'"
-    x-init="$watch('darkMode', val => {
-        localStorage.setItem('darkMode', val);
-        document.documentElement.classList.toggle('dark', val);
-    });
-    $watch('sidebarCollapsed', val => localStorage.setItem('sidebarCollapsed', val));
-    @if(Auth::user()->force_password_change && !request()->is('password/change'))
-    showPasswordModal = true;
-    @endif">
+    x-init="
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', val);
+            document.documentElement.classList.toggle('dark', val);
+        });
+        $watch('sidebarCollapsed', val => localStorage.setItem('sidebarCollapsed', val));
+        // Cerrar drawer en ESC
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') sidebarOpen = false; });
+        // Ajustar estado al cambiar tamaño
+        window.addEventListener('resize', () => { if (window.innerWidth >= 1024) sidebarOpen = false; });
+        @if(Auth::user()->force_password_change && !request()->is('password/change'))
+        showPasswordModal = true;
+        @endif
+    "
+>
     <div x-cloak x-show="true">
         @if (Auth::user()->force_password_change && !request()->is('password/change'))
             <!-- Modal de Cambio de Contraseña -->
@@ -292,6 +306,12 @@
 
                             <div class="mt-4 space-y-4">
                                 <div>
+                                        <li>
+                                            <a href="/admin/companies" class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-700">
+                                                <span class="material-icons-outlined text-base mr-3">business</span>
+                                                Companies
+                                            </a>
+                                        </li>
                                     <label for="current_password"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Contraseña Actual
@@ -353,9 +373,34 @@
                 </div>
             </div>
         @endif
-        @include('components.sidebar')
-        <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out" :class="[sidebarCollapsed ? 'ml-20' : 'ml-72', darkMode ? 'bg-gray-900' : 'bg-gray-100']">
+    @include('components.sidebar')
+    <!-- Overlay para mobile -->
+    <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-20 bg-black/50 lg:hidden" @click="sidebarOpen = false"></div>
+    <div class="flex flex-col min-h-screen transition-all duration-300 ease-in-out" :class="[sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72', darkMode ? 'bg-gray-900' : 'bg-gray-100']">
             @include('components.topbar')
+            @auth
+            <div class="px-8 pt-4" x-data="companySwitcher" x-cloak>
+                <template x-if="companies.length">
+                    <div class="inline-block relative mb-4">
+                        <button @click="open = !open" class="px-3 py-2 bg-gray-100 dark:bg-gray-800 text-sm rounded-md flex items-center gap-2 border dark:border-gray-700">
+                            <span class="font-medium" x-text="currentCompany ? currentCompany.name : 'Compañía'"></span>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="open" @click.outside="open=false" class="absolute z-50 mt-2 w-60 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                            <div class="py-1 max-h-64 overflow-auto">
+                                <template x-for="c in companies" :key="c.id">
+                                    <button @click="switchCompany(c.id)" type="button" class="w-full text-left px-4 py-2 text-sm flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        :class="{'bg-blue-50 dark:bg-gray-700': currentCompany && currentCompany.id === c.id}">
+                                        <span x-text="c.name"></span>
+                                        <span x-show="currentCompany && currentCompany.id === c.id" class="text-blue-500"><i class="fa fa-check"></i></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            @endauth
             <main class="flex-1 p-8 overflow-y-auto" :class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'" style="height:calc(100vh - 5rem)">
                 @yield('content')
             </main>
@@ -364,6 +409,20 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     @stack('scripts')
+    <script>
+    document.addEventListener('alpine:init', () => {
+        if (!Alpine.store('companySwitcherRegistered')) {
+            Alpine.store('companySwitcherRegistered', true);
+            Alpine.data('companySwitcher', () => ({
+                open:false, companies:[], currentCompany:null,
+                init(){ this.fetchCurrent(); this.fetchCompanies(); },
+                async fetchCurrent(){ try{ const {data}= await axios.get('/api/company/current'); this.currentCompany=data.data; }catch(e){console.error(e);} },
+                async fetchCompanies(){ try{ const {data}= await axios.get('/api/companies/mine'); this.companies=data.data; }catch(e){console.error(e);} },
+                async switchCompany(id){ if(!id || (this.currentCompany && this.currentCompany.id===id)){ this.open=false; return;} try{ await axios.post('/api/company/switch',{company_id:id}); await this.fetchCurrent(); this.open=false; window.location.reload(); }catch(e){ console.error(e); alert('No se pudo cambiar de compañía'); } }
+            }));
+        }
+    });
+    </script>
     <script>
         // Manejo de mensajes flash con SweetAlert2
         @if(session('success'))

@@ -205,6 +205,62 @@
     </div>
 </div>
 
+<!-- Panel Uso del Plan -->
+<div x-data="limitsPanel" x-cloak class="mb-10">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18M3 9h18M3 15h18M3 21h18"/></svg>
+                Uso del Plan
+                <template x-if="plan"><span class="ml-2 text-sm px-2 py-0.5 rounded bg-blue-100 text-blue-700" x-text="plan"></span></template>
+        </h2>
+        <template x-if="loaded">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <template x-for="key in Object.keys(limits)" :key="key">
+                                <div class="p-4 rounded border bg-white dark:bg-gray-800 shadow-sm">
+                                        <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm font-medium capitalize" x-text="key.replace('_',' ')"></span>
+                                                <span class="text-xs text-gray-500" x-text="usage[key] + ' / ' + (limits[key] ?? '∞')"></span>
+                                        </div>
+                                        <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                                                <div class="h-2 bg-blue-500" :style="progressStyle(key)"></div>
+                                        </div>
+                                        <p class="mt-2 text-xs text-gray-500" x-show="remaining[key] !== null" x-text="'Restantes: ' + remaining[key]"></p>
+                                </div>
+                        </template>
+                </div>
+        </template>
+        <template x-if="!loaded">
+                <div class="text-sm text-gray-500">Cargando límites...</div>
+        </template>
+</div>
+
+@push('scripts')
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('limitsPanel', () => ({
+        loaded:false, plan:null, limits:{}, usage:{}, remaining:{},
+        async init(){
+            try{ const {data}= await axios.get('/api/company/limits');
+                if(data.data){
+                    this.plan = data.data.plan;
+                    this.limits = data.data.limits;
+                    this.usage = data.data.usage;
+                    this.remaining = data.data.remaining;
+                }
+                this.loaded = true;
+            }catch(e){ console.error(e); }
+        },
+        progressStyle(key){
+            const limit = this.limits[key];
+            if(limit === null) return 'width:100%';
+            const used = this.usage[key] ?? 0;
+            const pct = Math.min(100, (used/limit)*100);
+            return `width:${pct}%`;
+        }
+    }))
+});
+</script>
+@endpush
+
 <!-- Charts Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Employees by Department Chart -->

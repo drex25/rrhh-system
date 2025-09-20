@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use App\Traits\BelongsToCompany;
 
 class JobPosting extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToCompany;
 
     protected $fillable = [
         'title',
@@ -30,7 +31,8 @@ class JobPosting extends Model
         'closing_date',
         'vacancies',
         'is_featured',
-        'is_active'
+        'is_active',
+        'company_id',
     ];
 
     protected $casts = [

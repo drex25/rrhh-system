@@ -196,11 +196,13 @@
                         Contacto
                     </a>
 
-                    <!-- Demo Button -->
-                    <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg whitespace-nowrap">
+                    @if(!auth()->check() && config('demo.enabled'))
+                    <a href="{{ route('demo.login') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-700 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-200 transition-all duration-200 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/40 rounded-lg whitespace-nowrap">
                         <i class="fas fa-play mr-2"></i>
-                        Ver Demo
+                        Live Demo
+                        <span class="ml-2 inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold rounded bg-purple-600 text-white">NEW</span>
                     </a>
+                    @endif
 
                     <!-- Login Button -->
                     <a href="{{ route('login') }}" 
@@ -455,6 +457,33 @@
         </div>
     </footer>
 
+    @auth
+    <script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('publicCompanySwitcher', () => ({
+            open:false, loaded:false, companies:[], currentCompany:null,
+            async init(){ await this.refresh(); },
+            async refresh(){
+                try {
+                    const [cur, mine] = await Promise.all([
+                        axios.get('/api/company/current'),
+                        axios.get('/api/companies/mine')
+                    ]);
+                    this.currentCompany = cur.data.data;
+                    this.companies = mine.data.data || [];
+                    this.loaded = true;
+                } catch(e){ console.error(e); }
+            },
+            async switchTo(id){
+                if(this.currentCompany && id===this.currentCompany.id){ this.open=false; return; }
+                try { await axios.post('/api/company/switch',{company_id:id}); await this.refresh(); this.open=false; window.location.reload(); }
+                catch(e){ alert('No se pudo cambiar'); }
+            }
+        }))
+    });
+    </script>
+    @endauth
+
     <!-- AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -467,5 +496,7 @@
             });
         });
     </script>
+    
+    @stack('scripts')
 </body>
 </html> 

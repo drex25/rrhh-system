@@ -4,17 +4,29 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
+    public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->date('termination_date')->nullable()->after('is_active');
-            $table->string('termination_reason')->nullable()->after('termination_date');
+            // Evitar error de rename/permiso en ciertos motores MySQL: no usar after() y verificar existencia
+            if (!Schema::hasColumn('employees', 'termination_date')) {
+                $table->date('termination_date')->nullable();
+            }
+            if (!Schema::hasColumn('employees', 'termination_reason')) {
+                $table->string('termination_reason')->nullable();
+            }
         });
     }
-    public function down()
+
+    public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn(['termination_date', 'termination_reason']);
+            // Dropear solo si existen para evitar fallos en entornos inconsistentes
+            if (Schema::hasColumn('employees', 'termination_reason')) {
+                $table->dropColumn('termination_reason');
+            }
+            if (Schema::hasColumn('employees', 'termination_date')) {
+                $table->dropColumn('termination_date');
+            }
         });
     }
-}; 
+};

@@ -1,0 +1,12 @@
+[
+  {"code":"USD","name":"Dólar Estadounidense","symbol":"$","decimals":2},
+  {"code":"EUR","name":"Euro","symbol":"€","decimals":2},
+  {"code":"ARS","name":"Peso Argentino","symbol":"$","decimals":2},
+  {"code":"MXN","name":"Peso Mexicano","symbol":"$","decimals":2},
+  {"code":"CLP","name":"Peso Chileno","symbol":"$","decimals":0},
+  {"code":"COP","name":"Peso Colombiano","symbol":"$","decimals":2},
+  {"code":"PEN","name":"Sol Peruano","symbol":"S/","decimals":2},
+  {"code":"BRL","name":"Real Brasileño","symbol":"R$","decimals":2},
+  {"code":"GBP","name":"Libra Esterlina","symbol":"£","decimals":2},
+  {"code":"JPY","name":"Yen Japonés","symbol":"¥","decimals":0}
+]

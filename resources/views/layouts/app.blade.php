@@ -42,6 +42,29 @@
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             @auth
+                                <div x-data="companySwitcher" class="mr-4" x-cloak>
+                                    <template x-if="companies.length">
+                                        <div class="relative">
+                                            <button @click="open = !open" type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none">
+                                                <span x-text="currentCompany ? currentCompany.name : 'Compañía'"></span>
+                                                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                            </button>
+                                            <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+                                                <div class="py-1 max-h-64 overflow-auto">
+                                                    <template x-for="c in companies" :key="c.id">
+                                                        <button @click="switchCompany(c.id)" type="button" class="w-full text-left px-4 py-2 text-sm flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                            :class="{'bg-blue-50 dark:bg-gray-700': currentCompany && currentCompany.id === c.id}">
+                                                            <span x-text="c.name"></span>
+                                                            <span x-show="currentCompany && currentCompany.id === c.id" class="text-blue-500"><i class="fa fa-check"></i></span>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            @endauth
+                            @auth
                                 <div class="ml-3 relative">
                                     <x-dropdown align="right" width="48">
                                         <x-slot name="trigger">
@@ -197,6 +220,29 @@
         </div>
 
         @stack('scripts')
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('companySwitcher', () => ({
+                    open: false,
+                    companies: [],
+                    currentCompany: null,
+                    init() {
+                        this.fetchCurrent();
+                        this.fetchCompanies();
+                    },
+                    async fetchCurrent() {
+                        try { const { data } = await axios.get('/api/company/current'); this.currentCompany = data.data; } catch(e){ console.error(e); }
+                    },
+                    async fetchCompanies() {
+                        try { const { data } = await axios.get('/api/companies/mine'); this.companies = data.data; } catch(e){ console.error(e); }
+                    },
+                    async switchCompany(id) {
+                        if (!id || (this.currentCompany && this.currentCompany.id === id)) { this.open=false; return; }
+                        try { await axios.post('/api/company/switch', { company_id: id }); await this.fetchCurrent(); this.open=false; window.location.reload(); } catch(e){ console.error(e); alert('No se pudo cambiar de compañía'); }
+                    }
+                }));
+            });
+        </script>
     </body>
 </html>
 

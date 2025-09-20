@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\BelongsToCompany;
 
 /**
  * App\Models\Employee
@@ -98,7 +99,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Employee extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToCompany;
 
     protected $fillable = [
         'user_id',
@@ -138,6 +139,7 @@ class Employee extends Model
         'spouse_name',
         'children',
         'cbu_attachment',
+        'company_id',
     ];
 
     protected $casts = [

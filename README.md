@@ -1,11 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RRHH SaaS Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Una plataforma SaaS completa para la gestión de recursos humanos, construida con Laravel 11 y diseñada para empresas de todos los tamaños.
+
+## 🚀 Características Principales
+
+### Multi-Tenancy
+- **Arquitectura Single Database**: Cada empresa (tenant) tiene su propio contexto aislado
+- **Switching dinámico**: Los usuarios pueden cambiar entre compañías
+- **Global Scopes**: Aislamiento automático de datos por `company_id`
+- **Middleware inteligente**: Bootstrap automático de contexto de compañía
+
+### Módulos Funcionales
+- **Gestión de Personal**: Legajos digitales completos
+- **Reclutamiento**: ATS con gestión de candidatos y entrevistas
+- **Nómina**: Generación automática de recibos de sueldo
+- **Asistencia**: Control de horarios, vacaciones y permisos
+- **Evaluaciones**: Ciclos de feedback y evaluación de desempeño
+- **Reportes**: Analytics en tiempo real y dashboards ejecutivos
+
+### Demo Mode 🎯
+Sistema de demostración en vivo para visitantes:
+
+```bash
+# Activar en .env
+DEMO_MODE=true
+DEMO_USER_EMAIL=demo@demo.test
+DEMO_COMPANY_NAME="TechFlow Solutions"
+DEMO_PLAN=pro
+DEMO_READ_ONLY=false
+```
+
+**Características del Demo:**
+- **Login automático**: Ruta `/demo` loguea como usuario demo
+- **Datos pre-poblados**: 4 departamentos + empleados de ejemplo
+- **Experiencia realista**: TechFlow Solutions con estructura completa
+- **Protección configurable**: Bloqueo opcional de eliminaciones
+- **UI integrada**: Botón "Live Demo" visible para visitantes
+
+### Onboarding Wizard 🧙‍♂️
+Sistema de configuración inicial para nuevos usuarios:
+
+**Paso 1: Información de Empresa**
+- Nombre de la empresa
+- Industria y tamaño
+- Plan automático basado en tamaño
+
+**Paso 2: Departamentos**
+- Selección de departamentos comunes
+- Opción de agregar departamentos personalizados
+- Creación automática de posiciones básicas
+
+**Paso 3: Primer Empleado**
+- Empleado inicial opcional
+- Configuración básica de datos
+
+## 📋 Instalación Rápida
+
+### Configuración Inicial
+
+1. **Clonar e instalar:**
+```bash
+git clone <repository>
+cd rrhh-tsgroup
+composer install && npm install
+```
+
+2. **Configurar entorno:**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3. **Base de datos:**
+```bash
+# Configurar DB en .env, luego:
+php artisan migrate:fresh --seed
+```
+
+4. **Assets y demo:**
+```bash
+npm run dev
+# Agregar a .env para demo:
+echo "DEMO_MODE=true" >> .env
+php artisan config:clear
+```
+
+### Acceso al Sistema
+
+**Usuarios demo predeterminados:**
+- Admin: admin@company.com / password
+- HR: hr@company.com / password
+- **Demo en vivo**: Visita `/demo` como visitante
+
+## 🔧 Multi-Tenancy
+
+### Helpers Disponibles
+```php
+$company = current_company(); // Compañía actual
+$companyId = company_id();    // ID de compañía actual
+```
+
+### API Endpoints
+```javascript
+GET /api/company/current      // Datos compañía actual
+GET /api/companies/mine       // Compañías del usuario
+POST /api/company/switch      // Cambiar compañía
+GET /api/company/limits       // Límites y uso del plan
+```
+
+### Trait para Modelos
+```php
+use App\Traits\BelongsToCompany;
+
+class Employee extends Model
+{
+    use BelongsToCompany; // Agrega scope automático + company_id
+}
+```
+
+## 🎨 UI & Experience
+
+### Demo Flow
+1. Visitante ve botón "Live Demo" en landing
+2. Clic → login automático como Sarah Johnson
+3. Explora TechFlow Solutions con datos realistas
+4. Puede crear/editar (no eliminar si read-only activo)
+
+### Onboarding Flow
+1. Usuario se registra normalmente
+2. First login → redirect a `/onboarding`
+3. Wizard 3 pasos → empresa configurada
+4. Redirect a dashboard con estructura lista
+
+### Stack Frontend
+- **Blade + Alpine.js**: SSR con interactividad ligera
+- **Tailwind CSS**: Styling moderno y responsive
+- **Componentes SaaS**: Hero, pricing, testimonials reutilizables
+
+## 🚀 Próximos Pasos SaaS
+
+### ✅ Implementado
+- Multi-tenancy base
+- Demo mode completo
+- Onboarding wizard
+- API switching
+- Límites por plan (estructura)
+
+### 🔄 Siguiente Sprint
+- Enforcement de límites en creación
+- Policies de autorización
+- Billing básico (Stripe)
+- Invitaciones de usuarios
+
+### 📋 Roadmap
+- API pública
+- Integraciones (Slack, etc.)
+- Mobile companion
+- Analytics avanzados
+
+---
+
+**🎯 Estado actual**: Sistema SaaS funcional con demo en vivo, onboarding completo y base multi-tenant sólida. Listo para implementar billing y enforcement de límites.
+
+**💡 Pruébalo**: Visita `/demo` para ver la experiencia completa sin registro.
 
 ## About Laravel
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Company;
 use App\Models\Department;
 use App\Models\Payslip;
 use App\Models\LeaveRequest;
@@ -14,7 +15,29 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+        
+        // Verificar si necesita onboarding (usuario nuevo sin compañía configurada)
+        if (!$user->company_id || (!Company::find($user->company_id)->departments()->exists() && $user->email !== config('demo.user_email'))) {
+            return redirect()->route('onboarding.show');
+        }
+        
+        // Asegurar que el usuario tenga compañía activa (multi-tenant bootstrap)
+        if(!$user->company_id){
+            // Intentar asignar la primera compañía global o crear una demo mínima
+            $company = Company::firstOrCreate(['slug'=>'demo'],[
+                'name'=>'Demo Company','plan'=>'standard','billing_email'=>$user->email
+            ]);
+            $user->company_id = $company->id;
+            if(!$user->last_active_company_id){
+                $user->last_active_company_id = $company->id;
+            }
+            $user->save();
+        } elseif(!$user->last_active_company_id) {
+            $user->last_active_company_id = $user->company_id;
+            $user->save();
+        }
         
         if ($user->hasRole('Admin') || $user->hasRole('HR')) {
             return $this->adminDashboard();

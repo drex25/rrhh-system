@@ -9,17 +9,24 @@ return new class extends Migration
 {
     public function up()
     {
-        // Primero eliminamos el valor por defecto
-        DB::statement('ALTER TABLE candidates ALTER COLUMN status DROP DEFAULT');
-        
-        // Modificamos el tipo ENUM
-        DB::statement("ALTER TABLE candidates MODIFY COLUMN status ENUM('pending', 'reviewing', 'shortlisted', 'interview_scheduled', 'interviewed', 'technical_test', 'reference_check', 'offered', 'accepted', 'hired', 'rejected', 'withdrawn') NOT NULL DEFAULT 'pending'");
+        $driver = DB::getDriverName();
+        if ($driver === 'mysql') {
+            // Ajuste MySQL real
+            DB::statement("ALTER TABLE candidates MODIFY COLUMN status ENUM('pending', 'reviewing', 'shortlisted', 'interview_scheduled', 'interviewed', 'technical_test', 'reference_check', 'offered', 'accepted', 'hired', 'rejected', 'withdrawn') NOT NULL DEFAULT 'pending'");
+        } else {
+            // SQLite / otros: simplemente asegurar que la columna existe; no soporta ENUM real.
+            // Podemos dejarla como TEXT y validar por aplicación; si ya existe, ignoramos.
+            if (Schema::hasTable('candidates') && Schema::hasColumn('candidates', 'status')) {
+                // Nada: evitar fallar.
+            }
+        }
     }
 
     public function down()
     {
-        // Revertimos a los valores originales
-        DB::statement('ALTER TABLE candidates ALTER COLUMN status DROP DEFAULT');
-        DB::statement("ALTER TABLE candidates MODIFY COLUMN status ENUM('pending', 'reviewing', 'interviewed', 'hired', 'rejected') NOT NULL DEFAULT 'pending'");
+        $driver = DB::getDriverName();
+        if ($driver === 'mysql') {
+            DB::statement("ALTER TABLE candidates MODIFY COLUMN status ENUM('pending', 'reviewing', 'interviewed', 'hired', 'rejected') NOT NULL DEFAULT 'pending'");
+        }
     }
-}; 
+};

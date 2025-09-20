@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\BelongsToCompany;
 
 class Payslip extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToCompany;
 
     protected $fillable = [
         'employee_id',
@@ -25,6 +26,7 @@ class Payslip extends Model
         'is_paid',
         'paid_at',
         'notes',
+        'company_id',
     ];
 
     protected $casts = [

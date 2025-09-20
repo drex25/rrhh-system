@@ -24,6 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'force_password_change',
+        'company_id',
+        'last_active_company_id',
     ];
 
     /**
@@ -55,5 +57,10 @@ class User extends Authenticatable
     public function interviewJobPostings()
     {
         return $this->belongsToMany(JobPosting::class, 'job_posting_user');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

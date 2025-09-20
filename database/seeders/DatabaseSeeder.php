@@ -21,10 +21,16 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
+            DefaultCompanySeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
             LeaveTypeSeeder::class,
+            PlanLimitSeeder::class,
         ]);
+
+        if (config('demo.enabled')) {
+            $this->call([DemoSeeder::class]);
+        }
 
         // Obtener roles existentes
         $adminRole = Role::where('name', 'Admin')->first();

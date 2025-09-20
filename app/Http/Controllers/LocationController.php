@@ -3,78 +3,114 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 class LocationController extends Controller
 {
-    public function getCountries()
+    // GET /api/countries
+    public function countries(): JsonResponse
     {
-        // Cache the countries list for 24 hours
-        return Cache::remember('countries', 86400, function () {
-            $response = Http::get('https://restcountries.com/v3.1/all');
-            if ($response->successful()) {
-                $countries = collect($response->json())->map(function ($country) {
-                    return [
-                        'name' => $country['name']['common'],
-                        'code' => $country['cca2']
-                    ];
-                })->sortBy('name')->values();
-                return response()->json($countries);
-            }
-            return response()->json(['error' => 'Failed to fetch countries'], 500);
+        $countries = Cache::remember('countries_all_es_api', 86400, function () {
+            $list = $this->fetchRestCountriesV3();
+            return collect($list)
+                ->filter(fn($c) => isset($c['name']) && $c['name'])
+                ->map(fn($c) => ['name' => (string) $c['name'], 'code' => $c['code'] ?? null])
+                ->unique('name')
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
+                ->all();
         });
+
+        return response()->json($countries);
     }
 
-    public function getProvinces()
+    /**
+     * Fetch countries from RestCountries v3.1 with Spanish translation when available
+     * @return array<int, array{name:string, code:?string}>
+     */
+    protected function fetchRestCountriesV3(): array
     {
-        // Cache the provinces list for 24 hours
-        return Cache::remember('provinces', 86400, function () {
-            $response = Http::get('https://apis.datos.gob.ar/georef/api/provincias', [
-                'campos' => 'id,nombre'
+        try {
+            $response = Http::timeout(6)->retry(2, 200)->get('https://restcountries.com/v3.1/all', [
+                'fields' => 'name,cca2,translations'
+            ]);
+            if (!$response->successful()) {
+                return [];
+            }
+            $data = $response->json();
+            if (!is_array($data)) return [];
+            return collect($data)
+                ->map(function ($c) {
+                    $name = $c['translations']['spa']['common']
+                        ?? $c['translations']['es']['common']
+                        ?? ($c['name']['common'] ?? null);
+                    $code = $c['cca2'] ?? null;
+                    return $name ? ['name' => $name, 'code' => $code] : null;
+                })
+                ->filter()
+                ->values()
+                ->all();
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+
+    // GET /api/provinces (Argentina)
+    public function provinces(): JsonResponse
+    {
+        $provinces = Cache::remember('ar_provinces', 86400, function () {
+            $response = Http::timeout(6)->retry(2, 200)->get('https://apis.datos.gob.ar/georef/api/provincias', [
+                'campos' => 'id,nombre',
+                'max' => 100
             ]);
             if ($response->successful()) {
                 $data = $response->json();
                 if (isset($data['provincias'])) {
-                    $provinces = collect($data['provincias'])->map(function ($prov) {
-                        return [
-                            'id' => $prov['id'],
-                            'name' => $prov['nombre']
-                        ];
-                    })->sortBy('name')->values();
-                    return response()->json($provinces);
+                    return collect($data['provincias'])
+                    ->map(fn($p) => ['id' => $p['id'], 'name' => $p['nombre']])
+                    ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                    ->values()
+                    ->all();
                 }
             }
-            return response()->json([], 500);
+            // Sin fallback: solo API. Si falla, lista vacía.
+            return [];
         });
+
+        return response()->json($provinces);
     }
 
-    public function getCities(Request $request)
+    // GET /api/cities?province={id}
+    public function cities(Request $request): JsonResponse
     {
-        $province = $request->input('province');
+        $province = $request->query('province');
         if (!$province) {
-            return response()->json(['error' => 'Province is required'], 400);
+            return response()->json(['error' => 'province param required'], 400);
         }
 
-        // Cache the cities list for 24 hours
-        return Cache::remember("cities_{$province}", 86400, function () use ($province) {
+        $cities = Cache::remember("ar_cities_{$province}", 86400, function () use ($province) {
             $response = Http::get('https://apis.datos.gob.ar/georef/api/municipios', [
                 'provincia' => $province,
                 'campos' => 'id,nombre',
-                'max' => 1000
+                'max' => 1000,
             ]);
-
             if ($response->successful()) {
                 $data = $response->json();
                 if (isset($data['municipios'])) {
-                    $municipios = collect($data['municipios'])->map(function($m) {
-                        return ['name' => $m['nombre'], 'id' => $m['id']];
-                    })->values();
-                    return response()->json($municipios);
+                    return collect($data['municipios'])
+                    ->map(fn($m) => ['id' => $m['id'], 'name' => $m['nombre']])
+                    ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                    ->values()
+                    ->all();
                 }
             }
-            
-            return response()->json(['error' => 'Failed to fetch cities'], 500);
+            // Sin fallback: solo API. Si falla, lista vacía.
+            return [];
         });
+
+        return response()->json($cities);
     }
-} 
+}

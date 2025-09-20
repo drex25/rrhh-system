@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\BelongsToCompany;
 
 class Position extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToCompany;
 
     protected $fillable = [
         'title',
@@ -20,6 +21,7 @@ class Position extends Model
         'requirements',
         'responsibilities',
         'is_active',
+        'company_id',
     ];
 
     protected $casts = [
